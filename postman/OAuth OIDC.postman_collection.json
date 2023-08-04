@@ -1,0 +1,715 @@
+{
+	"info": {
+		"_postman_id": "3a5c720f-bb7b-43ee-89fc-be10a744e30e",
+		"name": "OAuth OIDC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5651614"
+	},
+	"item": [
+		{
+			"name": "OAtuh2-AuthenticationCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=openid+profile+client.create+client.read&redirect_uri=http://127.0.0.1:8080/authorized",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"authorize"
+					],
+					"query": [
+						{
+							"key": "response_type",
+							"value": "code"
+						},
+						{
+							"key": "client_id",
+							"value": "messaging-client"
+						},
+						{
+							"key": "scope",
+							"value": "openid+profile+client.create+client.read"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://127.0.0.1:8080/authorized"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-Token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:8080/authorized&code=Eb7wFbLOBkiNiAB-b0va2w3hiNpwTQzinLwY6lhdM4SCeuftjvovj5owpwTn-ArjoDT02A3l8eDspVw7-DlG2t31EQZF3_qE2U5GE5Kg_yP_Wdh2QF62B8idH9WO74uM",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://127.0.0.1:8080/authorized"
+						},
+						{
+							"key": "code",
+							"value": "Eb7wFbLOBkiNiAB-b0va2w3hiNpwTQzinLwY6lhdM4SCeuftjvovj5owpwTn-ArjoDT02A3l8eDspVw7-DlG2t31EQZF3_qE2U5GE5Kg_yP_Wdh2QF62B8idH9WO74uM"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-Refresh Token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/token?grant_type=refresh_token&refresh_token=jgIeE1q4v8HmWtCBzxO7HiLvg02tkNq4PNcHPZANpfHIrwl6aMyDYC8QXfLw19Ux_X9cQi2Duq4cZUwzMbzeEl4HAX0Xuno42AMiK5LeezJ8KL5i6r6weBoFzIIlHq6i",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "refresh_token"
+						},
+						{
+							"key": "refresh_token",
+							"value": "jgIeE1q4v8HmWtCBzxO7HiLvg02tkNq4PNcHPZANpfHIrwl6aMyDYC8QXfLw19Ux_X9cQi2Duq4cZUwzMbzeEl4HAX0Xuno42AMiK5LeezJ8KL5i6r6weBoFzIIlHq6i"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-Revoke Token",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/revoke?token_type_hint=access_token&token=eyJra",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"revoke"
+					],
+					"query": [
+						{
+							"key": "token_type_hint",
+							"value": "access_token"
+						},
+						{
+							"key": "token",
+							"value": "eyJra"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-Revoke RefreshToken",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/revoke?token_type_hint=refresh_token&token=jgIeE1q4v8HmWtCBzxO7HiLvg02tkNq4PNcHPZANpfHIrwl6aMyDYC8QXfLw19Ux_X9cQi2Duq4cZUwzMbzeEl4HAX0Xuno42AMiK5LeezJ8KL5i6r6weBoFzIIlHq6i",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"revoke"
+					],
+					"query": [
+						{
+							"key": "token_type_hint",
+							"value": "refresh_token"
+						},
+						{
+							"key": "token",
+							"value": "jgIeE1q4v8HmWtCBzxO7HiLvg02tkNq4PNcHPZANpfHIrwl6aMyDYC8QXfLw19Ux_X9cQi2Duq4cZUwzMbzeEl4HAX0Xuno42AMiK5LeezJ8KL5i6r6weBoFzIIlHq6i"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-AuthorizationServer Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/.well-known/oauth-authorization-server",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						".well-known",
+						"oauth-authorization-server"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-Token Introspect",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/introspect?token_type_hint=access_token&token=eyJjdXN0b21lckhlYWRlciI6Iui_meaYr-S4gOS4quiHquWumuS5iWhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMjhmODRlZjctMTRjMS00M2ZlLThjNjYtMTVmZDkyZjZkZDc2In0.eyJzdWIiOiJ0ZXN0IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiLov5nmmK_kuIDkuKroh6rlrprkuYlDbGFpbSIsIm5iZiI6MTY4NDMwNDgzOSwic2NvcGUiOlsib3BlbmlkIiwiY2xpZW50LmNyZWF0ZSIsImNsaWVudC5yZWFkIl0sImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsImV4cCI6MTY4NDMwNTEzOSwiaWF0IjoxNjg0MzA0ODM5fQ.KX2QSKTr2pcfZnfxdWuwx__6RokQyl715tI8geWXqO-73qpWMkSWicT6UzUddF03eViiF0beOx0rGynvbMrH-QP3Q8pWwFuCoUNvuAnNr3_9YByaPjM0MiXDsxcMdrAQEhGcUGyDAxT0ZL9ug2gfhRQboNxXpSMzaV65wAFKuAIU-xWgRvSfmtl9NMzR9TZwutoPAKvgiQv2bubBxjSMl4qKbzPkUfDzseiLyLH_n_f1iUV7K4JDoiV-tlFhWEVGovNAgBqhjJLvvW1LGV1juJ7zomFD5XBTj2609HobwLUEjnfvG6fyMG_DHqIRfXFSif9HLndZBDygZD-0u3FLBA",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"introspect"
+					],
+					"query": [
+						{
+							"key": "token_type_hint",
+							"value": "access_token"
+						},
+						{
+							"key": "token",
+							"value": "eyJjdXN0b21lckhlYWRlciI6Iui_meaYr-S4gOS4quiHquWumuS5iWhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMjhmODRlZjctMTRjMS00M2ZlLThjNjYtMTVmZDkyZjZkZDc2In0.eyJzdWIiOiJ0ZXN0IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiLov5nmmK_kuIDkuKroh6rlrprkuYlDbGFpbSIsIm5iZiI6MTY4NDMwNDgzOSwic2NvcGUiOlsib3BlbmlkIiwiY2xpZW50LmNyZWF0ZSIsImNsaWVudC5yZWFkIl0sImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsImV4cCI6MTY4NDMwNTEzOSwiaWF0IjoxNjg0MzA0ODM5fQ.KX2QSKTr2pcfZnfxdWuwx__6RokQyl715tI8geWXqO-73qpWMkSWicT6UzUddF03eViiF0beOx0rGynvbMrH-QP3Q8pWwFuCoUNvuAnNr3_9YByaPjM0MiXDsxcMdrAQEhGcUGyDAxT0ZL9ug2gfhRQboNxXpSMzaV65wAFKuAIU-xWgRvSfmtl9NMzR9TZwutoPAKvgiQv2bubBxjSMl4qKbzPkUfDzseiLyLH_n_f1iUV7K4JDoiV-tlFhWEVGovNAgBqhjJLvvW1LGV1juJ7zomFD5XBTj2609HobwLUEjnfvG6fyMG_DHqIRfXFSif9HLndZBDygZD-0u3FLBA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-RefreshToken Introspect",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/introspect?token_type_hint=refresh_token&token=eyJra",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"introspect"
+					],
+					"query": [
+						{
+							"key": "token_type_hint",
+							"value": "refresh_token"
+						},
+						{
+							"key": "token",
+							"value": "eyJra"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OAuth2-JWK Set",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/jwks",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"jwks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OIDC-Provider Info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/.well-known/openid-configuration",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						".well-known",
+						"openid-configuration"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OIDC-User Info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJjdXN0b21lckhlYWRlciI6Iui_meaYr-S4gOS4quiHquWumuS5iWhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMjhmODRlZjctMTRjMS00M2ZlLThjNjYtMTVmZDkyZjZkZDc2In0.eyJzdWIiOiJ0ZXN0IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiLov5nmmK_kuIDkuKroh6rlrprkuYlDbGFpbSIsIm5iZiI6MTY4NDMwNDgzOSwic2NvcGUiOlsib3BlbmlkIiwiY2xpZW50LmNyZWF0ZSIsImNsaWVudC5yZWFkIl0sImlzcyI6Imh0dHA6Ly8xMjcuMC4wLjE6ODA4MCIsImV4cCI6MTY4NDMwNTEzOSwiaWF0IjoxNjg0MzA0ODM5fQ.KX2QSKTr2pcfZnfxdWuwx__6RokQyl715tI8geWXqO-73qpWMkSWicT6UzUddF03eViiF0beOx0rGynvbMrH-QP3Q8pWwFuCoUNvuAnNr3_9YByaPjM0MiXDsxcMdrAQEhGcUGyDAxT0ZL9ug2gfhRQboNxXpSMzaV65wAFKuAIU-xWgRvSfmtl9NMzR9TZwutoPAKvgiQv2bubBxjSMl4qKbzPkUfDzseiLyLH_n_f1iUV7K4JDoiV-tlFhWEVGovNAgBqhjJLvvW1LGV1juJ7zomFD5XBTj2609HobwLUEjnfvG6fyMG_DHqIRfXFSif9HLndZBDygZD-0u3FLBA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/userinfo",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"userinfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OIDC-Client Register",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJjdXN0b21lckhlYWRlciI6Iui_meaYr-S4gOS4quiHquWumuS5iWhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMjhmODRlZjctMTRjMS00M2ZlLThjNjYtMTVmZDkyZjZkZDc2In0.eyJzdWIiOiJ0ZXN0IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiLov5nmmK_kuIDkuKroh6rlrprkuYlDbGFpbSIsIm5iZiI6MTY4NDMwNDkzMywic2NvcGUiOlsiY2xpZW50LmNyZWF0ZSJdLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJleHAiOjE2ODQzMDUyMzMsImlhdCI6MTY4NDMwNDkzM30.M_CJNkmSQijRy2b3_cfCi_RTmzWHUwWIWs6tbpFXvCYOOv6ryqIOS6Q17Gf9KKpKdOUNiQQfIGjI60-ISa15-QJbF1so9CoRmG1sDs4i8y_o7Z9wY11X7krzCN2ITqiD307Iu83MT2v5GrGREuVB8D4ESEJBGMvaJXxeCA3LtDKQKE2zLAf2hXPuq018RMbLwLwL82x1qUnulcMb2gf0STCKiaUnoym0GVCw8OMk-NDZyqq5SsJInXGvkZ23_ejQKkju-j-AYns3dDVmLzhKnH68aPHbvLpBmKhVM1WKQVE8y7grH-8E9hAIJVvXueEjvzLuG-i4HTrlfiiwG5HSzw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"application_type\": \"web\",\r\n    \"redirect_uris\": [\r\n        \"https://client.example.org/callback\",\r\n        \"https://client.example.org/callback2\"\r\n    ],\r\n    \"client_name\": \"My Example\",\r\n    \"client_name#ja-Jpan-JP\": \"クライアント名\",\r\n    \"logo_uri\": \"https://client.example.org/logo.png\",\r\n    \"subject_type\": \"pairwise\",\r\n    \"sector_identifier_uri\": \"https://other.example.net/file_of_redirect_uris.json\",\r\n    \"token_endpoint_auth_method\": \"client_secret_basic\",\r\n    \"jwks_uri\": \"https://client.example.org/my_public_keys.jwks\",\r\n    \"userinfo_encrypted_response_alg\": \"RSA1_5\",\r\n    \"userinfo_encrypted_response_enc\": \"A128CBC-HS256\",\r\n    \"contacts\": [\r\n        \"ve7jtb@example.org\",\r\n        \"mary@example.org\"\r\n    ],\r\n    \"request_uris\": [\r\n        \"https://client.example.org/rf.txt#qpXaRLh_n93TTR9F252ValdatUQvQiJi5BDub2BeznA\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8080/connect/register",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"connect",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OIDC-Client Read",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJjdXN0b21lckhlYWRlciI6Iui_meaYr-S4gOS4quiHquWumuS5iWhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMjhmODRlZjctMTRjMS00M2ZlLThjNjYtMTVmZDkyZjZkZDc2In0.eyJzdWIiOiJ0ZXN0IiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiLov5nmmK_kuIDkuKroh6rlrprkuYlDbGFpbSIsIm5iZiI6MTY4NDMwNTc3OCwic2NvcGUiOlsiY2xpZW50LnJlYWQiXSwiaXNzIjoiaHR0cDovLzEyNy4wLjAuMTo4MDgwIiwiZXhwIjoxNjg0MzA2MDc4LCJpYXQiOjE2ODQzMDU3Nzh9.w_GTx6WBhkg0x1S9iOq5-rEsa64O9Clydv14CYaBWHfGjM_mmO66MwX1W60EXTHjIM2c9eSafyWAofFbv9NOe6SbYiBxh7dKOGApJDeDkWyO5TxqtNtdGjItCSMFqzikNQKqrsTJkDvXZM7q8KM5nGrrgWGm9gigCqu78lVFltfL1BunYsmmK8B7Zjsc4nRu2QwtuoJ6kAjJV7dx9SbjyWp0sShgmUm2NY9G26nuWkPFNCPwBYuC-40Q_5qL-pBwJ8TPNFJiNwr9POd570wO7k4c6gxpElt9yU9gUzyD6sAIldmZqWX0284omWD5Eleo7COdPPLNKwJTajhvJU3cQQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/connect/register?client_id=7d5seTkGh3k8kfLrYbSoiV3bJFfL2BIGuI4qAX0XtsQ",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"connect",
+						"register"
+					],
+					"query": [
+						{
+							"key": "client_id",
+							"value": "7d5seTkGh3k8kfLrYbSoiV3bJFfL2BIGuI4qAX0XtsQ"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEVICE-Code&URL None",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/device_authorization?scope=message.read+message.write&client_id=device-messaging-client",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"device_authorization"
+					],
+					"query": [
+						{
+							"key": "scope",
+							"value": "message.read+message.write"
+						},
+						{
+							"key": "client_id",
+							"value": "device-messaging-client"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEVICE-Token None",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/token?grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=eWrw6mR8XY8RtbntzU5ojGWmuV3cEalb5JO0ovJJTG6YKTLz7SgGKcsG3Xf1SKOq8gTa9lukocFChgLptOiG_yovq1gEhXny1AQQNoNbRpaU8YprC2eNag6FDJue2TCf&client_id=device-messaging-client",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:device_code"
+						},
+						{
+							"key": "device_code",
+							"value": "eWrw6mR8XY8RtbntzU5ojGWmuV3cEalb5JO0ovJJTG6YKTLz7SgGKcsG3Xf1SKOq8gTa9lukocFChgLptOiG_yovq1gEhXny1AQQNoNbRpaU8YprC2eNag6FDJue2TCf"
+						},
+						{
+							"key": "client_id",
+							"value": "device-messaging-client"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEVICE-Code&URL Client_Secret_Basic",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/device_authorization?scope=message.read+message.write",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"device_authorization"
+					],
+					"query": [
+						{
+							"key": "scope",
+							"value": "message.read+message.write"
+						},
+						{
+							"key": "client_id",
+							"value": "messaging-client",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DEVICE-Token Client_Secret_Basic",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "messaging-client",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8080/oauth2/token?grant_type=urn:ietf:params:oauth:grant-type:device_code&device_code=eWrw6mR8XY8RtbntzU5ojGWmuV3cEalb5JO0ovJJTG6YKTLz7SgGKcsG3Xf1SKOq8gTa9lukocFChgLptOiG_yovq1gEhXny1AQQNoNbRpaU8YprC2eNag6FDJue2TCf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"oauth2",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "urn:ietf:params:oauth:grant-type:device_code"
+						},
+						{
+							"key": "device_code",
+							"value": "eWrw6mR8XY8RtbntzU5ojGWmuV3cEalb5JO0ovJJTG6YKTLz7SgGKcsG3Xf1SKOq8gTa9lukocFChgLptOiG_yovq1gEhXny1AQQNoNbRpaU8YprC2eNag6FDJue2TCf"
+						},
+						{
+							"key": "client_id",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

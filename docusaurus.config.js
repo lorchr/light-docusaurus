@@ -3,10 +3,11 @@
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const npm2yarn = require('@docusaurus/remark-plugin-npm2yarn');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
+  title: 'Light Docusaurus',
   tagline: 'Dinosaurs are cool',
   favicon: 'img/favicon.ico',
 
@@ -31,9 +32,71 @@ const config = {
   // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'zh-Hans',
-    locales: ['en', 'zh-Hans'],
+    locales: ['zh-Hans'],
   },
 
+  plugins: [
+    [
+      '@docusaurus/plugin-content-docs',
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: 'middleware',
+        path: 'middleware',
+        routeBasePath: 'middleware',
+        editUrl: `https://github.com/lorchr/light-docusaurus/tree/main/`,
+        remarkPlugins: [npm2yarn],
+        editCurrentVersion: true,
+        sidebarPath: require.resolve('./sidebarsMiddleware.js'),
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+      }),
+    ],
+    [
+      'content-docs',
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: 'electron',
+        path: 'electron',
+        routeBasePath: 'electron',
+        editUrl: `https://github.com/lorchr/light-docusaurus/tree/main/`,
+        remarkPlugins: [npm2yarn],
+        editCurrentVersion: true,
+        sidebarPath: require.resolve('./sidebarsElectron.js'),
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+      }),
+    ],
+    [
+      'content-docs',
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: 'postman',
+        path: 'postman',
+        routeBasePath: 'postman',
+        editUrl: `https://github.com/lorchr/light-docusaurus/tree/main/`,
+        remarkPlugins: [npm2yarn],
+        editCurrentVersion: true,
+        sidebarPath: require.resolve('./sidebarsPostman.js'),
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+      }),
+    ],
+    [
+      'content-docs',
+      /** @type {import('@docusaurus/plugin-content-docs').Options} */
+      ({
+        id: 'diy',
+        path: 'diy',
+        routeBasePath: 'diy',
+        editUrl: `https://github.com/lorchr/light-docusaurus/tree/main/`,
+        remarkPlugins: [npm2yarn],
+        editCurrentVersion: true,
+        sidebarPath: require.resolve('./sidebarsDiy.js'),
+        showLastUpdateAuthor: true,
+        showLastUpdateTime: true,
+      }),
+    ],
+  ],
   presets: [
     [
       'classic',
@@ -44,14 +107,14 @@ const config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/lorchr/light-docusaurus/tree/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          'https://github.com/lorchr/light-docusaurus/tree/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -66,25 +129,78 @@ const config = {
       // Replace with your project's social card
       image: 'img/docusaurus-social-card.jpg',
       navbar: {
-        title: 'My Site',
+        title: 'Torch',
         logo: {
-          alt: 'My Site Logo',
+          alt: 'Torch Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
             type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            sidebarId: 'troch',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Torch',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            to: '/blog', 
+            label: 'Blog', 
+            position: 'left'
+          },
+          // {
+          //   type: 'docSidebar',
+          //   sidebarId: 'zh-cn',
+          //   position: 'left',
+          //   label: 'Torch',
+          // },
+          // {
+          //   to: '/zh-cn',
+          //   label: 'Torch', 
+          //   position: 'left',
+          //   activeBaseRegex: `/zh-cn/`,
+          // },
+          {
+            to: '/middleware', 
+            label: 'Middleware', 
+            position: 'left',
+            activeBaseRegex: `/middleware/`,
+          },
+          {
+            to: '/electron', 
+            label: 'Electron', 
+            position: 'left',
+            activeBaseRegex: `/electron/`,
+          },
+          {
+            to: '/postman', 
+            label: 'Postman', 
+            position: 'left',
+            activeBaseRegex: `/postman/`,
+          },
+          {
+            to: '/diy', 
+            label: 'DIY', 
+            position: 'left',
+            activeBaseRegex: `/diy/`,
+          },
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
+          {
+            href: 'https://github.com/lorchr/light-docusaurus',
             label: 'GitHub',
             position: 'right',
           },
         ],
+      },
+      docs: {
+          // sidebar设置
+          sidebar: {
+            // 设置sidebar可隐藏
+            hideable: true,
+            // 自动折叠
+            autoCollapseCategories: true,
+          }
       },
       footer: {
         style: 'dark',
@@ -103,15 +219,15 @@ const config = {
             items: [
               {
                 label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                href: 'https://stackoverflow.com/questions/tagged/lorchr',
               },
               {
                 label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                href: 'https://discordapp.com/invite/lorchr',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/lorchr',
               },
             ],
           },
@@ -124,16 +240,45 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/lorchr/light-docusaurus',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Light-Docusaurus, Inc. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
+      },
+      algolia: {
+        // The application ID provided by Algolia
+        appId: 'YOUR_APP_ID',
+  
+        // Public API key: it is safe to commit it
+        apiKey: 'YOUR_SEARCH_API_KEY',
+  
+        indexName: 'light-docusaurus',
+  
+        // Optional: see doc section below
+        contextualSearch: true,
+  
+        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+        externalUrlRegex: 'external\\.com|domain\\.com',
+  
+        // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
+        replaceSearchResultPathname: {
+          from: '/docs/', // or as RegExp: /\/docs\//
+          to: '/',
+        },
+  
+        // Optional: Algolia search parameters
+        searchParameters: {},
+  
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
+  
+        //... other Algolia params
       },
     }),
 };

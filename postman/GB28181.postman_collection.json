@@ -1,0 +1,160 @@
+{
+	"info": {
+		"_postman_id": "4e2ba0b4-a7f7-4b16-beb1-a0a25d59627f",
+		"name": "GB28181",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5651614"
+	},
+	"item": [
+		{
+			"name": "客户端注册",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/gb28181/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"gb28181",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "客户端注销",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/gb28181/unRegister",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"gb28181",
+						"unRegister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "拉流",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:54321/stream/invite?channelId=34020000001320000003",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "54321",
+					"path": [
+						"stream",
+						"invite"
+					],
+					"query": [
+						{
+							"key": "channelId",
+							"value": "34020000001320000003"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ZL-心跳",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"data\": {\r\n        \"Buffer\": 12,\r\n        \"BufferLikeString\": 0,\r\n        \"BufferList\": 0,\r\n        \"BufferRaw\": 12,\r\n        \"Frame\": 0,\r\n        \"FrameImp\": 0,\r\n        \"MediaSource\": 0,\r\n        \"MultiMediaSourceMuxer\": 0,\r\n        \"RtmpPacket\": 0,\r\n        \"RtpPacket\": 0,\r\n        \"Socket\": 84,\r\n        \"TcpClient\": 0,\r\n        \"TcpServer\": 63,\r\n        \"TcpSession\": 0,\r\n        \"UdpServer\": 24,\r\n        \"UdpSession\": 0\r\n    },\r\n    \"mediaServerId\": \"FQ3TF8yT83wh5Wvz\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://114.55.234.250:9096/wvp/index/hook/on_server_keepalive",
+					"protocol": "http",
+					"host": [
+						"114",
+						"55",
+						"234",
+						"250"
+					],
+					"port": "9096",
+					"path": [
+						"wvp",
+						"index",
+						"hook",
+						"on_server_keepalive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取token",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://114.55.234.250:31888/oauth/oauth/token?grant_type=authorization_code&code=IO6ohQ&client_id=wvp&client_secret=7mevh7atoq23f9xcqgqsmr4ny8v2ufp0rsg7z2p2bidnvj7tsq&scope=all&redirect_uri=http://localhost:8080/wvp/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"114",
+						"55",
+						"234",
+						"250"
+					],
+					"port": "31888",
+					"path": [
+						"oauth",
+						"oauth",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "authorization_code"
+						},
+						{
+							"key": "code",
+							"value": "IO6ohQ"
+						},
+						{
+							"key": "client_id",
+							"value": "wvp"
+						},
+						{
+							"key": "client_secret",
+							"value": "7mevh7atoq23f9xcqgqsmr4ny8v2ufp0rsg7z2p2bidnvj7tsq"
+						},
+						{
+							"key": "scope",
+							"value": "all"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:8080/wvp/api/auth/login"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
