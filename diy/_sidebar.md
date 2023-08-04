@@ -1,0 +1,7 @@
+* [DIY](diy/)
+* [Android](diy/android)
+* [NAS](diy/nas)
+* [TV Box](diy/tv-box)
+* [HA](diy/ha)
+* [Soft Router](diy/soft-router)
+* [Device and Software Plan](diy/device-and-software-plan)
