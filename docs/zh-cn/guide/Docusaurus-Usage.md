@@ -1,6 +1,6 @@
-[Docusaurus 官网](https://docusaurus.io/)
-[Docusaurus 中文网](https://www.docusaurus.cn/)
-[Docusaurus Github](https://github.com/facebook/docusaurus)
+- [Docusaurus 官网](https://docusaurus.io/)
+- [Docusaurus 中文网](https://www.docusaurus.cn/)
+- [Docusaurus Github](https://github.com/facebook/docusaurus)
 
 ## 1. 环境
 - Node.js 16.14+
