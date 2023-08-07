@@ -1,0 +1,438 @@
+{
+	"info": {
+		"_postman_id": "ad5770e6-e4da-4096-b898-6a7b11128fec",
+		"name": "MQTT",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5651614"
+	},
+	"item": [
+		{
+			"name": "所有服务端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/servers?type=0",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"servers"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "可用服务端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/servers?type=1",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"servers"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "客户端分配的服务端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/servers?type=2&instanceId=http://172.16.100.134:31891/message",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"servers"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "2"
+						},
+						{
+							"key": "instanceId",
+							"value": "http://172.16.100.134:31891/message"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "服务端注册",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE5Mi4xNjguMi44OCIsInRpbWVzdGFtcCI6MTY2MjEwMDczOTUyOH0.LOeNwJLlpvwIt9zUxiTFAPw0PdF2270iExuRfxcmvdE",
+						"type": "text"
+					},
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": \"pd_test\",\r\n    \"enable\": 1,\r\n    \"host\": \"localhost\",\r\n    \"instanceId\": \"tcp://localhost:1884\",\r\n    \"password\": \"\",\r\n    \"port\": 1884,\r\n    \"serviceId\": \"tcp://localhost:1884\",\r\n    \"status\": 0,\r\n    \"timeout\": 30,\r\n    \"uri\": \"tcp://localhost:1884\",\r\n    \"username\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/serverRegister",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"serverRegister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "服务端注册 Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE5Mi4xNjguMi44OCIsInRpbWVzdGFtcCI6MTY2MjEwMDczOTUyOH0.LOeNwJLlpvwIt9zUxiTFAPw0PdF2270iExuRfxcmvdE",
+						"type": "text"
+					},
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"clientId\": \"pd_test\",\r\n    \"enable\": 1,\r\n    \"host\": \"101.37.34.77\",\r\n    \"instanceId\": \"tcp://101.37.34.77:1883\",\r\n    \"password\": \"\",\r\n    \"port\": 1883,\r\n    \"serviceId\": \"tcp://101.37.34.77:1883\",\r\n    \"status\": 0,\r\n    \"timeout\": 30,\r\n    \"uri\": \"tcp://101.37.34.77:1883\",\r\n    \"username\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/serverRegister",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"serverRegister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "服务端注销",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE5Mi4xNjguMi44OCIsInRpbWVzdGFtcCI6MTY2MjEwMDczOTUyOH0.LOeNwJLlpvwIt9zUxiTFAPw0PdF2270iExuRfxcmvdE",
+						"type": "text"
+					},
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"instanceId\": \"tcp://localhost:1884\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/serverDeregister",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"serverDeregister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "所有客户端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clients?type=0",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clients"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "可用客户端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clients?type=1",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clients"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "服务端分配的客户端列表",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clients?type=2&instanceId=tcp://localhost:1883",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clients"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "2"
+						},
+						{
+							"key": "instanceId",
+							"value": "tcp://localhost:1883"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "指定客户端信息",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clients?type=3&instanceId=http://172.16.100.134:31891/message",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clients"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "3"
+						},
+						{
+							"key": "instanceId",
+							"value": "http://172.16.100.134:31891/message"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "客户端注册",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE5Mi4xNjguMi44OCIsInRpbWVzdGFtcCI6MTY2MjEwMDczOTUyOH0.LOeNwJLlpvwIt9zUxiTFAPw0PdF2270iExuRfxcmvdE",
+						"type": "text"
+					},
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contextPath\": \"/message\",\r\n    \"coordinatorInstanceIdList\": [\r\n        \"http://114.55.234.250:31114/admin\"\r\n    ],\r\n    \"host\": \"10.244.0.90\",\r\n    \"instanceId\": \"http://10.244.0.90:31890/message\",\r\n    \"lastPingTime\": 1666857193414,\r\n    \"port\": 31890,\r\n    \"serviceId\": \"none\",\r\n    \"status\": 0,\r\n    \"uri\": \"http://10.244.0.90:31890/message\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clientRegister",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clientRegister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "客户端注销",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE5Mi4xNjguMi44OCIsInRpbWVzdGFtcCI6MTY2MjEwMDczOTUyOH0.LOeNwJLlpvwIt9zUxiTFAPw0PdF2270iExuRfxcmvdE",
+						"type": "text"
+					},
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"contextPath\": \"/message\",\r\n    \"coordinatorInstanceIdList\": [\r\n        \"http://114.55.234.250:31114/admin\"\r\n    ],\r\n    \"host\": \"10.244.0.90\",\r\n    \"instanceId\": \"http://10.244.0.90:31890/message\",\r\n    \"lastPingTime\": 1666857193414,\r\n    \"port\": 31890,\r\n    \"serviceId\": \"none\",\r\n    \"status\": 0,\r\n    \"uri\": \"http://10.244.0.90:31890/message\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{system}}/mqttLb/coordinator/clientDeregister",
+					"host": [
+						"{{system}}"
+					],
+					"path": [
+						"mqttLb",
+						"coordinator",
+						"clientDeregister"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MQTT测试消息",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX25hbWUiOiJsaXVodWkiLCJpcCI6IjE4My45NC4xMzMuMTQ1IiwidGltZXN0YW1wIjoxNjY2NjYxNTY4NzA1fQ.rrsJ6xeqTiWHiCn4wtYlExsQRBXCKD9MbZlLJKjSg4g",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "System-Name",
+						"value": "Pi-Diginn",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{message}}/service/pdAlarmTemplate/test?topic=json/lh_sdfg",
+					"host": [
+						"{{message}}"
+					],
+					"path": [
+						"service",
+						"pdAlarmTemplate",
+						"test"
+					],
+					"query": [
+						{
+							"key": "topic",
+							"value": "json/lh_sdfg"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
