@@ -1,4 +1,4 @@
-## 软硬件方案
+# Device and Software Plan
 
 ## 1. Android
 ### 手机端的Linux 
