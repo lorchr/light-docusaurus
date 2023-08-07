@@ -1,4 +1,4 @@
-# README
+# Postman
 
 # 1. OAuth OIDC
 [OAuth-OIDC](./OAuth%20OIDC.postman_collection.json ':include')
