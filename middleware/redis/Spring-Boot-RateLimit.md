@@ -1,5 +1,5 @@
-[SpringBoot 服务接口限流，搞定！](blog.csdn.net/qq_34217386/article/details/122100904)
-[SpringBoot 项目使用 Redis 对用户 IP 进行接口限流](https://mp.weixin.qq.com/s/062xXsIEaOuen_4wwYTUow)
+- [SpringBoot 服务接口限流，搞定！](https://blog.csdn.net/qq_34217386/article/details/122100904)
+- [SpringBoot 项目使用 Redis 对用户 IP 进行接口限流](https://mp.weixin.qq.com/s/062xXsIEaOuen_4wwYTUow)
 
 ## 前言
 在开发高并发系统时有三把利器用来保护系统：缓存、降级和限流。限流可以认为服务降级的一种，限流通过限制请求的流量以达到保护系统的目的。

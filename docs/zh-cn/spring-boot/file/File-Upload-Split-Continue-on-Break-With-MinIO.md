@@ -1,5 +1,5 @@
 - [SpringBoot 整合 MinIO 实现视频的分片上传/断点续传](https://mp.weixin.qq.com/s/Vy9pG4CncXpgxg_-YkGuwg)
-- [SpringBoot 整合 MinIO 实现视频的分片上传/断点续传](blog.csdn.net/weixin_44153131/article/details/129249169)
+- [SpringBoot 整合 MinIO 实现视频的分片上传/断点续传](https://blog.csdn.net/weixin_44153131/article/details/129249169)
 
 ## 1、前言
 之前做了一个慕课网上的仿短视频开发，里面有很多比较粗糙的实现，比如视频上传部分是直接由前端上传云服务，没考虑到客户的网络环境质量等问题，如果一个视频快上传完了，但是网断了没有上传完成需要客户重新上传，这对于用户体验是极差的。
