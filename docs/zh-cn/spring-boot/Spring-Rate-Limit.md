@@ -1,4 +1,6 @@
-[Spring Boot通用限流方案](https://mp.weixin.qq.com/s/eSaKOWUNNLqodyvy1AdHow)
+- [Spring Boot通用限流方案](https://mp.weixin.qq.com/s/eSaKOWUNNLqodyvy1AdHow)
+- [四种分布式限流算法](https://mp.weixin.qq.com/s/9H3lMCQ6SqZAcO28wT-rIQ)
+
 ## 一、背景
 
 限流对于一个微服务架构系统来说具有非常重要的意义，否则其中的某个微服务将成为整个系统隐藏的雪崩因素，为什么这么说？
