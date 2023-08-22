@@ -15,6 +15,7 @@
 - [答题小程序](https://gitee.com/wulivicor/exam)
 - [Spring Boot + Vue3博客系统](https://github.com/weiwosuoai/WeBlog)
 - [南生论坛（仿掘金）](https://github.com/maliangnansheng/bbs-springboot)
+- [一站式开源持续测试平台](https://github.com/metersphere/metersphere)
 
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)

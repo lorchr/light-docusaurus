@@ -143,25 +143,40 @@
 
 - https://stackoverflow.com/questions/26993101/switching-between-different-jdk-versions-in-windows
 
-```bat sjv.bat
+```bat jenv.bat
 @echo off
+setlocal
+
 if "%~1" == "17" (
-   set "JAVA_HOME=D:\Develop\Java\jdk-17"
+    REM 切换到选择的 JDK 版本
+    set "JAVA_HOME=D:\Develop\Java\jdk-17"
 ) else if "%~1" == "11" (
-   set "JAVA_HOME=D:\Develop\Java\jdk-11"
+    set "JAVA_HOME=D:\Develop\Java\jdk-11"
 ) else if "%~1" == "8" (
-   set "JAVA_HOME=D:\Develop\Java\jdk1.8"
+    set "JAVA_HOME=D:\Develop\Java\jdk1.8"
 ) else (
-   @echo on
-   echo "================================"
-   echo "Error No JDK Path For %~1"
-   echo "================================"
+    @echo on
+    echo "================================"
+    echo "Error No JDK Path For %~1"
+    echo "================================"
+    exit /b 1
 )
-set "Path=%JAVA_HOME%\bin;%Path%"
+
+REM 检查管理员权限
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    REM 管理员权限：更新系统环境变量 PATH 来切换 JDK 版本 setx /?
+    setx Path "%JAVA_HOME%\bin;%Path%" /M
+) else (
+    REM 非管理员权限：临时切换
+    set "Path=%JAVA_HOME%\bin;%Path%"
+)
 
 @echo on
 echo JAVA_HOME %JAVA_HOME%
 java -version
+
+endlocal
 ```
 
 ```ps1 jenv.ps1
@@ -174,10 +189,12 @@ If($args[0] -eq "17")
 } ElseIf($args[0] -eq "8")
 {
     $env:JAVA_HOME = 'D:\Develop\Java\jdk1.8'
-} Else {
+} Else 
+{
    echo "================================"
    echo "Error No JDK Path For $args[0]"
    echo "================================"
+   exit /b 1
 }
 $env:Path = $env:JAVA_HOME+'\bin;'+$env:Path
 
