@@ -287,3 +287,107 @@ docker run -e PASSWORD=Liuhui1993 -p 8388:8388 -p 8388:8388/udp -d shadowsocks/s
     docker cp <container-id(name)>:<container_path> <local_file_path>
     docker cp elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-ik C://users/light/Desktop/elasticsearch-analysis-ik
    ```
+
+
+## 7. 镜像备份加载
+导出 export  与 保存 save 的区别
+1. export导出的镜像文件大小小于 save 保存的镜像
+
+2. export 导出（import导入）是根据容器拿到的镜像，再导入时会丢失镜像所有的历史，所以无法进行回滚操作（docker tag <LAYER ID> <IMAGE NAME>）；而save保存（load加载）的镜像，没有丢失镜像的历史，可以回滚到之前的层（layer）。（查看方式：docker images –tree）
+```shell
+# 镜像备份 加载 save load
+docker save -o image_version.tar docker.io/image:version
+docker load -i image_version.tar docker.io/image:version
+
+# 镜像备份 加载 export import
+docker export image_version.tar container_name
+docker import image_version.tar docker.io/image:version
+```
+
+传输文件
+```shell
+#将本地文件夹下面的test文件夹拷贝到服务器上
+scp -r ./test/ root@192.168.8.220:/home/test/
+#拷贝远程服务器的文件夹test到本地目录下./test2文件夹
+scp -r root@192.168.8.220:/home/test/ ./test2/
+```
+
+## 8. 获取容器的运行指令及参数
+```shell
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  assaflavie/runlike -p mysql
+```
+
+## 9. 部署镜像仓库
+1. 编写docker-compose文件
+```yaml
+version: '3.1'
+services:
+  registry:
+    image: registry
+    restart: always
+    container_name: registry
+    ports:
+      - 5000:5000
+    volumes:
+      - ./data:/var/lib/registry
+
+  frontend:
+    image: konradkleine/docker-registry-frontend:v2
+    ports:
+      - 8080:80
+    volumes:
+      - ./certs/frontend.crt:/etc/apache2/server.crt:ro
+      - ./certs/frontend.key:/etc/apache2/server.key:ro
+    environment:
+      - ENV_DOCKER_REGISTRY_HOST=192.168.110.158(Docker仓库的IP)
+      - ENV_DOCKER_REGISTRY_PORT=5000
+```
+
+2. 运行镜像仓库
+```shell
+# v1版本
+docker-compose up -d
+
+# v2版本
+docker compose up -d
+```
+
+3. 客户端配置
+```shell
+修改 /etc/docker/daemon.json 增加 insecure-registries 配置
+
+{
+  "registry-mirrors": [
+    "https://xxx.mirror.aliyuncs.com"
+  ],
+  "insecure-registries": [
+    "192.168.110.158:5000"
+  ]
+}
+```
+
+4. 重启docker daemon
+```shell
+systemctl daemon-reload
+systemctl restart docker
+```
+
+5. 上传镜像到私服
+```shell
+# 给镜像添加tag
+docker tag image_test:v1 192.168.110.158:5000/image_test:v1
+
+# 上传镜像
+docker push 192.168.110.158:5000/image_test
+
+# 查看镜像
+curl 192.168.110.158:5000/v2/_catalog
+
+# 删除本地镜像
+docker rmi image_test:v1 192.168.110.158:5000/image_test:v1
+
+# 从镜像仓库拉取镜像
+docker pull 192.168.110.158:5000/image_test:v1
+```

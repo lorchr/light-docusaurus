@@ -34,6 +34,7 @@ git remote set-url --add gitee git@gitee.com:lorchr/torch-web.git
 
 # 更新到当前分支，允许两边有无关的提交记录
 git pull gitee main --allow-unrelated-histories
+# git push gitee local_branch:remote_branch
 git push gitee main:main
 ```
 

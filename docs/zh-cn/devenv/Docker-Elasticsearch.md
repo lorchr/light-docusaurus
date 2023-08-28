@@ -206,3 +206,19 @@ docker cp elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-
     ```shell
     curl --user elastic:elastic -X GET "localhost:9200/_cat/nodes?v&pretty"
     ```
+
+## 4. 安装Kibana
+```shell
+# 运行容器
+docker run -d \
+  --publish 5601:5601 \
+  --publish 9300:9300 \
+  --net dev \
+  --restart=no \
+  --name kibana \
+  docker.elastic.co/kibana/kibana:7.17.10
+
+# 启动安装 Kibana ，需要 从elasticsearch 获取 token
+docker exec -it elasticsearch root /bin/bash
+bin/elasticsearch-create-enrollment-token -s kibana
+```

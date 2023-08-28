@@ -91,10 +91,11 @@ fastboot reboot
    1. 容器类型: chroot
    2. 发行版
    3. 源地址 中科大 http://mirrors.ustc.edu.cn/ubuntu-ports/ https://mirrors.aliyun.com/ubuntu-ports/
-   4. 用户名 密码
-   5. 本地化 zh_CN.UTF-8
-   6. SSH 开启，修改端口 2233
-   7. 安装路径
+   4. 安装路径
+   5. 镜像大小 8000M
+   6. 用户名 密码
+   7. 本地化 zh_CN.UTF-8
+   8. SSH 开启，修改端口 2233
 5. 点击右上角安装，全称大概10分钟 `<<< deploy` 表示安装完成，没有出现fail，并且有显示 `Starting extra/ssh ... done`表示安装成功
 6. 点击Start启动系统
 7. 打开JuiceSSH 输入`127.0.0.1` `2233` 用户名 密码登录

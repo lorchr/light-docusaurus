@@ -99,41 +99,41 @@ flowable:
       path: /form-api # Form servlet 的 context path。
   history-level: audit # 要使用的历史级别。
   idm:
-  enabled: false # 是否启用IDM引擎。
-  ldap:
-    attribute:
-      email: # 用户 email 的属性名。
-      first-name: # 用户名字的属性名。
-      group-id: # 用户组 ID 的属性名。
-      group-name: # 用户组名的属性名。
-      group-type: # 用户组类型的属性名。
-      last-name: # 用户姓的属性名。
-      user-id: # 用户 ID 的属性名。
-  base-dn: # 查找用户与组的 DN（标志名称 distinguished name）。
-  cache:
-    group-size: -1 # 设置{@link org.flowable.ldap.LDAPGroupCache}的大小。这是 LRU 缓存，用于缓存用户及组，以避免每次都查询 LDAP 系统。
-  custom-connection-parameters: # 用于设置所有没有专用 setter 的 LDAP 连接参数。查看 http://docs.oracle.com/javase/tutorial/jndi/ldap/jndi.html 介绍的自定义参数。参数包括配置链接池，安全设置，等等。
-  enabled: false # 是否启用 LDAP IDM 服务。
-  group-base-dn: # 组查找的 DN。
-  initial-context-factory: com.sun.jndi.ldap.LdapCtxFactory # 初始化上下文工厂的类名。
-  password: # 连接 LDAP 系统的密码。
-  port: -1 # LDAP 系统的端口。
-  query:
-    all-groups: # 查询所有组所用的语句。
-    all-users: # 查询所有用户所用的语句。
-    groups-for-user: # 按照指定用户查询所属组所用的语句
-    user-by-full-name-like: # 按照给定全名查找用户所用的语句。
-    user-by-id: # 按照 userId 查找用户所用的语句。
-  search-time-limit: 0 # 查询 LDAP 的超时时间（以毫秒计）。默认值为0，即“一直等待”。
-  security-authentication: simple # 连接 LDAP 系统所用的 java.naming.security.authentication 参数的值。
-  server: # LDAP 系统的主机名。如 ldap://localhost。
-  user: # 连接 LDAP 系统的用户 ID。
-  user-base-dn: # 查找用户的 DN。
-  password-encoder: # 使用的密码编码类型。
-  servlet:
-    load-on-startup: -1 # 启动时加载 IDM servlet。
-    name: Flowable IDM Rest API # IDM servlet 的名字。
-    path: /idm-api # IDM servlet 的 context path。
+    enabled: false # 是否启用IDM引擎。
+    ldap:
+      attribute:
+        email: # 用户 email 的属性名。
+        first-name: # 用户名字的属性名。
+        group-id: # 用户组 ID 的属性名。
+        group-name: # 用户组名的属性名。
+        group-type: # 用户组类型的属性名。
+        last-name: # 用户姓的属性名。
+        user-id: # 用户 ID 的属性名。
+      base-dn: # 查找用户与组的 DN（标志名称 distinguished name）。
+      cache:
+        group-size: -1 # 设置{@link org.flowable.ldap.LDAPGroupCache}的大小。这是 LRU 缓存，用于缓存用户及组，以避免每次都查询 LDAP 系统。
+      custom-connection-parameters: # 用于设置所有没有专用 setter 的 LDAP 连接参数。查看 http://docs.oracle.com/javase/tutorial/jndi/ldap/jndi.html 介绍的自定义参数。参数包括配置链接池，安全设置，等等。
+      enabled: false # 是否启用 LDAP IDM 服务。
+      group-base-dn: # 组查找的 DN。
+      initial-context-factory: com.sun.jndi.ldap.LdapCtxFactory # 初始化上下文工厂的类名。
+      password: # 连接 LDAP 系统的密码。
+      port: -1 # LDAP 系统的端口。
+      query:
+        all-groups: # 查询所有组所用的语句。
+        all-users: # 查询所有用户所用的语句。
+        groups-for-user: # 按照指定用户查询所属组所用的语句
+        user-by-full-name-like: # 按照给定全名查找用户所用的语句。
+        user-by-id: # 按照 userId 查找用户所用的语句。
+      search-time-limit: 0 # 查询 LDAP 的超时时间（以毫秒计）。默认值为0，即“一直等待”。
+      security-authentication: simple # 连接 LDAP 系统所用的 java.naming.security.authentication 参数的值。
+      server: # LDAP 系统的主机名。如 ldap://localhost。
+      user: # 连接 LDAP 系统的用户 ID。
+      user-base-dn: # 查找用户的 DN。
+    password-encoder: # 使用的密码编码类型。
+    servlet:
+      load-on-startup: -1 # 启动时加载 IDM servlet。
+      name: Flowable IDM Rest API # IDM servlet 的名字。
+      path: /idm-api # IDM servlet 的 context path。
   mail:
     server:
       default-from: flowable@localhost # 发送邮件时使用的默认发信人地址。
