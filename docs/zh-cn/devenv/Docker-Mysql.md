@@ -111,5 +111,6 @@ lower_case_table_names=0
    - 0 表名存储区分大小写，比较时区分大小写
    - 1 表名存储时转为小写，比较时不区分大小写
    - 2 表名存储区分大小写，比较时为转为小写
+3. 修改 `lower_case_table_names` 可能会导致数据表删除失败，此时需要改回之前的配置再进行删除，或者在数据目录使用命令删除 `rm-rf /database`
 
 [windows docker里安装并使用mysql（内含mysql主从搭建）](https://blog.csdn.net/u012643122/article/details/125899829)
