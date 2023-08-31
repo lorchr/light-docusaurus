@@ -23,3 +23,4 @@
 - [在线生成头像](https://github.com/mayandev/notion-avatar)
 - [网页在线工具汇总](https://iui.su/1492/) https://lai.yuweining.cn/music
 - [浏览器自动化操作](https://github.com/AutomaApp/automa)
+- [LocalSend本地文件传输](https://github.com/localsend/localsend)
