@@ -97,3 +97,22 @@ pg_dumpall –h 127.0.0.1 –p 5432 -U postgres –c -C –f db_bak.sql
 ```shell
 psql –h 127.0.0.1 -p 5432 -U postgres –f db_bak.sql
 ```
+
+## 3. 常用命令
+1. 连接管理
+```sql
+-- 查询当前连接数
+SELECT * FROM pg_stat_activity;
+
+-- 查看过期连接
+SELECT * FROM pg_stat_activity WHERE state = 'idle';
+
+--删除连接，括号里传pid
+SELECT pg_terminate_backend(151);
+
+-- 查看最大连接数
+SHOW max_connections;
+
+-- 修改最大连接数，需要superuser权限
+ALTER system SET max_connections = 1000;
+```

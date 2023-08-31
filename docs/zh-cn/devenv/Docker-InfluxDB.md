@@ -230,3 +230,94 @@ influxd restore [ -db <db_name> ] # 待恢复的数据库(备份中的数据库�
     > influxd restore -portable -db example-db -rp example-rp -newrp example-new-rp /path/to/backup-directory
 7. 恢复指定的分片
     > influxd backup -portable -db example-db -rp example-rp -shard 123 /path/to/backup-directory
+
+## 4. 常用命令行操作
+1. 连接influxdb
+```shell
+# 登录
+influx
+# 登录时指定ip port
+influx -host localhost -port 8086 
+
+
+# 认证 输入账号密码
+auth
+# 也可以在登录时认证
+influx -username name -password pwd
+
+
+# 设置时间格式
+precision rfc3339
+# 也可以在登录时设置
+influx -precision rfc3339
+
+
+# 完整命令
+influx -host localhost -port 8086 -username influxdb -password influxdb -precision rfc3339
+```
+
+2. 数据库操作
+```shell
+# 显示所有数据库
+SHOW DATABASES;
+
+# 使用某个数据库
+USE <database name>;
+
+# 删除某个数据库
+DROP DATABASE <database name>;
+```
+
+3. 数据表操作
+```shell
+# 显示所有数据表
+SHOW MEASUREMENTS;
+
+# InfluxDB中没有显式的新建表的语句，只能通过insert数据的方式来建立新表。
+INSERT <measurement name>,tag=tag_value field=field_value timestamp;
+
+# 删除某个数据表
+DROP MEASUREMENT <measurement name>;
+```
+
+4. 数据保存策略
+```shell
+# 查看当前保存策略
+SHOW RETENTION POLICIES ON <database name>;
+
+# 创建新的保存策略
+# rp_name：策略名；
+# db_name：具体的数据库名；
+# 3w：保存3周，3周之前的数据将被删除，influxdb具有各种事件参数，比如：h（小时），d（天），w（星期）；
+# replication 1：副本个数，一般为1就可以了；
+# default：设置为默认策略
+CREATE RETENTION POLICY "rp_name" ON "db_name" duration 3w REPLICATION 1 default;
+
+# 修改保存策略
+ALTER RETENTION POLICY "rp_name" ON "db_name" DURATION 30d default;
+
+# 删除保存策略
+DROP RETENTION POLICY "rp_name" ON "db_name";
+```
+
+5. 数据查询操作
+```shell
+# 普通查询
+SELECT * FROM <measurement name>;
+
+# 条件查询 5分钟内
+SELECT * FROM <measurement name> WHERE time > now() - 5m tz('Asia/Shanghai');
+
+# 分页查询 通过 LIMIT 和 OFFSET 配合可以实现分页
+SELECT * FROM <measurement name> LIMIT 5 OFFSET 5 tz('Asia/Shanghai');
+
+# 模糊查询
+# starts with
+SELECT field FROM <measurement name> WHERE field=~/^给定字段/ tz('Asia/Shanghai');
+
+# ends with
+SELECT field FROM <measurement name> WHERE field=~/给定字段$/ tz('Asia/Shanghai');
+
+# contains
+SELECT field FROM <measurement name> WHERE field=~/给定字段/ tz('Asia/Shanghai');
+```
