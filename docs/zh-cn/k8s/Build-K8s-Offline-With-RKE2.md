@@ -272,8 +272,8 @@ mkdir -p /data/local/emqx && tar -zxvf emqx-5.2.0-el7-amd64.tar.gz -C /data/loca
 ```
 
 
-### 七、Redis Cluster 三主三从集群安装
-1、准备已编译完成tar包
+## 七、Redis Cluster 三主三从集群安装
+### 1、准备已编译完成tar包
 ```shell
 # 184创建目录
 mkdir -p /data/local/redis/node-6381
