@@ -293,7 +293,7 @@ docker run -e PASSWORD=Liuhui1993 -p 8388:8388 -p 8388:8388/udp -d shadowsocks/s
 导出 export  与 保存 save 的区别
 1. export导出的镜像文件大小小于 save 保存的镜像
 
-2. export 导出（import导入）是根据容器拿到的镜像，再导入时会丢失镜像所有的历史，所以无法进行回滚操作（docker tag <LAYER ID> <IMAGE NAME>）；而save保存（load加载）的镜像，没有丢失镜像的历史，可以回滚到之前的层（layer）。（查看方式：docker images –tree）
+2. export 导出（import导入）是根据容器拿到的镜像，再导入时会丢失镜像所有的历史，所以无法进行回滚操作（`docker tag <LAYER ID> <IMAGE NAME>`）；而save保存（load加载）的镜像，没有丢失镜像的历史，可以回滚到之前的层（layer）。（查看方式：`docker images –tree`）
 ```shell
 # 镜像备份 加载 save load
 docker save -o image_version.tar docker.io/image:version
@@ -306,9 +306,9 @@ docker import image_version.tar docker.io/image:version
 
 传输文件
 ```shell
-#将本地文件夹下面的test文件夹拷贝到服务器上
+# 将本地文件夹下面的test文件夹拷贝到服务器上
 scp -r ./test/ root@192.168.8.220:/home/test/
-#拷贝远程服务器的文件夹test到本地目录下./test2文件夹
+# 拷贝远程服务器的文件夹test到本地目录下./test2文件夹
 scp -r root@192.168.8.220:/home/test/ ./test2/
 ```
 

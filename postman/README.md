@@ -8,3 +8,10 @@
 
 # 3. GB28181
 [GB28181](./GB28181.postman_collection.json ':include')
+
+# 4. ChatGPT
+- [ChatGPT OpenAPI](https://github.com/openai/openai-openapi/blob/master/openapi.yaml)
+[ChatGPT](./ChatGPT-openapi.yaml ':include')
+
+# 5. Camunda
+[Camunda](./Camunda-openapi.json ':include')

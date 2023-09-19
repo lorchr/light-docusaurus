@@ -1,4 +1,26 @@
 # Windows
+## Chocolatey包管理器
+- [Chocolatey](https://chocolatey.org/)
+- [Chocolatey Install](https://chocolatey.org/install)
+- [Chocolatey Document](https://docs.chocolatey.org/en-us/getting-started#installation)
+
+```powershell
+# 以管理员权限运行
+# 修改执行策略
+set-executionpolicy remotesigned
+
+# 安装
+iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex
+
+# 测试
+choco --version
+
+# 安装 Chocolatey GUI
+choco install -y chocolateygui
+
+# 在应用中找到对应的程序打开即可 Chocolatey GUI
+```
+
 ## Windows系统工具
 [你最满意的10款PC软件](https://www.zhihu.com/question/469450888)
 
