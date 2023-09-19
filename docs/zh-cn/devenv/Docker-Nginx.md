@@ -8,16 +8,31 @@
 
 ## 1. Docker安装 Nginx
 ```shell
+# 获取默认配置文件
+docker run -d --name nginx_temp nginx:1.25 \
+&& docker cp nginx_temp:/etc/nginx/nginx.conf D:/docker/nginx/conf/nginx.conf.example \
+&& docker cp nginx_temp:/etc/nginx/conf.d/ D:/docker/nginx/conf/ \
+&& docker stop nginx_temp && docker rm nginx_temp
+
 # 运行容器
 docker run -d \
-  --publish 10080:80 \
-  --publish 10443:443 \
-  --volume //d/docker/nginx/data:/data \
-  --volume //d/docker/nginx/conf:/etc/nginx/nginx.d \
+  --publish 30080:80 \
+  --publish 30090:90 \
+  --publish 30443:443 \
+  --volume //d/docker/nginx/data:/usr/share/nginx/html:ro \
+  --volume //d/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
+  --volume //d/docker/nginx/conf/conf.d:/etc/nginx/conf.d \
+  --volume //d/docker/nginx/log:/var/log/nginx \
+  --add-host 'pisx.liuhui.com:192.168.8.220' \
   --net dev \
   --restart=no \
   --name nginx \
-  nginx:1.25.1
+  nginx:1.25
+
+docker exec -it -u root nginx /bin/bash
+
+vim /etc/nginx/nginx.conf
+vim /etc/nginx/
 ```
 
 ## 2. Docker安装 NPM

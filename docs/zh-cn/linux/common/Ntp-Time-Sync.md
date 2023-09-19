@@ -146,5 +146,5 @@ NTP synchronized: no
 ```shell
 vim /etc/crontab
 
-*/15 * * * * root /usr/sbin/ntpdate 0.cn.pool.ntp.org
+* * * * * root /usr/sbin/ntpdate 0.cn.pool.ntp.org >> /var/log/ntpdate.log
 ```
