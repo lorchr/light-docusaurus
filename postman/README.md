@@ -11,6 +11,7 @@
 
 # 4. ChatGPT
 - [ChatGPT OpenAPI](https://github.com/openai/openai-openapi/blob/master/openapi.yaml)
+
 [ChatGPT](./ChatGPT-openapi.yaml ':include')
 
 # 5. Camunda
