@@ -198,19 +198,26 @@ scp /usr/local/bin/docker-compose root@192.168.137.102:/usr/local/bin/docker-com
 
 ### 3. Docker overlay2占用大量磁盘空间解决办法
 1. 首先找到overlay2目录
-> cd /var/lib/docker/overlay2
+```shell
+cd /var/lib/docker/overlay2
+```
 
 2. 查看文件的大小
-> du -h --max-depth=1 /var/lib/docker/overlay2 | grep [MGT] | sort -nr
+```shell
+du -h --max-depth=1 /var/lib/docker/overlay2 | grep [MGT] | sort -nr
+```
 如下所示，找到大小为500G的文件
 
 3. 查看占用空间的pid，以及对应的容器名称
-> docker ps -q | xargs docker inspect --format '{{.State.Pid}}, {{.Name}}, {{.GraphDriver.Data.WorkDir}}' | grep "09151aa1dd70a8884a9f6ab3f31b0b530be8a7a5fb78c25f4f51901440089681"
+```shell
+docker ps -q | xargs docker inspect --format '{{.State.Pid}}, {{.Name}}, {{.GraphDriver.Data.WorkDir}}' | grep "09151aa1dd70a8884a9f6ab3f31b0b530be8a7a5fb78c25f4f51901440089681"
+```
 结果如下：
 
 4. 解决方法（会删除对应的容器和对应镜像）：
-> docker stop ainews_processB && docker rm ainews_processB && docker rmi image_id
-
+```shell
+docker stop ainews_processB && docker rm ainews_processB && docker rmi image_id
+```
 
 ### 4. 安装K8s
 - https://kubernetes.io/docs/getting-started-guides/kubeadm/
@@ -630,21 +637,30 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6Il9HcDhZZmNiVTVHVTZsbDhxY29DNVUybnYzREZxMFUySGpLYmVx
 
 ## 7. 状态查看
 1. 查看节点状态
-> kubectl get nodes
+```shell
+kubectl get nodes
+```
 
 2. 查看pod状态
-> kubectl get pod --all-namespaces
+```shell
+kubectl get pod --all-namespaces
+```
 
-1. 查看副本数
-> kubectl get deployments --all-namespaces
-> kubectl get pod -o wide --all-namespaces
+3. 查看副本数
+```shell
+kubectl get deployments --all-namespaces
+kubectl get pod -o wide --all-namespaces
+```
 
 4. 查看deployment详细信息
-> kubectl describe deployments --all-namespaces
+```shell
+kubectl describe deployments --all-namespaces
+```
 
 5. 查看集群基本组件状态
-> kubectl get cs
 ```shell
+kubectl get cs
+
 NAME                 STATUS    MESSAGE             ERROR
 scheduler            Healthy   ok
 controller-manager   Healthy   ok
@@ -653,7 +669,9 @@ etcd-0               Healthy   {"health":"true"}
 
 ## 8. 部署业务服务
 ### 1. 创建命名空间
-> kubectl create namespace svc-pd-service
+```shell
+kubectl create namespace svc-pd-service
+```
 
 ### 2. 编写yaml文件
 ```yaml
@@ -662,7 +680,11 @@ etcd-0               Healthy   {"health":"true"}
 
 ### 3. 执行部署
 ```shell
+# 创建部署，不能重复使用
+kubectl create -f k8s.yaml
 
+# 创建部署，可以重复使用
+kubectl apply -f k8s.yaml
 ```
 
 ## 10. 异常处理

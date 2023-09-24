@@ -29,11 +29,14 @@
     ```shell
     # 关闭防火墙
     systemctl stop firewalld && systemctl disable firewalld
+
     # 关闭selinux
     sed -i 's/enforcing/disabled/' /etc/selinux/config && setenforce 0 # 永久
+
     # 看/etc/selinux/config文件中SELINUX=disabled 即可
     sed -i 's/permissive/disabled/' /etc/selinux/config && setenforce 0
-    ## 关闭swap
+
+    # 关闭swap
     swapoff -a && sed -ri 's/.*swap.*/#&/' /etc/fstab
    ```
 
@@ -70,15 +73,14 @@
     # 先备份原来的源
     mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup 下载新的 CentOS-Base.repo 到 /etc/yum.repos.d/
     wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-7.repo
-    或
+    # 或
     curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
     # 运行 yum makecache 生成缓存
     yum makecache 
     # 安装epel源
     yum -y install epel-release
-    yum的'--showduplicates'选项对于显示软件包的多个版本很有用。当您有非常特定的依赖项并尝试查找要
-    安装的软件包的特定名称时，它将起着非常大的作用
-    # yum list docker --show-duplicates
+    # yum的'--showduplicates'选项对于显示软件包的多个版本很有用。当您有非常特定的依赖项并尝试查找要安装的软件包的特定名称时，它将起着非常大的作用
+    yum list docker --show-duplicates
     ```
 
 3. 安装依赖
@@ -104,7 +106,7 @@
     mkdir -p /etc/docker/
     cat > /etc/docker/daemon.json << EOF
     {
-    "registry-mirrors": ["https://9cpn8tt6.mirror.aliyuncs.com"]
+        "registry-mirrors": ["https://9cpn8tt6.mirror.aliyuncs.com"]
     }
     EOF
     ```
@@ -125,24 +127,24 @@
 
 ## 4. 启动Rancher
 1. 启动rancher
-    启动时需要添加 `--privileged` 参数
     ```shell
-    # docker run -d --restart=unless-stopped --privileged --name rancher -p 80:80 -p 443:443 rancher/rancher:stable
+    # 启动时需要添加 `--privileged` 参数
+    docker run -d --restart=unless-stopped --privileged --name rancher -p 80:80 -p 443:443 rancher/rancher:stable
     ```
 
 2. 查看日志
-    ```
-    如果没有明显的错误就运行成功了
-    # docker logs -f rancher
+    ```shell
+    # 如果没有明显的错误就运行成功了
+    docker logs -f rancher
     ```
 
 3. 查看运行状态
-    ```
-    # docker ps
+    ```shell
+    docker ps
     ```
 
 4. 在Web界面登录
-    ```
+    ```shell
     https://rancherIp:7643
     ```
 
@@ -180,37 +182,37 @@
 ## 6. Kubectl工具的安装
 这里是将kubectl工具安装在master上
 1. 安装wget
-    ```
+    ```shell
     yum install -y wget
     ```
 
 2. 下载kubectl
-    ```
+    ```shell
     wget https://storage.googleapis.com/kubernetes-release/release/v1.18.20/bin/linux/amd64/kubectl
     ```
 
-3. 加x权限
-    ```
+3. 加执行权限
+    ```shell
     chmod +x kubectl
     ```
 
 4. 将kubectl移到PATH中
-    ```
+    ```shell
     mv kubectl /usr/local/bin/
     ```
 
 5. 查看版本
-    ```
+    ```shell
     kubectl version --client
     ```
 
 6. 创建kube目录
-    ```
+    ```shell
     mkdir ~/.kube
     ```
 
 7. 编辑~/.kube/config文件
-    ```
+    ```shell
     vi ~/.kube/config
     ```
 
@@ -219,7 +221,7 @@
     然后复制到config文件中，并保存退出。
 
 8. 查看全部Pod状态
-    ```
+    ```shell
     kubectl get pods -A
     ```
 

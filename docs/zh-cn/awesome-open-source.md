@@ -25,3 +25,7 @@
 - [网页在线工具汇总](https://iui.su/1492/) https://lai.yuweining.cn/music
 - [浏览器自动化操作](https://github.com/AutomaApp/automa)
 - [LocalSend本地文件传输](https://github.com/localsend/localsend)
+- [一个开源协作式数字白板](https://github.com/tldraw/tldraw)
+- [一个用Markdown来设计HTML表单的小工具](https://createhtmlform.com/)
+- [一个为家庭用户打造的库存和组织系统](https://github.com/hay-kot/homebox)
+- [开源笔记软件(替代Notion)](https://github.com/toeverything/AFFiNE)

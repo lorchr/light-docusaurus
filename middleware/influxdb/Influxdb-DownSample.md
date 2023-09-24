@@ -21,18 +21,18 @@ CREATE DATABASE seconds_36;
 DROP MEASUREMENT rq_36_test1;
 
 # 修改保留策略
-ALTER RETENTION POLICY default ON "yunyi" DURATION 52w REPLICATION 1 DEFAULT;
+ALTER RETENTION POLICY default ON "pd" DURATION 52w REPLICATION 1 DEFAULT;
 ```
 
 ## 使用Continuous Query降采样
 ```shell
 # 创建保留策略
-CREATE RETENTION POLICY "rp_36" ON "yunyi" DURATION 2w REPLICATION 1;
+CREATE RETENTION POLICY "rp_36" ON "pd" DURATION 2w REPLICATION 1;
 
 # 创建连续查询 
 # EVERY 36s 每隔36s执行一次，
 # FOR   36s 统计36s之内的数据
-CREATE CONTINUOUS QUERY "cq_36_test1" ON "yunyi"
+CREATE CONTINUOUS QUERY "cq_36_test1" ON "pd"
 RESAMPLE EVERY 36s
 BEGIN 
     SELECT mean(*::field) INTO "rp_36"."cq_36_test1" FROM "test1" GROUP BY time(36s),* fill(0);
@@ -42,7 +42,7 @@ END;
 SHOW CONTINUOUS QUERIES;
 
 # 删除连续查询
-DROP CONTINUOUS QUERY "cq_36_test1" ON "yunyi";
+DROP CONTINUOUS QUERY "cq_36_test1" ON "pd";
 
 # 查询原始数据
 SELECT mean(*::field),min(*::field),max(*::field) FROM test1 GROUP BY time(36s),* fill(0);
@@ -347,20 +347,16 @@ public class DownSampleServiceImpl implements DownSampleService {
 ```
 
 ### 参数示例
-
+请求初始化接口 `POST` `/downsample/initSetting`
 ```json
 // 8小时的数据  间隔4s
 {
   "databaseName": "pd",
   "rpName": "rp_4",
-  "rpDuration": "1d",
+  "rpDuration": "1w",
   "cqPrefix": "cq_4",
   "execInterval": "4s",
   "groupInterval": "4s",
-  "measurements": [
-    "test1",
-    "test2"
-  ],
   "overrideCQ": 0,
   "allMeasurements": 1
 }
@@ -369,14 +365,10 @@ public class DownSampleServiceImpl implements DownSampleService {
 {
   "databaseName": "pd",
   "rpName": "rp_12",
-  "rpDuration": "3d",
+  "rpDuration": "1w",
   "cqPrefix": "cq_12",
   "execInterval": "12s",
   "groupInterval": "12s",
-  "measurements": [
-    "test1",
-    "test2"
-  ],
   "overrideCQ": 0,
   "allMeasurements": 1
 }
@@ -389,10 +381,6 @@ public class DownSampleServiceImpl implements DownSampleService {
   "cqPrefix": "cq_36",
   "execInterval": "36s",
   "groupInterval": "36s",
-  "measurements": [
-    "test1",
-    "test2"
-  ],
   "overrideCQ": 0,
   "allMeasurements": 1
 }
