@@ -297,7 +297,7 @@ docker run -e PASSWORD=Liuhui1993 -p 8388:8388 -p 8388:8388/udp -d shadowsocks/s
 ```shell
 # 镜像备份 加载 save load
 docker save -o image_version.tar docker.io/image:version
-docker load -i image_version.tar docker.io/image:version
+docker load -i image_version.tar
 
 # 镜像备份 加载 export import
 docker export image_version.tar container_name

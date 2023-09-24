@@ -116,3 +116,30 @@ SHOW max_connections;
 -- 修改最大连接数，需要superuser权限
 ALTER system SET max_connections = 1000;
 ```
+
+2. 数据库操作
+```sql
+-- 查看数据库列表
+SELECT datname FROM pg_database;
+
+-- 切换到某个数据库
+\c db_name;
+
+-- 执行数据库脚本
+\i /path/to/scripts.sql
+
+-- 查询当前数据库下的所有数据表
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
+
+-- 删除数据库
+DROP DATABASE IF EXISTS "db_name";
+
+-- 创建数据库
+CREATE DATABASE "db_name"
+    WITH OWNER = postgres
+    TEMPLATE = template0
+    ENCODING = 'UTF8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+GRANT ALL ON DATABASE "db_name"  TO postgres;
+```

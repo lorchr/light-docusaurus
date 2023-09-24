@@ -270,8 +270,10 @@ const sidebars = {
       items: [
         // 'zh-cn/docker',
         'zh-cn/docker/Docker-Install',
+        'zh-cn/docker/Docker-Add-Hosts-For-Container',
         'zh-cn/docker/Play-With-Docker',
         'zh-cn/docker/Oracle-Cloud-Free-Tier',
+        'zh-cn/docker/Containerd',
       ],
     },
     // {
