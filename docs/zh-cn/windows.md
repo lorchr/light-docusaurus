@@ -19,6 +19,9 @@ choco --version
 choco install -y chocolateygui
 
 # 在应用中找到对应的程序打开即可 Chocolatey GUI
+
+# 校验SHA256
+Get-FileHash -Algorithm SHA256 <文件路径>
 ```
 
 ## Windows系统工具

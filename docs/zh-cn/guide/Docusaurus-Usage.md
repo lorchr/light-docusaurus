@@ -69,10 +69,10 @@ const config = {
 # 生成秘钥 https://docs.github.com/cn/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token
 #   在 `GitHub 主页` -> `个人头像` -> `Settings` -> `Developer settings` -> `Personal access tokens` 进行生成或更新
 
-# 配置秘钥
-#   `代码仓库`->`Settinigs`->`Secrets`->`Actions`->`New repository secret`填上对应的`key-value`
+# 配置秘钥 https://github.com/lorchr/light-docusaurus/settings/secrets/actions
+#   `代码仓库`->`Settinigs`->`Secrets and variables`->`Actions`->`New repository secret`填上对应的`key-value`
 
-ACCESS_TOKEN = Ds1aH2d6sa2219Ssa
+ACCESS_TOKEN = asdfghjkl
 ```
 
 3. 添加 github action files
