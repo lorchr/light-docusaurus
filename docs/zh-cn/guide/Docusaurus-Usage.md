@@ -174,5 +174,5 @@ npm install
 npx docusaurus --version
 
 # 或者一键升级
-yarn upgrade @docusaurus/core@latest @docusaurus/preset-classic@latest
+yarn upgrade @docusaurus/core@latest @docusaurus/preset-classic@latest @docusaurus/remark-plugin-npm2yarn@latest @docusaurus/module-type-aliases@latest
 ```
