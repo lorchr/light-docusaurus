@@ -1251,8 +1251,8 @@ docker load -i backend.tar
 docker tag backend:1.0.1 backend:latest
 ```
 
-
-## k8s拉取镜像报错 
+## 九、安装问题
+### 1、k8s拉取镜像报错 
 `imagePullBackOff`  `http: server gave HTTP response to HTTPS client`
 
 1. [RKE2](https://docs.rke2.io/zh/install/containerd_registry_configuration)
