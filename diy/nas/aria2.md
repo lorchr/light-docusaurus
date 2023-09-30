@@ -1,5 +1,13 @@
-- https://hub.docker.com/r/p3terx/aria2-pro
-- https://p3terx.com/archives/docker-aria2-pro.html
+---
+id: Aria2
+slug: Aria2
+title: Aria2
+---
+
+# Aria2
+
+- [Aria2 Pro Docker](https://hub.docker.com/r/p3terx/aria2-pro)
+- [Aria2 Pro Blog](https://p3terx.com/archives/docker-aria2-pro.html)
 
 ```shell
 # 安装aria2
