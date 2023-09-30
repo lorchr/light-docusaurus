@@ -73,7 +73,7 @@ name 字段是 work­flow 的名称。若忽略此字段，则默认会设置为
 
 ### on
 on 字段指定 work­flow 的触发条件，通常是某些事件，比如示例中的触发事件是 push，即在代码 push 到仓库后被触发。on 字段也可以是事件的数组，多种事件触发，比如在 push 或 pull_request 时触发：
-```shell
+```yaml
 on: [push, pull_request]
 ```
 
@@ -133,6 +133,7 @@ jobs:
 runs-on 字段指定任务运行所需要的虚拟服务器环境，是必填字段，目前可用的虚拟机如下：
 
 > TIPS： 每个任务的虚拟环境都是独立的。
+
 | 虚拟环境               | YAML workflow 标签            |
 | ---------------------- | ----------------------------- |
 | Windows Server 2019    | windows-latest                |
@@ -204,6 +205,7 @@ jobs:
 ```
 
 > TIPS： 如果是有源码的仓库，可以引用 [actions/checkout](https://github.com/actions/checkout) 这个官方 ac­tion 把源码签出到工作目录中。工作目录也就是在 Ac­tions 中执行命令的根目录，其绝对路径为/home/runner/work/REPO_NAME/REPO_NAME，环境变量为$GITHUB_WORKSPACE。
+
 然后还需要拉取 feeds ，它是扩展软件包源码，所以需要单独拉取。既然都是拉取源码，所以就都放在一起吧。
 
 ```yaml

@@ -9,52 +9,52 @@
 本项目旨在介绍一种更加容易实现的编译方式：即使用Github的Actions功能实现OpenWrt的云编译，可以根本上解决本地编译的网络、环境配置问题。 同时也支持通过配置来增、减插件，打造属于自己的OpenWrt固件，拒绝各种广告固件。 项目基于Lean的LEDE进行编译。本文不算保姆教程，适合有一定Linux基础的同学参考（特别是WSL本地配置那一步）。
 
 ## 项目配置
-1. 访问 https://github.com/P3TERX/Actions-OpenWrt , 点击 `Use this template` 来创建一个自己的项目。
+1. 访问 [P3TERX/Actions-OpenWrt](https://github.com/P3TERX/Actions-OpenWrt) , 点击 `Use this template` 来创建一个自己的项目。
 
-2. 自动化用的是P3TERX项目，项目地址：`https://github.com/P3TERX/Actions-OpenWrt`
+2. 自动化用的是[P3TERX项目](https://github.com/P3TERX/Actions-OpenWrt)
 
-编译的OpenWrt源项目是Lean的LEDE，项目地址：`https://github.com/coolsnowwolf/lede`
+编译的OpenWrt源项目是[Lean的LEDE](https://github.com/coolsnowwolf/lede)
 
 3. 云编译项目主要需修改/配置俩个地方：
 
 - `diy-part1.sh`里面添加feeds源，比如可以使用kenzok8的`feeds`源。
 - 另一个是`.config`文件，可以本地自己通过`make menuconfig`来保存生成或者直接用别人的。
 
-4. Windows环境下可以简单使用WSL（Windows Subsystem for Linux）来搭建Ubuntu环境（建议20版本以上），此环境的作用主要是用来配置`config`文件，然后将文件上传到Github，当然你可以先查看本项目里的Config是否满足你的需求，再决定是否需要自己装环境来自己配置config。此步骤可以参考Lean的Readme文档（请注意WSL/WSL2那部分说明）：`https://github.com/coolsnowwolf/lede/blob/master/README.md`
+4. Windows环境下可以简单使用WSL（Windows Subsystem for Linux）来搭建Ubuntu环境（建议20.x版本以上），此环境的作用主要是用来配置`config`文件，然后将文件上传到Github，当然你可以先查看本项目里的Config是否满足你的需求，再决定是否需要自己装环境来自己配置config。此步骤可以参考[Lean的Readme文档（请注意WSL/WSL2那部分说明）](https://github.com/coolsnowwolf/lede/blob/master/README.md)
 
 
-5. 点击项目的Actions，在Build OpenWrt的工作流中，点击run workflow，刷新等待工作流完成（1-2小时）。之后点开编译好的workflow，即可在最底部的Artifacts区域下载到已编译好的固件。
+5. 点击项目的`Actions`，在`Build OpenWrt`的工作流中，点击`run workflow`，刷新等待工作流完成（1-2小时）。之后点开编译好的workflow，即可在最底部的Artifacts区域下载到已编译好的固件。
 
 
-6. 默认登陆IP 192.168.1.1 密码 password
+6. 默认登陆IP: `192.168.1.1` 密码: `password`
 
 
 ## 附录：本地编译常见问题
-1. fatal: unable to access 'https://github.com/coolsnowwolf/lede/': gnutls_handshake() failed: The TLS connection was non-properly terminated.
+1. `fatal: unable to access https://github.com/coolsnowwolf/lede/: gnutls_handshake() failed: The TLS connection was non-properly terminated.`
 解决方式：
 ```shell
 git config --global http.sslVerify "false"
 ```
 
-1. error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+2. `error: RPC failed; curl 18 transfer closed with outstanding read data remaining`
 解决方案：
 ```shell
 git config --global http.postBuffer 524288000
 ```
 
-1. Can't exec "make": No such file or directory at ./scripts/feeds line 22.
+3. `Can't exec "make": No such file or directory at ./scripts/feeds line 22.`
 解决方案：
 ```shell
 sudo apt-get install build-essential subversion libncurses5-dev zlib1g-dev sudo apt-get install gawk gcc-multilib flex git-core gettext libssl-dev
 ```
 
-1. Build dependency: Please install 'unzip'
+4. `Build dependency: Please install 'unzip'`
 解决方案：
 ```shell
 sudo apt install unzip
 ```
 
-1. fatal: unable to access 'https://git.openwrt.org/feed/telephony.git/': server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
+5. `fatal: unable to access https://git.openwrt.org/feed/telephony.git/: server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none`
 解决方案：
 ```shell
 export GIT_SSL_NO_VERIFY=1
@@ -65,19 +65,19 @@ export GIT_SSL_NO_VERIFY=1
 sudo apt-get update sudo apt-get install ca-certificates
 ```
 
-1. :1:10: fatal error: libelf.h: No such file or directory
+6. `:1:10: fatal error: libelf.h: No such file or directory`
 解决方案：
 ```shell
 sudo apt-get install libelf-dev
 ```
 
-1. fatal error: gelf.h: No such file or directory
+7. `fatal error: gelf.h: No such file or directory`
 解决方案：
 ```shell
 sudo apt-get install libelf-dev
 ```
 
-项目地址：https://github.com/U3DC/Actions-OpenWrt
+项目地址：[U3DC/Actions-OpenWrt](https://github.com/U3DC/Actions-OpenWrt)
 
 如果对你有帮助，就Star一下。tks~
 

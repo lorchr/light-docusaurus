@@ -20,7 +20,7 @@ Github Ac­tions 是 Mi­crosoft 收购 GitHub 后推出的 CI/​CD 服务，�
 > 本解决方案是一个开放平台，任何人都可以基于此打造自己专属的编译方案。
 
 ## 项目地址
-https://github.com/P3TERX/Actions-OpenWrt
+[P3TERX/Actions-OpenWrt](https://github.com/P3TERX/Actions-OpenWrt)
 
 支持项目请随手点个 star，让更多的人发现、使用并受益。
 
@@ -72,7 +72,7 @@ https://github.com/P3TERX/Actions-OpenWrt
 
 ## 进阶使用
 ### 自定义环境变量与功能
-打开 work­flow 文件（.github/workflows/build-openwrt.yml），你会看到有如下一些环境变量，可按照自己的需求对这些变量进行定义。
+打开 work­flow 文件（`.github/workflows/build-openwrt.yml`），你会看到有如下一些环境变量，可按照自己的需求对这些变量进行定义。
 ```yaml
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
@@ -172,18 +172,18 @@ REPO_BRANCH: openwrt-19.07
 假设有三台路由器的固件需要编译，比如 K2P、x86_64 软路由、新路由 3。
 
 - 生成它们的.config文件
-- 分别将它们重命名为k2p.config、x64.config、d2.config放入本地仓库根目录。
-- 复制多个 workflow 文件（.github/workflows/build-openwrt.yml）。为了更好的区分可以对它进行重命名，比如k2p.yml、x64.yml、d2.yml。此外第一行name字段也可以进行相应的修改。
-- 然后分别用上面修改的文件名替换对应 workflow 文件中下面两个位置的.config，不同的机型同样可以使用不同的 DIY 脚本。
+- 分别将它们重命名为`k2p.config`、`x64.config`、`d2.config`放入本地仓库根目录。
+- 复制多个 workflow 文件（`.github/workflows/build-openwrt.yml`）。为了更好的区分可以对它进行重命名，比如`k2p.yml`、`x64.yml`、`d2.yml`。此外第一行`name`字段也可以进行相应的修改。
+- 然后分别用上面修改的文件名替换对应 workflow 文件中下面两个位置的`.config`，不同的机型同样可以使用不同的 DIY 脚本。
 
 ```yaml
-...
+#...
     paths:
       - '.config'
-...
+#...
         CONFIG_FILE: '.config'
         DIY_SH: 'diy.sh'
-...
+#...
 ```
 
 ### SSH 连接到 Actions

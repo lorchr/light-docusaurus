@@ -17,8 +17,10 @@
 
 
 ## 安装步骤：
-环境：虚拟机 ubuntu20.04
-安装工具pmbootstrap https://wiki.postmarketos.org/wiki/Installing_pmbootstrap
+环境：
+- 虚拟机 ubuntu20.04
+- [安装工具pmbootstrap](https://wiki.postmarketos.org/wiki/Installing_pmbootstrap)
+
 ### 1、安装3.4以上python
 ```shell
 wget -c https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz连接

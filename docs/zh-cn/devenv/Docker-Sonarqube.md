@@ -4,8 +4,6 @@
 - [SonarQube Offical Document](https://docs.sonarsource.com/sonarqube/latest/requirements/prerequisites-and-overview/)
 - [Sonar-Scanner-Cli Offical Document](https://docs.sonarsource.com/sonarqube/latest/analyzing-source-code/scanners/sonarscanner/)
 
-- https://blog.csdn.net/weixin_45056333/article/details/132319321
-
 ## 1. Docker安装
 ```shell
 # 创建文件目录
@@ -48,7 +46,7 @@ docker exec -it -u root sonarqube /bin/bash
 vim /opt/sonarqube/conf/sonar.properties
 ```
 
-- [Dashboard](http://[localhost:18083](http://localhost:9000))
+- [Dashboard](http://localhost:9000)
   - admin/admin (默认)
   - admin/sonarqube
 
