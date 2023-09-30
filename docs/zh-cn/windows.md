@@ -39,6 +39,7 @@ Get-FileHash -Algorithm SHA256 <文件路径>
 - [Windows To Go](https://learn.microsoft.com/zh-cn/windows/deployment/planning/windows-to-go-overview)
 - [WePE](https://www.wepe.com.cn/)
 - [WinToGo](https://www.disktool.cn/wintogo.html)
+- [Starwind-v2v-Converter](https://www.starwindsoftware.com/starwind-v2v-converter#download) For [Download](https://www.starwindsoftware.com/tmplink/starwindconverter.exe)
 
 ## 磁盘清理工具
 1. [SpaceSniffer](https://www.fosshub.com)

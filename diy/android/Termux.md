@@ -4,9 +4,7 @@ Termux 高级终端安装使用配置教程，刚写这篇文章的时候，当�
 ## 1. 版权声明
 17 年开始接触到 Termux，就发现它有很多值得挖掘的潜力，于是抽空在 18 年的某一个法定的整整花了三天假期开才写完第一版文章，然后文章陆陆续续更新到现在，期间有一次误操作不小心把博客所有的评论都删了，否则这篇文章的评论数会更多。现在本文的截图数量达到了 150 张左右了，文字数目已经数万多了。自己花了很长时间写出来的原创文章，抄袭白嫖党直接 Ctrl+C Ctrl+V 只要几秒钟。原创很辛苦，抄袭的成本却很低，维权的成本又很高，虽然国内目前的抄袭风气很严重，但是我相信尊重原创，保护原创从现在做起从大家做起，tomorrow is another day! 如果大面转载引用的话 希望标明文章出处:
 
-### Termux 高级终端安装使用配置教程
-
-https://www.sqlsec.com/2018/05/termux.html
+### [Termux 高级终端安装使用配置教程](https://www.sqlsec.com/2018/05/termux.html)
 
 ## 2. 学习资源
 考虑到手机用户体验和离线观看教程的需求，国光打包了几种风格的 PDF 版本，并且已经插入好目录，阅读体验会比较友好。
@@ -47,12 +45,13 @@ Termux was unable to install the bootstrap packages.
 Check your network connection and try again.
 ```
 
-这里的 Termux 官方远程的服务器地址是: http://termux.net/bootstrap/
+这里的 [Termux 官方远程的服务器](http://termux.net/bootstrap/)地址
 
 目前解决方法有两种：
 - VPN 全局代理 （成功率很高）
 - 如果你是 WiFi 的话尝试切换到运营商流量 （有一定成功率）
-- ① F-Droid > ② Google Play > ③ 酷安 根据这个顺序尝试安装，如果不行再重复 1、2 步骤操作
+
+`① F-Droid > ② Google Play > ③ 酷安` 根据这个顺序尝试安装，如果不行再重复 1、2 步骤操作
 
 ## 4. 基本操作
 基本操作还是要学习一下的，可以事半功倍。
@@ -264,7 +263,7 @@ pkg install vim curl wget git tree -y
 ```
 
 ### 2. 终端配色方案
-脚本项目地址：https://github.com/Cabbagec/termux-ohmyzsh/
+[脚本项目地址](https://github.com/Cabbagec/termux-ohmyzsh/)
 
 该脚本主要使用了 zsh 来替代 bash 作为默认 shell，并且支持色彩和字体样式，同时也激活了外置存储，可以直接访问 SD 卡下的目录。主题默认为 agnoster，颜色样式默认为 Tango，字体默认为 Ubuntu。
 
@@ -472,7 +471,7 @@ tsu
 在管理员身份下，输入 exit 可回到普通用户身份。不过本文没有设计到 root 权限的操作，一些底层的工具可能才会需要，考虑到 root 的不安全性 和 那些工具的冷门性，国光这里就没有继续拓展。
 
 ### 9. 备份与恢复
-评论区有网友提问 Termux 有办法打个镜像或者快照吗？😂 怕折腾坏了。也有网友分享了官方 WiKi 已经更新了备份和恢复的方法了，原文是：https://wiki.termux.com/wiki/Backing_up_Termux
+评论区有网友提问 Termux 有办法打个镜像或者快照吗？😂 怕折腾坏了。也有网友分享了官方 WiKi 已经更新了备份和恢复的方法了，[原文](https://wiki.termux.com/wiki/Backing_up_Termux)
 
 下面国光简单搬运过来：
 
@@ -631,26 +630,31 @@ Termux 上的 Apache 默认配置文件的路径为:
 ```shell
 $PREFIX/etc/apache2/httpd.conf
 ```
+
 直接编辑配置文件:
 ```shell
 vim /data/data/com.termux/files/usr/etc/apache2/httpd.conf
 ```
+
 配置文件里面搜索 PHP 没有相关的模块，所以需要我们手动添加 PHP7 的模块:
 ```shell
 LoadModule php7_module /data/data/com.termux/files/usr/libexec/apache2/libphp7.so 
 ```
+
 并在刚刚这个语句下方添加解析器，内容如下:
 ```xml
 <FilesMatch \.php$>
   SetHandler application/x-httpd-php
 </FilesMatch> 
 ```
+
 接着继续往下找配置文件里面配置默认首页的地方，我们添加 index.php 到默认首页的规则里面:
 ```xml
 <IfModule dir_module>
   DirectoryIndex index.php index.html
 </IfModule>
 ```
+
 这表示网站目录的默认首页是 index.php，如果没有 index.php 系统会自动寻找 index.html 做为默认首页了。
 
 修改完 Apache 的配置文件后，记得使用 `apachectl restart` 重启 Apache 服务，然后这个时候回发现我们重启居然报错了：
@@ -658,6 +662,7 @@ LoadModule php7_module /data/data/com.termux/files/usr/libexec/apache2/libphp7.s
 Apache is running a threaded MPM, but your PHP Module is not compiled to be threadsafe.  You need to recompile PHP.
 AH00013: Pre-configuration failed
 ```
+
 不要慌问题不大，下面来解决这个问题
 
 #### 解决 Apache PHP 报错
@@ -665,18 +670,22 @@ AH00013: Pre-configuration failed
 ```shell
 LoadModule mpm_worker_module libexec/apache2/mod_mpm_worker.so
 ```
+
 给他注释掉为：
 ```shell
 #LoadModule mpm_worker_module libexec/apache2/mod_mpm_worker.so
 ```
+
 然后找到如下行：
 ```shell
 #LoadModule mpm_prefork_module libexec/apache2/mod_mpm_prefork.so
 ```
+
 取消注释：
 ```shell
 LoadModule mpm_prefork_module libexec/apache2/mod_mpm_prefork.so
 ```
+
 最终的示例图如下:
 
 
@@ -686,6 +695,7 @@ LoadModule mpm_prefork_module libexec/apache2/mod_mpm_prefork.so
 ```shell
 echo '<?php phpinfo(); ?>' > $PREFIX/share/apache2/default-site/htdocs/index.php
 ```
+
 然后浏览访问: `http://127.0.0.1:8080` 查看效果：
 
 Termux 官方封装了 Clang，他是一个 C、C++、Objective-C 和 Objective-C++ 编程语言的编译器前端。
@@ -706,10 +716,12 @@ int main(){
   return 0;
 }
 ```
+
 编辑完成后，使用 clang 来编译生成 hello 的可执行文件：
 ```shell
 clang hello.c -o hello
 ```
+
 效果图
 
 ### 5. Java
@@ -722,6 +734,7 @@ Termux 早期原生编译 JAVA 只能使用 ecj (Eclipse Compiler for Java) 和 
 pkg update
 pkg install openjdk-17
 ```
+
 当然这个包可能不太稳定，遇到相关问题可以去 Termux 官方的项目下提交 issue：
 ```shell
 https://github.com/termux/termux-packages/issues?q=openjdk
@@ -733,6 +746,7 @@ https://github.com/termux/termux-packages/issues?q=java
 ```shell
 pkg install ecj dx -y
 ```
+
 国光这里只演示基本的 Hello World 使用。写一个 Hello World 的 JAVA 程序，如下 HelloWorld.java:
 ```shell
 public class HelloWorld {
@@ -741,19 +755,23 @@ public class HelloWorld {
     }
 }
 ```
+
 ##### 编译生成 class 文件
 ```shell
 ecj HelloWorld.java
 ```
+
 ##### 编译生成 dex 文件
 ```shell
 dx --dex --output=hello.dex HelloWorld.class
 ```
+
 ##### 使用 dalvikvm 运行
 > 格式规范如下：dalvikvm -cp dex文件名 类名
 ```shell
 dalvikvm -cp hello.dex HelloWorld
 ```
+
 效果图
 
 ### 6. MariaDB (MySQL)
@@ -770,11 +788,13 @@ pkg install mariadb
 $ cd /data/data/com.termux/files/usr/etc/
 $ mkdir my.cnf.d
 ```
+
 #### 初始化数据库
 > 早期的 Termux 安装完 MySQL 是需要初始化数据库的，新版本在安装时候就已经初始化了数据库
 ```shell
 mysql_install_db
 ```
+
 2020 年 4 月 19 日：国光今天安装的 MySQL 发现已经存在 mysql.user 表了，无需初始化：
 
 
@@ -804,12 +824,14 @@ Termux 下没有好的办法退出 MySQL 服务，只能强制杀掉进程了，
 ```shell
 kill -9 PID
 ```
+
 成功kill掉
 
 当然每次查看进程的 PID 号，再杀掉进程有点繁琐了，实际上这一步可以直接这样操作：
 ```shell
 kill -9 `pgrep mysql`
 ```
+
 Awesome ! 优雅！
 
 #### 默认的两个用户
@@ -819,12 +841,14 @@ Awesome ! 优雅！
 ```shell
 mysql -u root
 ```
+
 提示拒绝 root 登录
 
 另一个用户就是 Termux 的用户名，默认密码为空，我们来登录看看：
 ```shell
 mysql -u $(whoami)
 ```
+
 可以成功登录 并执行 SQL 语句
 
 那么这个无法登录的 root 用户该怎么办呢 ？不要着急 继续往下看
@@ -880,6 +904,7 @@ Termux 安装 Nginx 也很简单，一条命令即可：
 ```shell
 pkg install nginx
 ```
+
 安装完成后，国光的习惯是查看一下版本信息：
 
 1.17.10 版本
@@ -915,15 +940,18 @@ listen [::1]:8080;
 ```shell
 nginx -s reload
 ```
+
 #### 停止 Nginx
 ##### 方法一 原生停止
 ```shell
 nginx -s stop
 ```
+
 或者
 ```shell
 nginx -s quit
 ```
+
 quit 是一个优雅的关闭方式，Nginx 在退出前完成已经接受的连接请求。Stop 是快速关闭，不管有没有正在处理的请求。
 
 ##### 方法二 杀掉进程
@@ -931,6 +959,7 @@ quit 是一个优雅的关闭方式，Nginx 在退出前完成已经接受的连
 ```shell
 kill -9 `pgrep nginx`
 ```
+
 貌似手机党 并不好敲 这个 ` 符号 =，= ，如果实在敲不出来，那就分两步走吧：
 ```shell
 # 查询 nginx 进程相关的 PID 号
@@ -948,6 +977,7 @@ Nginx 本身不能处理 PHP，它只是个 Web 服务器，当接收到 PHP 请
 ```shell
 pkg install php-fpm
 ```
+
 安装完成顺便检查一下版本信息吧：
 
 
@@ -957,14 +987,17 @@ pkg install php-fpm
 ```shell
 vim $PREFIX/etc/php-fpm.d/www.conf
 ```
+
 定位搜索 listen = 找到
 ```shell
 listen = /data/data/com.termux/files/usr/var/run/php-fpm.sock
 ```
+
 将其改为：
 ```shell
 listen = 127.0.0.1:9000
 ```
+
 ？？？啥 你不会使用 vim 搜索 ㄟ (▔,▔) ㄏ 那就老老实实一个个翻页吧。
 
 #### 配置 Nginx
@@ -972,6 +1005,7 @@ listen = 127.0.0.1:9000
 ```shell
 vim $PREFIX/etc/nginx/nginx.conf
 ```
+
 下面国光贴出配置好的完整配置文件，大家可以参考下面这些图，只需要两大步骤：
 
 添加 index.php 到默认首页的规则里面：
@@ -984,6 +1018,7 @@ Termux 里面的 Nginx 默认网站的根目为：
 ```shell
 /data/data/com.termux/files/usr/share/nginx/html
 ```
+
 如果想要修改默认路径的话 只需要在配置文件中 替换 2 处出现的这个路径即可
 
 下面贴一份完整的配置文件：
@@ -1022,24 +1057,29 @@ http {
     }
 }
 ```
+
 #### 测试 PHP 解析
 Nginx 默认网站的根目录为：
 ```shell
 /data/data/com.termux/files/usr/share/nginx/html
 ```
+
 在这个网站根目录下新建 info.php 内容为：<?php phpinfo(); ?>
 ```shell
 echo '<?php phpinfo(); ?>' > $PREFIX/share/nginx/html/info.php
 ```
+
 #### 启动服务
 先启动 php-fpm 服务：
 ```shell
 php-fpm
 ```
+
 然后再启动 Nginx 服务：
 ```shell
 nginx
 ```
+
 如果你的 Nginx 已经启动了的话，使用 nginx -s reload 重启 Nginx
 
 #### 访问测试
@@ -1055,25 +1095,30 @@ nodejs-lts 是长期支持版本，如果执行 pkg install nodejs 版本后，�
 ```shell
 segmentation fault
 ```
+
 那么这个时候可以尝试卸载当前版本 pkg uninstall nodejs 然后执行下面命令安装长期稳定版本：
 ```shell
 pkg install nodejs-lts
 ```
+
 安装完成后使用如下命令查看版本信息：
 ```shell
 node -V
 npm -V
 ```
+
 #### Hello World
 新建一个 hello.js 脚本，内容如下:
 ```shell
 console.log('Hello Termux');
 ```
+
 然后尝试运行：
 ```shell
 $ node hello.js
 Hello Termux
 ```
+
 #### http-server
 http-server 是一个基于 Node.js 的简单零配置命令行 HTTP 服务器。
 ```shell
@@ -1093,6 +1138,7 @@ OK
 ```shell
 Cannot read property 'length' of undefined
 ```
+
 查了下是这边版本的问题：
 
 新版本貌似npm正常
@@ -1107,6 +1153,7 @@ disable concurrency in case of libuv/libuv#1459
 ```shell
 vim $PREFIX/lib/node_modules/npm/node_modules/worker-farm/lib/farm.js
 ```
+
 我这里修改 length 的是 4，这个好像和 CPU 有关，总之这里的 length 得指定一个数字：
 
 新版本貌似npm正常
@@ -1121,6 +1168,7 @@ Termux 官方封装了 PHP，所以我们安装起来就很方便：
 ```shell
 pkg install php
 ```
+
 安装完成后查看下版本信息：
 ```shell
 php --version
@@ -1133,6 +1181,7 @@ php --version
 ```php
 <?php phpinfo();?>
 ```
+
 完整的步骤如下：
 ```shell
 # 新建 www 文件夹
@@ -1141,6 +1190,7 @@ mkdir ~/www
 # 创建 inedx.php 文件
 echo '<?php phpinfo();?>' > ~/www/index.php
 ```
+
 编写完成 index.php 文件后，尝试使用 PHP 内置的 WebServer 直接启动：
 ```shell
 # 进入家目录
@@ -1149,6 +1199,7 @@ cd ~
 # 启动 WebServer
 php -S 0.0.0.0:8888 -t www/
 ```
+
 自己制定端口后，浏览器访问 `http://127.0.0.1:8888` 效果如下：
 
 
@@ -1161,6 +1212,7 @@ Python2 版本要淘汰了，大家简单了解一下就好：
 ```shell
 pkg install python2 -y
 ```
+
 安装完成后，使用 python2 命令启动 Python2.7 的环境。
 
 #### 安装 Python3
@@ -1168,6 +1220,7 @@ Termux 安装 Python 默认版本是 Python3 的版本，与此同时也顺便�
 ```shell
 pkg install python -y
 ```
+
 安装完成后，查看下 clang 和 Python 的版本：
 
 
@@ -1188,12 +1241,14 @@ python2 -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple
 # 升级 pip3
 python -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 ```
+
 这两条命令分别升级了 pip2 和 pip3 到最新版。升级完成后你会惊讶的发现你的 pip3 命令不见了？？？然后这个时候就开始吐槽国光了（内心 OS：国光 非要强迫症升级 pip 版本，这下好了吧！）
 
 国光：不要慌 问题不大，我们可以手动查看当前有哪些可执行的 pip 文件，使用如下命令：
 ```shell
 ls /data/data/com.termux/files/usr/bin|grep pip
 ```
+
 原来我们的pip3变成了pip3.8了啊
 
 接下来分别查看对应 pip 可执行文件的版本：
@@ -1206,11 +1261,13 @@ ls /data/data/com.termux/files/usr/bin|grep pip
 iPython 是一个 Python 的增强版本的交互式 shell，支持变量自动补全，自动缩进，支持 shell 命令等，内置了许多很有用的功能和函数。iPython 可以提高我们的学习效率！
 
 > 先安装 clang, 否则直接使用 pip 安装 ipython 会失败报错。没有安装的话使用 pkg install clang 安装
+
 ```shell
 # -i 手动指定国内清华 pip 源 提高下载速度
 pip install ipython -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 pip3.8 install ipython -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 ```
+
 执行完上述命令分别安装好对应版本的 iPython 后，然后分别查看对应版本信息：
 ```shell
 ipython2 -V
@@ -1235,6 +1292,7 @@ apt install libzmq libzmq-dev
 apt install ipython 
 pip install jupyter 
 ```
+
 如果你一步步跟着本文安装顺序操作的话，发现很多工具我们都安装过了（国光我真的有先见之明…），那么直接参考如下命令安装即可：
 ```shell
 # -i 手动指定国内中清华 pip 源 提高下载速度
@@ -1256,10 +1314,12 @@ exit
 # 安装 jupyterlab
 pip3 install jupyterlab -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 ```
+
 安装好之后查看一下版本信息：
 ```shell
 jupyter --version
 ```
+
 所有插件均安装完成
 
 Jupyter Notebook 就安装好了，这个比较强大更详细的教程大家可以自行去谷歌或者百度一下，国光这里只演示基本的功能。
@@ -1268,6 +1328,7 @@ Jupyter Notebook 就安装好了，这个比较强大更详细的教程大家可
 ```shell
 jupyter notebook
 ```
+
 然后会看到运行的日志，我们复制出 提示的 URL：
 
 
@@ -1297,10 +1358,12 @@ DVWA 是一个用来搞 Web 安全从业者入门使用的一个练习靶场，�
 ```shell
 wget https://github.com/ethicalhack3r/DVWA/archive/master.zip
 ```
+
 如果访问 Github 比较慢的话，可以尝试如下链接：
 ```shell
 wget https://hub.fastgit.org/ethicalhack3r/DVWA/archive/master.zip
 ```
+
 解压到 Nginx 目录下
 ```shell
 # 解压
@@ -1315,6 +1378,7 @@ mv DVWA-master dvwa
 ```shell
 mysql -uroot -p*** -e"create database dvwa;show databases;"
 ```
+
 *** 这里是 mysql 的密码
 
 
@@ -1329,6 +1393,7 @@ mv config.inc.php.dist config.inc.php
 # 编辑配置文件
 vim mv config.inc.php.dist config.inc.php
 ```
+
 只需要定位找到如下内容 根据你的实际情况填写就可以了：
 
 
@@ -1342,7 +1407,7 @@ vim mv config.inc.php.dist config.inc.php
 
 实际上正常人是不会去开启这个的，十分危险，但是 DVWA 是一个靶场，有些漏洞实际上就是利用 PHP 配置不当造成的，这样才让新手有攻击下来的信心。
 
-配置 php.ini
+配置 `php.ini`
 Termux 下默认是没有 php.ini 文件的，不信我们手动来查找一下：
 ```shell
 php --ini
@@ -1352,10 +1417,12 @@ Loaded Configuration File:         (none)
 Scan for additional .ini files in: (none)
 Additional .ini files parsed:      (none)
 ```
-发现 php.ini 的文件应该存放在 /data/data/com.termux/files/usr/lib 目录下，但是 PHP 没有找到配置文件，所以需要我们手动在这个目录下新建 php.ini 配置文件:
+
+发现 `php.ini` 的文件应该存放在 /data/data/com.termux/files/usr/lib 目录下，但是 PHP 没有找到配置文件，所以需要我们手动在这个目录下新建 php.ini 配置文件:
 ```shell
 echo 'allow_url_include = On' > $PREFIX/lib/php.ini
 ```
+
 > 注意这是一个不安全的配置 只是为了配合本地的 DVWA 靶场 做模拟黑客攻击练习使用的
 
 配置完成后，自己尝试使用 php --ini 来定位搜索配置文件，会发现 PHP 已经找到了配置文件了。
@@ -1370,7 +1437,7 @@ php-fpm
 ```
 
 #### 再次访问测试网站
-浏览器访问: http://192.168.31.124:8080/dvwa/setup.php
+浏览器访问: `http://192.168.31.124:8080/dvwa/setup.php`
 
 可以看到刚刚的配置文件生效了，现在安全检查全部通过
 
@@ -1400,6 +1467,7 @@ Hexo 是用 Nodejs 编写的，所以安装的话得使用 npm 命令来安装�
 ```shell
 npm install hexo-cli -g
 ```
+
 安装完成的话，顺便看一下 Hexo 相关的版本信息吧：
 ```shell
 hexo -v
@@ -1422,7 +1490,7 @@ hexo s
 
 然后就跑起来一个最基本的 Hexo 博客，关于 Hexo 博客的详细教程，建议搭建去参考 Hexo 官方文档，我这里重点在于 Termux 其他的不作过多的叙述。
 
-使用浏览器访问: http://127.0.0.1:4000 即可看到 Hexo 的效果图：
+使用浏览器访问: `http://127.0.0.1:4000` 即可看到 Hexo 的效果图：
 
 
 
@@ -1447,7 +1515,7 @@ cp -rf public/* $PREFIX/share/nginx/html/hexo
 ```
 
 ##### 访问效果查看
-浏览器访问:http://127.0.0.1:8080/hexo/ 即可看到效果：
+浏览器访问: `http://127.0.0.1:8080/hexo/` 即可看到效果：
 
 
 
@@ -1459,10 +1527,10 @@ cp -rf public/* $PREFIX/share/nginx/html/hexo
 国光这里就只是说一下这个思路，因为强迫症的我不能忍受 Nginx 根目录的文件 乱七八糟 =，= 大家想尝试的话 按照我这个思路去尝试就可以了。
 
 ### 3. KodExplorer
-KodExplorer 是一款开源文件资源管理器，搭建起来很简单，我们也可以在 Termux 搭建，这样就可以实现 Temux 下的文件分享了，十分优雅方便。在我的这篇文章：https://www.sqlsec.com/2019/11/kode.html 里面也讲解了 macOS 下的安装。
+KodExplorer 是一款开源文件资源管理器，搭建起来很简单，我们也可以在 Termux 搭建，这样就可以实现 Temux 下的文件分享了，十分优雅方便。在我的[这篇文章](https://www.sqlsec.com/2019/11/kode.html) 里面也讲解了 macOS 下的安装。
 
 #### 下载解压 Kod
-官网的下载地址：https://kodcloud.com/download/
+[官网的下载地址](https://kodcloud.com/download/)
 
 我们拷贝下载链接后，使用 wegt 可以直接下载：
 ```shell
@@ -1494,6 +1562,7 @@ WordPress 是一个以 PHP 和 MySQL 为平台的自由开源的博客软件和�
 ```shell
 mysql -uroot -p*** -e"create database wordpress;show databases;"
 ```
+
 *** 这里是 mysql 的密码
 
 
@@ -1514,6 +1583,7 @@ unzip wordpress-4.9.4-zh_CN.zip
 # 将解压的文件夹移动到 nginx 网站根目录下
 mv wordpress/ $PREFIX/share/nginx/html
 ```
+
 如果 WordPress 官网这个下载又问题的话，可以多尝试几次，也可以通过如下渠道来下载
 
 1. WordPress Too Many Requests 出现这种报错，多半是中国的 IP 又被国外屏蔽了，可以尝试使用迅雷来下载
@@ -1526,6 +1596,7 @@ mv wordpress/ $PREFIX/share/nginx/html
 php-fpm
 nginx
 ```
+
 当然如果你的 php-fpm 和 Nginx 服务以及启动的话 就直接跳到下一步吧
 
 #### 安装 WordPress
@@ -1575,6 +1646,7 @@ chmod +x install-nethunter-termux
 # 运行安装脚本
 ./install-nethunter-termux
 ```
+
 里面很多操作我们之前都做了，所以现在只需要如下几步即可：
 ```shell
 # 下载 安装脚本
@@ -1589,9 +1661,10 @@ chmod +x install-nethunter-termux
 # 运行安装脚本
 ./install-nethunter-termux
 ```
+
 > 下载包大概 1GB+ 左右安装过程比较慢，国光这里建议大家挂代理下载，提供效率和成功率
 
-如果你没有代理怎么办？ https://images.kali.org/nethunter/kalifs-arm64-full.tar.xz 这个就是最大的 1GB+ 的数据包，复制链接地址到迅雷等下载工具里面下载下来，然后拷贝到 Termux 手机的安装脚本同级目录下，或者直接更改脚本把这个数据包的下载地址替换为局域网的地址都可以方法有很多 大家可以自行发挥。
+如果你没有代理怎么办？ `https://images.kali.org/nethunter/kalifs-arm64-full.tar.xz` 这个就是最大的 1GB+ 的数据包，复制链接地址到迅雷等下载工具里面下载下来，然后拷贝到 Termux 手机的安装脚本同级目录下，或者直接更改脚本把这个数据包的下载地址替换为局域网的地址都可以方法有很多 大家可以自行发挥。
 
 安装成功的效果图如下：
 
@@ -1638,6 +1711,7 @@ VNC 连接还需要密码，所以这里手动设置一下：
 ```shell
 nh kex passwd
 ```
+
 设置完成之后级可以在 VNC 连接工具里面填写相应的信息即可连接了，记得端口号要加上：
 
 
@@ -1648,7 +1722,7 @@ nh kex stop
 ```
 
 ### 3. 其他 Linux 系统
-Termux 安装 Linux 系统项目地址：https://github.com/sqlsec/termux-install-linux
+Termux 安装 Linux 系统项目地址：`https://github.com/sqlsec/termux-install-linux`
 
 这个脚本国光我磨磨蹭蹭写了 1 天才写完，筛选下来的系统都是体验还不错的系统。
 
@@ -1662,6 +1736,7 @@ git clone https://github.com/sqlsec/termux-install-linux
 cd termux-install-linux
 python termux-linux-install.py
 ```
+
 系统安装的更多细节图可以参考我的这一篇文章：Android Termux 安装 Linux 就是这么简单
 
 ## 10. 极客行为
@@ -1674,6 +1749,7 @@ Aria2 是一个轻量级多协议和多源命令行下载实用工具。它支�
 ```shell
 pkg install aria2
 ```
+
 安装完成后 可以顺便看一下版本信息：
 ```shell
 aria2c -v
@@ -1692,6 +1768,7 @@ git clone https://github.com/ziahamza/webui-aria2.git
 cd webui-aria2
 node node-server.js
 ```
+
 > 需要 node 来运行，没有安装的 话使用 pkg install nodejs 来安装
 
 > 如果如果下载速度比较慢的话，可以尝试使用 fastgit 镜像地址来下载
@@ -1700,7 +1777,7 @@ node node-server.js
 
 
 
-运行起来后，浏览器访问:http://localhost:8888 查看效果：
+运行起来后，浏览器访问: `http://localhost:8888` 查看效果：
 
 
 
@@ -1721,6 +1798,7 @@ pkg install openssh
 ```shell
 ssh sqlsec@192.168.1.8
 ```
+
 手机连接操作电脑效果图：
 
 
@@ -1733,6 +1811,7 @@ ssh -p 22 user@hostname_or_ip
 # ssh -i 私钥 用户名@主机名或者IP
 ssh -i id_rsa user@hostname_or_ip
 ```
+
 ##### 传输文件
 SSH 不仅仅可以远程连接服务器，同样也可以使用 SSH 自带的 scp 命令进行文件传输：
 
@@ -1741,11 +1820,13 @@ SSH 不仅仅可以远程连接服务器，同样也可以使用 SSH 自带的 s
 # scp 本地文件路径 远程主机用户名@远程主机名或IP:远程文件保存的位置路径
 scp local_file remote_username@remote_ip:remote_folder
 ```
+
 复制目录
 ```shell
 # scp -r 本地文件夹路径 远程主机用户名@远程主机名或IP:远程文件夹保存的位置路径
 scp -r local_folder remote_username@remote_ip:remote_folder
 ```
+
 看完了 不打算亲自尝试一下文件传输的操作吗？ :-)
 
 #### 电脑 ssh 连接 Termux
@@ -1761,6 +1842,7 @@ scp -r local_folder remote_username@remote_ip:remote_folder
 ```shell
 sshd
 ```
+
 因为手机上面低的端口有安全限制，所以这里 openssh 默认的 sshd 默认的服务端口号为 8022
 
 
@@ -1780,6 +1862,7 @@ PrintMotd no
 PasswordAuthentication yes
 Subsystem sftp /data/data/com.termux/files/usr/libexec/sftp-server
 ```
+
 国光的 Termux 0.94 的版本就这 3 行配置，下面来逐行解释一下这个配置：
 
 - PrintMotd : 是否显示登录成功的欢迎信息 例如上次登入的时间、地点等
@@ -1791,6 +1874,7 @@ Subsystem sftp /data/data/com.termux/files/usr/libexec/sftp-server
 ```shell
 passwd
 ```
+
 密码不要忘记哦
 
 ###### 电脑远程连接测试
@@ -1807,6 +1891,7 @@ ssh 192.168.31.124 -p 8022
 ```shell
 ssh-keygen
 ```
+
 默认一直回车下去：
 
 
@@ -1815,6 +1900,7 @@ ssh-keygen
 ```shell
 id_rsa， id_rsa.pub，known_hosts
 ```
+
 然后需要把公钥 id_rsa.pub 拷贝到手机的 data\data\com.termux\files\home.ssh 文件夹中。然后
 
 ###### 将公钥拷贝到验证文件中
@@ -1828,18 +1914,22 @@ OK 现在你已经设置好公私钥了，那么修改一下 SSH 的配置文件
 ```shell
 vim $PREFIX/etc/ssh/sshd_config
 ```
+
 找到：
 ```shell
 PasswordAuthentication yes 
 ```
+
 修改为：
 ```shell
 PasswordAuthentication no
 ```
+
 然后记得重启一下 SSH 服务：
 ```shell
 pkill sshd;sshd
 ```
+
 然后电脑端这边直接就可以通过公私钥连接了，无需输入密码也更加安全：
 ```shell
 ssh 192.168.31.124 -p 8022
@@ -1852,10 +1942,12 @@ ssh 192.168.31.124 -p 8022
 ```shell
 ssh-keyge
 ```
+
 此时会在 ~/.ssh 目录下生成 3 个文件
 ```shell
 id_rsa， id_rsa.pub，known_hosts
 ```
+
 然后将公钥拷贝到验证文件中
 ```shell
 cat id_rsa.pub > authorized_keys
@@ -1865,10 +1957,12 @@ cat id_rsa.pub > authorized_keys
 ```shell
 chmod 600 id_rsa
 ```
+
 然后通过 -i 手动加载私钥的方式也可以成功连接到 Termux：
 ```shell
 ssh -i id_rsa root@192.168.31.124 -p 8022
 ```
+
 Bingo!
 
 至此，Termux SSH 连接的 3 种方式都演示过了，国光个人比较建议使用 PC 端生成公私钥 的方法，这样可以减少 rsa 私钥泄露的风险，也方便 PC 端的远程连接与管理。
@@ -1888,10 +1982,12 @@ pkg install python3 ffmpeg -y
 ```shell
 pip3 install you-get  -i https://pypi.tuna.tsinghua.edu.cn/simple some-package
 ```
+
 #### 升级 you-get
 ```shell
 pip3 install --upgrade you-get
 ```
+
 #### 下载 B 站视频
 默认是下载最高画质的，但是我们也可以列出所有可以下载的画质：
 ```shell
@@ -1918,6 +2014,7 @@ streams:             # Available quality and codecs
       size:          9.8 MiB (10274269 bytes)
    ...
 ```
+
 下载 720P 视频：
 ```shell
 you-get --format=dash-flv720 https://www.bilibili.com/video/BV1mE411L7Rg
@@ -1962,6 +2059,7 @@ you-get 'http://music.163.com/playlist?id=489221140'
 ```shell
 pkg install exiftool
 ```
+
 下面查看一下国光我刚刚保存地理信息拍的照片的元数据信息：
 ```shell
 cd ~/storage/dcim/Camera
@@ -1978,6 +2076,7 @@ Metasploite 黑客 Top10 工具之一，漏洞攻击库，安全从业者必备�
 ```shell
 E: Unable to locate paclage metasploit 
 ```
+
 国光这里是通过 Github 上的 m-wiz 项目来辅助安装 Metasploit 的，脚本启动比较简单：
 ```shell
 # 安装依赖
@@ -1989,6 +2088,7 @@ git clone https://github.com/noob-hackers/m-wiz
 # 运行脚本
 cd m-wiz && bash m-wiz.sh
 ```
+
 操作的菜单比较简单直观：
 
 
@@ -2008,6 +2108,7 @@ ln -s $HOME/metasploit-framework/msfrpc $PREFIX/bin/msfrpc
 ln -s $HOME/metasploit-framework/msfupdate $PREFIX/bin/msfupdate
 ln -s $HOME/metasploit-framework/msfvenom $PREFIX/bin/msfvenom
 ```
+
 #### 旧的教程
 ##### Android 7 +
 目前 Termux 官方的 pkg 已经支持直接安装 Metasploit 了，但是仅适用于 Android 7 及其以上版本。通过如下两条命令即可安装，下载过程大约 1 分钟左右（当然国光我是挂代理的）
@@ -2027,6 +2128,7 @@ gunzip metasploit_5.0.65-1_all.deb.gz
 dpkg -i metasploit_5.0.65-1_all.deb
 apt -f install
 ```
+
 ### 4. Netcat
 nc 被誉为网络安全界的瑞士军刀，一个简单而有用的工具，netcat 是比较新的现代版本，并且作者是着名的 Nmap 程序的作者。nc 命令的详细教程可以参考我的这篇文章: nc 命令教程
 
@@ -2054,9 +2156,8 @@ pkg install nmap
 ### 6. Hashcat
 Hashcat 是世界上最快的密码破解程序，是一个支持多平台、多算法的开源的分布式工具。
 
-官方:https://hashcat.net/hashcat/
-
-Github:https://github.com/hashcat/hashcat
+- [官方](https://hashcat.net/hashcat/)
+- [Github](https://github.com/hashcat/hashcat)
 
 在我的另一篇文章里面有更详细的教程来介绍这款工具：Hashcat 学习记录
 
@@ -2066,6 +2167,7 @@ Termux unstable 源里面也封装好了 Hastcat，所以我们安装依然一�
 ```shell
 pkg install hashcat
 ```
+
 如果提示找不到 Hashcat 包的话，那么手动安装切换不稳定源即可：
 ```shell
 #  切换不稳定源
@@ -2101,6 +2203,7 @@ git clone https://github.com/sqlmapproject/sqlmap.git
 cd sqlmap
 python sqlmap.py
 ```
+
 > sqlmap 支持 pip 安装了，所以建议直接 pip install sqlmap 来进行安装，然后终端下直接 sqlmap 就可以了，十分方便。
 
 
@@ -2136,6 +2239,7 @@ Termux:API，可用于访问手机硬件实现更多的友情的功能。官方�
 
 - [Termux:API Google Play 下载地址](https://play.google.com/store/apps/details?id=com.termux.api)
 - [Termux:API F-Droid 下载地址](https://f-droid.org/packages/com.termux.api/)
+
 > 请勿在 Google Play 和 F-Droid 之间混合安装 Termux 和 插件。
 
 
@@ -2150,6 +2254,7 @@ Termux:API，可用于访问手机硬件实现更多的友情的功能。官方�
 ```shell
 pkg install termux-api
 ```
+
 下面只列举一些可能会用到的，想要获取更多关于 Termux-api 的话，可以考虑参考官方文档。
 
 因为本文的篇幅已经过长，而且手机用户浏览起来已经很卡顿了，所以单独把之前冗长的 Termux API 部分开了一篇文章来记录，提高用户的浏览体验：Termux-API 使用教程
@@ -2160,6 +2265,7 @@ pkg install termux-api
 #### 安装 Termux:Boot
 - [Termux:Boot Google Play 下载地址](https://play.google.com/store/apps/details?id=com.termux.boot)
 - [Termux:Boot F-Droid 下载地址](https://f-droid.org/packages/com.termux.boot/)
+
 > 请勿在 Google Play 和 F-Droid 之间混合安装 Termux 和 插件。
 
 
@@ -2181,6 +2287,7 @@ sshd
 
 - [Termux: Float Google Play 下载地址](https://play.google.com/store/apps/details?id=com.termux.window)
 - [Termux: Float F-Droid 下载地址](https://f-droid.org/packages/com.termux.window/)
+
 > 请勿在 Google Play 和 F-Droid 之间混合安装 Termux 和 插件。
 
 
@@ -2194,6 +2301,7 @@ Termux 官方提供了终端的一些美化方案。
 
 - [Termux:Styling Google Play 下载地址](https://play.google.com/store/apps/details?id=com.termux.styling)
 - [Termux:Styling F-Droid 下载地址](https://f-droid.org/packages/com.termux.styling/)
+
 > 请勿在 Google Play 和 F-Droid 之间混合安装 Termux 和 插件。
 
 
@@ -2205,6 +2313,7 @@ Termux 官方提供了终端的一些美化方案。
 
 - [Termux:Widget Google Play 下载地址](https://play.google.com/store/apps/details?id=com.termux.widget)
 - [Termux:Widget F-Droid 下载地址](https://f-droid.org/packages/com.termux.widget/)
+
 > 请勿在 Google Play 和 F-Droid 之间混合安装 Termux 和 插件。
 
 
@@ -2228,6 +2337,7 @@ cowsay 命令是一个有趣的命令，它会用 ASCII 字符描绘牛，羊和
 pkg intall cowsay
 cowsay -f 动物 内容
 ```
+
 内置如下动物：
 ```shell
 $ cowsay -l list
@@ -2239,6 +2349,7 @@ head-in hellokitty kiss kitty koala kosh luke-koala meow milk moofasa moose
 mutilated ren sheep skeleton stegosaurus stimpy three-eyes turkey turtle
 tux vader vader-koala www
 ```
+
 国光的简单示例：
 ```shell
 cowsay -f eyes '法外狂徒张三'
@@ -2250,6 +2361,7 @@ FIGlet 是创建一个简单的命令行实用程序，用于创建 ASCII logo�
 pkg install figlet
 figlet -f 字体 '文本内容'
 ```
+
 内置如下样式：
 ```shell
 ls $PREFIX/share/figlet
@@ -2268,6 +2380,7 @@ ls $PREFIX/share/figlet
 646-irv.flc  8859-4.flc   block.flf       lean.flf      smascii9.tlf   utf8.flc
 646-it.flc   8859-5.flc   bubble.flf      letter.tlf    smblock.tlf    wideterm.tlf
 ```
+
 国光的演示：
 ```shell
 figlet -f future 'www.sqlsec.com'
@@ -2279,6 +2392,7 @@ figlet -f future 'www.sqlsec.com'
 pkg install hollywood
 hollywood
 ```
+
 国光差点就信了
 
 ### 5. neofetch
@@ -2308,6 +2422,7 @@ screenfetch
 ```shell
 screenfetch -A 发行版
 ```
+
 现在内置的发行版 logo 有：
 ```shell
 ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current
@@ -2325,10 +2440,12 @@ ALDOS, Alpine Linux, Amazon Linux, Antergos, Arch Linux (Old and Current
     Enterprise, SwagArch, TinyCore, Trisquel, Ubuntu, Viperr, Void and Zorin OS and
     EndeavourOS
 ```
+
 内置的操作系统 logo 有：
 ```shell
 Dragonfly/Free/Open/Net BSD, Haiku, Mac OS X, Windows
 ```
+
 ### 8. sl
 某编程牛人也经常犯把 ls 敲成 sl 的错误，所以他自己编了一个程序娱乐一下，这个程序的作用很简单，就是当你输入 sl 的时候终端会出现一个火车呼啸而过～～
 ```shell
@@ -2342,6 +2459,7 @@ toilet 能用字母拼写出更大字母的工具，具体拼出什么字由命�
 pkg install toilet
 toilet -f 字体 -F 颜色参数 '文本信息'
 ```
+
 内置如下字体：
 ```shell
 $ ls $PREFIX/share/figlet
@@ -2351,6 +2469,7 @@ ascii9.tlf      bigmono9.tlf   future.tlf   pagga.tlf      smbraille.tlf
 bigascii12.tlf  circle.tlf     letter.tlf   smascii12.tlf  smmono12.tlf
 bigascii9.tlf   emboss.tlf     mono12.tlf   smascii9.tlf   smmono9.tlf
 ```
+
 内置如下颜色效果：
 ```shell
 $ toilet --filter list
@@ -2366,6 +2485,7 @@ Available filters:
 "right": rotate 90 degrees clockwise
 "border": surround text with a border
 ```
+
 国光的简单演示：
 ```shell
 toilet -f mono12 -F gay 'Bilibili'
@@ -2374,7 +2494,7 @@ toilet -f mono12 -F gay 'Bilibili'
 ### 10. 搭建 mc 基岩服务器
 > 本版块由初学生 KeySummer 提供，QQ 为：1505708353 有这方面问题可以找他交流哦。
 
-搭建 mc 基岩服务器首先得了解跨 CPU 技术，具体安装方法可以参考 Gitee -Moe/Tmoe-linux ，在安装过程中请安装 ubuntu，以便与直接开服。然后输入 debian 就可以进入我的跨 cpu 的容器里了，然后大家可以去：https://www.minecraft.net/zh-hans/download/server/bedrock 网址内找到 Ubuntu 版的下载按钮，然后复制连接回到 Termux 内的 Ubuntu 后输入
+搭建 mc 基岩服务器首先得了解跨 CPU 技术，具体安装方法可以参考 Gitee -Moe/Tmoe-linux ，在安装过程中请安装 ubuntu，以便与直接开服。然后输入 debian 就可以进入我的跨 cpu 的容器里了，然后大家可以去：`https://www.minecraft.net/zh-hans/download/server/bedrock` 网址内找到 Ubuntu 版的下载按钮，然后复制连接回到 Termux 内的 Ubuntu 后输入
 ```shell
 mkdir mc 
 cd mc 
@@ -2382,10 +2502,11 @@ wget https://minecraft.azureedge.net/bin-linux/bedrock-server-1.16.201.02.zip
 apt install unzip
 unzip bedrock-server-1.16.201.02.zip
 ```
-然后输入 LD_LIBRARY_PATH=. ./bedrock_server 即可（树莓派和此办法一样，Ubuntu 则不需要前面的跨 CPU 步骤，直接进行最后的 2，3 两步即可），祝你们好运。
+
+然后输入 `LD_LIBRARY_PATH=. ./bedrock_server` 即可（树莓派和此办法一样，Ubuntu 则不需要前面的跨 CPU 步骤，直接进行最后的 2，3 两步即可），祝你们好运。
 
 ### 11. 终端二维码
-Linux 命令行下的二维码，主要核心是这个网址：http://qrenco.de/
+Linux 命令行下的二维码，主要核心是这个网址：`http://qrenco.de/`
 ```shell
 echo "https://www.sqlsec.com" |curl -F-=\<- qrenco.de
 ```

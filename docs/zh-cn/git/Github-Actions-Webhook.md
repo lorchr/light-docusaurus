@@ -64,7 +64,7 @@ jobs:
 ```
 
 ### 发送请求
-通过 web­hook 来触发 GitHub Ac­tions，以下是一个使用 cURL 发送请求的例子：
+通过 web­hook 来触发 `GitHub Ac­tions`，以下是一个使用 `cURL` 发送请求的例子：
 ```shell
 curl -X POST https://api.github.com/repos/:owner/:repo/dispatches \
     -H "Accept: application/vnd.github.everest-preview+json" \

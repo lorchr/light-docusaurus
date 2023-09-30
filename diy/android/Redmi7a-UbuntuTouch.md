@@ -5,6 +5,6 @@
 
 ## 输入Ubuntu touch
 1. 下载 [UBports installer](https://devices.ubuntu-touch.io/device/onclite#installerDownload)
-2. 手机连接电脑，打开 UBports installer，按照指导操作
-3. 可以看到，Redmi 7a还不支持刷入Ubuntu touch
+2. 手机连接电脑，打开 `UBports installer`，按照指导操作
+3. 可以看到，Redmi 7a还不支持刷入`Ubuntu touch`
 
