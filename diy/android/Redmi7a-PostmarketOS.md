@@ -37,12 +37,15 @@ sudo make
 sudo make install
 # 查看可执行文件路径which python
 ```
+
 然后按照指导进行安装、配置。
+
 ### 2、使用pmbootstrap配置好要安装项目
 ### 3、安装
 ```shell
 pmbootstrap install
 ```
+
 问题比较多，提示了8个error。多次重新执行命令，科学上网才成功。
 ```shell
 adil@adil-pc:~/postmarketos$ pmbootstrap install
@@ -130,6 +133,7 @@ rated files with 'pmbootstrap export' and flash outside of pmbootstrap.
 $ pmbootstrap flasher flash_rootfs
 $ pmbootstrap flasher flash_kernel
 ```
+
 第一条好久没反应，重刷一次，会要求输入密码，然后又是漫长的等待
 
 三次之后终于完成了，输出信息如下
