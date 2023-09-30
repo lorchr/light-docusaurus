@@ -90,7 +90,7 @@ fastboot reboot
 4. BusyBox安装成功后，打开LinuxDeploy，修改配置
    1. 容器类型: chroot
    2. 发行版
-   3. 源地址 中科大 http://mirrors.ustc.edu.cn/ubuntu-ports/ https://mirrors.aliyun.com/ubuntu-ports/
+   3. 源地址 中科大 `http://mirrors.ustc.edu.cn/ubuntu-ports/` `https://mirrors.aliyun.com/ubuntu-ports/`
    4. 安装路径
    5. 镜像大小 8000M
    6. 用户名 密码
