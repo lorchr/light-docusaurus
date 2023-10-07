@@ -157,6 +157,29 @@ kubectl delete nodes k8s-node-1
 /usr/local/bin/rke2-uninstall.sh
 ```
 
+### 7、节点IP更新造成节点漂移
+- [集群重置](https://docs.rke2.io/zh/backup_restore)
+
+RKE2 启用了一项功能，可以通过传递 `--cluster-reset` 标志将集群重置为一个成员集群。将此标志传递给 RKE2 server 时，它将使用相同的数据目录重置集群，数据 etcd 的目录存在于 `/var/lib/rancher/rke2/server/db/etcd` 中，这个标志可以在集群丢失仲裁时传递。
+
+要传递重置标志，首先你需要停止 RKE2 服务（如果 RKE2 是通过 `systemd` 启用的）：
+```shell
+systemctl stop rke2-server
+rke2 server --cluster-reset
+```
+
+**结果：** 日志中的一条消息表示 RKE2 可以在没有标志的情况下重新启动。再次启动 RKE2，它应该将 RKE2 作为一个成员集群启动。
+
+```shell
+INFO[0088] Managed etcd cluster membership has been reset, restart without --cluster-reset flag now. Backup and delete ${datadir}/server/db on each peer etcd server and rejoin the nodes 
+
+# master节点执行
+systemctl restart rke2-server
+
+# worker节点执行
+systemctl restart rke2-agent
+```
+
 ## 二、安装Pgsql 15.4
 
 ### 1、本地编译源码

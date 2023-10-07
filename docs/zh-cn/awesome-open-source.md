@@ -9,6 +9,7 @@
 - [Linux 服务器运维管理面板](https://github.com/1Panel-dev/1Panel) [安装脚本](https://github.com/1Panel-dev/installer)
 - [一个面向DevOps领域的低代码(GitOps)工具](https://gitee.com/jianmu-dev/jianmu)
 - [一款足够简单、足够好用、足够强的免费 WAF(Web Application Firewall)](https://github.com/chaitin/SafeLine)
+- [一个Docker容器化的SSH蜜罐](https://github.com/fffaraz/fakessh)
 
 ## 实用类
 - [潘多拉，一个让你呼吸顺畅的ChatGPT](https://github.com/pengzhile/pandora) [体验地址](https://chat.zhile.io)

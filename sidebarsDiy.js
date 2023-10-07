@@ -29,7 +29,6 @@
           //   dirName: 'device',
           // },
           'device/J4125',
-          'device/N5100',
         ],
       },
       {
