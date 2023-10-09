@@ -25,7 +25,8 @@ Get-FileHash -Algorithm SHA256 <文件路径>
 ```
 
 ## Windows系统工具
-[你最满意的10款PC软件](https://www.zhihu.com/question/469450888)
+- [图吧工具箱](http://www.tbtool.cn/)
+- [你最满意的10款PC软件](https://www.zhihu.com/question/469450888)
 
 ## 写盘工具
 - [Rufus](http://rufus.ie/zh/)
@@ -45,7 +46,7 @@ Get-FileHash -Algorithm SHA256 <文件路径>
 1. [SpaceSniffer](https://www.fosshub.com)
 2. [WizTree](https://www.diskanalyzer.com/)
 3. [Dism++](https://www.chuyu.me/zh-Hans/index.html) [Github](https://github.com/Chuyu-Team/Dism-Multi-language)
-4. [ChipGenius](https://chipgenius.en.softonic.com/)
+4. [ChipGenius](https://www.mydigit.cn/thread-263544-1-1.html) [作者（数码之家-hit00）](https://www.mydigit.cn/space-uid-20382.html)
 5. [DiskGenius](https://www.diskgenius.com/)
 
 ## 一些软件
