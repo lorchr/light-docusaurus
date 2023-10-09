@@ -57,7 +57,9 @@ vim /opt/sonarqube/conf/sonar.properties
 3. `Settings` - `Tools` - `SonarAnalyzer` 配置Sonarqube server地址以及Token
 4. `Settings` - `Tools` - `SonarAnalyzer` - `Project Settings`添加Sonarqube上创建的项目名称 `sonar.projectKey` 
 5. 选择插件`SonarAnalyzer` - `分析Project下的文件`
-6. 本地分析完毕后，可以在此页面看到服务端的分析任务 `http://localhost:9000/dashboard?id=project_name`
+6. 本地分析完毕后，可以在此页面看到服务端的分析任务 
+   - `http://localhost:9000/dashboard?id=project_name` 
+   - `http://localhost:9000/project/background_tasks?id=project_name`
 
 ### 2. IDEA Pluin SonarLint
 1. SonarQube创建项目，并生成Token `http://localhost:9000/account/security`

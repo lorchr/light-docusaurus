@@ -157,7 +157,7 @@ kubectl delete nodes k8s-node-1
 /usr/local/bin/rke2-uninstall.sh
 ```
 
-### 7、节点IP更新造成节点漂移
+### 7、集群重置
 - [集群重置](https://docs.rke2.io/zh/backup_restore)
 
 RKE2 启用了一项功能，可以通过传递 `--cluster-reset` 标志将集群重置为一个成员集群。将此标志传递给 RKE2 server 时，它将使用相同的数据目录重置集群，数据 etcd 的目录存在于 `/var/lib/rancher/rke2/server/db/etcd` 中，这个标志可以在集群丢失仲裁时传递。
@@ -173,10 +173,12 @@ rke2 server --cluster-reset
 ```shell
 INFO[0088] Managed etcd cluster membership has been reset, restart without --cluster-reset flag now. Backup and delete ${datadir}/server/db on each peer etcd server and rejoin the nodes 
 
-# master节点执行
+# 【master节点】重启RKE2
 systemctl restart rke2-server
 
-# worker节点执行
+# 【worker节点】修改server地址
+vim /etc/rancher/rke2/config.yaml
+# 【worker节点】重启RKE2
 systemctl restart rke2-agent
 ```
 
@@ -1143,6 +1145,7 @@ spec:
 # 定义镜像名称和版本默认值
 image_name=""
 image_version=""
+image_registry=""
 
 # 使用getopts来解析选项和参数
 while getopts "i:v:-:" opt; do
@@ -1153,6 +1156,9 @@ while getopts "i:v:-:" opt; do
         v|version)
             image_version="$OPTARG"
             ;;
+        r|registry)
+            image_registry="$OPTARG"
+            ;;
         -)
             case "${OPTARG}" in
                 image=*)
@@ -1160,6 +1166,9 @@ while getopts "i:v:-:" opt; do
                     ;;
                 version=*)
                     image_version="${OPTARG#*=}"
+                    ;;
+                registry=*)
+                    image_registry="${OPTARG#*=}"
                     ;;
                 *)
                     echo "Invalid option: --$OPTARG" >&2
@@ -1176,7 +1185,7 @@ done
 
 # 检查参数是否已提供
 if [ -z "$image_name" ] || [ -z "$image_version" ]; then
-    echo "Usage: $0 -i|--image <image_name> -v|--version <version_no>"
+    echo "Usage: $0 -i|--image <image_name> -v|--version <version_no> -r|--registry <registry_address>"
     exit 1
 fi
 
@@ -1186,14 +1195,17 @@ timestamp=$(date +%Y%m%d%H%M%S)
 
 # 备份镜像为tar文件
 docker save -o "${image_name}_${image_version}_${timestamp}.tar" "${image_name}:${image_version}" || echo "continue execute"
+docker rmi ${image_name}:${image_version} || echo "continue execute"
 
 # 构建新的Docker镜像
 docker build -t "${image_name}:${image_version}" .
 
 # 推送新的Docker镜像到镜像仓库
-# docker tag ${image_name}:${image_version} 192.168.0.22:5000/${image_name}:${image_version}
-# docker push 192.168.0.22:5000/${image_name}:${image_version}
-
+if [ "$image_registry" ]; then
+    docker rmi ${image_registry}/${image_name}:${image_version} || echo "continue execute"
+    docker tag ${image_name}:${image_version} ${image_registry}/${image_name}:${image_version}
+    docker push ${image_registry}/${image_name}:${image_version}
+fi
 
 export KUBECONFIG="/root/.kube/config"
 export PATH="$PATH:/var/lib/rancher/rke2/bin/"
@@ -1289,9 +1301,13 @@ mirrors:
     endpoint:
       - "http://192.168.0.22:5000"
 EOF
+
+# 修改完成后重启 RKE2
+systemctl daemon-reload && systemctl restart rke2-server
+systemctl daemon-reload && systemctl restart rke2-agent
 ```
 
-2. [Containerd](https://github.com/containerd/containerd/issues/3847)
+1. [Containerd](https://github.com/containerd/containerd/issues/3847)
 - [Containerd](https://github.com/containerd/cri/blob/master/docs/registry.md#configure-registry-endpoint)
 ```shell
 cat > /etc/containerd/config.toml  << EOF
@@ -1315,13 +1331,19 @@ cat > /etc/containerd/config.toml  << EOF
                 [plugins."io.containerd.grpc.v1.cri".registry.configs."192.168.0.22:5000".tls]
                     insecure_skip_verify = true
 EOF
+
+# 修改完成后重启 Containerd
+systemctl daemon-reload && systemctl restart containerd
 ```
 
-3. [Docker](https://docs.docker.com/registry/insecure/)
+1. [Docker](https://docs.docker.com/registry/insecure/)
 ```shell
 cat > /etc/docker/daemon.json << EOF
 { 
     "insecure-registries":["192.168.0.22:5000"]
 }
 EOF
+
+# 修改完成后重启 Docker
+systemctl daemon-reload && systemctl restart docker
 ```

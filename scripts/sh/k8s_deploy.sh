@@ -3,6 +3,7 @@
 # 定义镜像名称和版本默认值
 image_name=""
 image_version=""
+image_registry=""
 
 # 使用getopts来解析选项和参数
 while getopts "i:v:-:" opt; do
@@ -13,6 +14,9 @@ while getopts "i:v:-:" opt; do
         v|version)
             image_version="$OPTARG"
             ;;
+        r|registry)
+            image_registry="$OPTARG"
+            ;;
         -)
             case "${OPTARG}" in
                 image=*)
@@ -20,6 +24,9 @@ while getopts "i:v:-:" opt; do
                     ;;
                 version=*)
                     image_version="${OPTARG#*=}"
+                    ;;
+                registry=*)
+                    image_registry="${OPTARG#*=}"
                     ;;
                 *)
                     echo "Invalid option: --$OPTARG" >&2
@@ -36,7 +43,7 @@ done
 
 # 检查参数是否已提供
 if [ -z "$image_name" ] || [ -z "$image_version" ]; then
-    echo "Usage: $0 -i|--image <image_name> -v|--version <version_no>"
+    echo "Usage: $0 -i|--image <image_name> -v|--version <version_no> -r|--registry <registry_address>"
     exit 1
 fi
 
@@ -46,13 +53,17 @@ timestamp=$(date +%Y%m%d%H%M%S)
 
 # 备份镜像为tar文件
 docker save -o "${image_name}_${image_version}_${timestamp}.tar" "${image_name}:${image_version}" || echo "continue execute"
+docker rmi ${image_name}:${image_version} || echo "continue execute"
 
 # 构建新的Docker镜像
 docker build -t "${image_name}:${image_version}" .
 
 # 推送新的Docker镜像到镜像仓库
-docker tag ${image_name}:${image_version} 192.168.0.22:5000/${image_name}:${image_version}
-docker push 192.168.0.22:5000/${image_name}:${image_version}
+if [ "$image_registry" ]; then
+    docker rmi ${image_registry}/${image_name}:${image_version} || echo "continue execute"
+    docker tag ${image_name}:${image_version} ${image_registry}/${image_name}:${image_version}
+    docker push ${image_registry}/${image_name}:${image_version}
+fi
 
 export KUBECONFIG="/root/.kube/config"
 export PATH="$PATH:/var/lib/rancher/rke2/bin/"
