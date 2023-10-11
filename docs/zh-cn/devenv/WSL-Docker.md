@@ -391,3 +391,57 @@ docker rmi image_test:v1 192.168.110.158:5000/image_test:v1
 # 从镜像仓库拉取镜像
 docker pull 192.168.110.158:5000/image_test:v1
 ```
+
+## 10、更改WSL Docker位置
+WSL默认安装在 `C:/Users/light/AppData/Local` 下，占据空间过大
+
+1. 查看安装目录
+
+```shell
+# 查看数据
+wsl --list -v
+
+# 输出
+  NAME                   STATE           VERSION
+* docker-desktop-data    Stopped         2
+  docker-desktop         Stopped         2
+  Ubuntu-22.04           Stopped         2
+  
+# 关闭wsl
+wsl --shutdown
+```
+
+2. 导出应用
+
+```shell
+# wsl --export <app-name> <target-file>
+wsl --export Ubuntu-20.04         D:\\wsl\\ubuntu\\Ubuntu-20.04.tar
+wsl --export docker-desktop-data  D:\\wsl\\docker\\data\\docker-desktop-data.tar
+wsl --export docker-desktop       D:\\wsl\\docker\\desktop\\docker-desktop.tar
+```
+
+3. 注销应用
+
+```shell
+# wsl --unregister <app-name>
+wsl --unregister Ubuntu-20.04
+wsl --unregister docker-desktop-data
+wsl --unregister docker-desktop
+```
+
+4. 导入应用
+
+```shell
+# wsl --import <app-name> <install-dir> <source-file> --version <wsl-version>
+wsl --import Ubuntu-20.04        D:\\ubuntu\\wsl           D:\\wsl\\ubuntu\\Ubuntu-20.04.tar --version 2
+wsl --import docker-desktop-data D:\\wsl\\docker\\data     D:\\wsl\\docker\\data\\docker-desktop-data.tar --version 2
+wsl --import docker-desktop      D:\\wsl\\docker\\desktop  D:\\wsl\\docker\\desktop\\docker-desktop.tar --version 2
+
+```
+
+6. 设置WSL默认用户
+
+```shell
+# 切换默认用户，安装时设置的默认用户名是 light
+Ubuntu-20.04 config --default-user light
+```
