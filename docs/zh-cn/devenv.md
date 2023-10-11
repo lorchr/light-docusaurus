@@ -1,18 +1,19 @@
 # Dev Environment
 
 # 0. 软件列表
-1. IDEA             zhile.io
-2. DBeaver
-3. MobaxTerm
-4. VS Code
-5. Maven            mvnrepository.com
-6. JDK
-7. Git
-8. U Tools
-9. Docker
-10. Chrome
-11. 企业微信\钉钉
-12. FoxMail
+1. [InteliJ IDEA](https://www.jetbrains.com/zh-cn/idea/download/) [Zhile](https://zhile.io)
+2. [DBeaver](https://dbeaver.io/)
+3. [MobaxTerm](https://mobaxterm.mobatek.net/)
+4. [VS Code](https://code.visualstudio.com/)
+5. [Maven](https://maven.apache.org/index.html) [Repository](https://mvnrepository.com)
+6. [JDK](https://openjdk.org/) [JDK8](https://jdk.java.net/java-se-ri/8-MR5) [JDK21](https://jdk.java.net/21/)
+7. [Git](https://git-scm.com/) [Download](https://git-scm.com/download/win)
+8. [U Tools](https://www.u.tools/)
+9. [Docker](https://www.docker.com/) [DockerHub](https://hub.docker.com/)
+10. [Chrome](https://www.google.cn/chrome/index.html)
+11. [企业微信](https://work.weixin.qq.com/) [钉钉](https://www.dingtalk.com/)
+12. [FoxMail](https://www.foxmail.com/)
+13. [我们所向往的](wmsxwd-c.men)
 
 # 1. IDEA
 [IDEA](devenv/IDEA.md ':include')
