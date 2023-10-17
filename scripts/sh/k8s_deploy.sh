@@ -6,7 +6,7 @@ image_version=""
 image_registry=""
 
 # 使用getopts来解析选项和参数
-while getopts "i:v:-:" opt; do
+while getopts "i:v:r:-:" opt; do
     case "$opt" in
         i|image)
             image_name="$OPTARG"

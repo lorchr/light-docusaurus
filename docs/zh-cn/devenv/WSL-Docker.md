@@ -316,7 +316,7 @@ scp -r root@192.168.8.220:/home/test/ ./test2/
 ```shell
 docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock \
-  assaflavie/runlike -p mysql
+  assaflavie/runlike -p postgres
 ```
 
 ## 9. 部署镜像仓库
