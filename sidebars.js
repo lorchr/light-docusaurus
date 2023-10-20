@@ -76,6 +76,8 @@ const sidebars = {
         'zh-cn/devenv/Maven-Mvnd',
         'zh-cn/devenv/Docker-Mysql',
         'zh-cn/devenv/Docker-Pgsql',
+        'zh-cn/devenv/Docker-Mssql',
+        'zh-cn/devenv/Docker-Oracle',
         'zh-cn/devenv/Docker-Redis',
         'zh-cn/devenv/Docker-Nginx',
         'zh-cn/devenv/Docker-InfluxDB',

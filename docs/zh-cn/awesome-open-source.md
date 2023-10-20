@@ -30,3 +30,8 @@
 - [一个用Markdown来设计HTML表单的小工具](https://createhtmlform.com/)
 - [一个为家庭用户打造的库存和组织系统](https://github.com/hay-kot/homebox)
 - [开源笔记软件(替代Notion)](https://github.com/toeverything/AFFiNE)
+
+
+## 学习类
+- [Java充电社](http://itsoku.com/)
+- [labuladong 的算法笔记](https://labuladong.github.io/algo/)
