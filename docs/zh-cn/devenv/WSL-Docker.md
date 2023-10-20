@@ -1,4 +1,43 @@
 
+## 安装WSL
+要在Windows上启用WSL（Windows Subsystem for Linux），您可以按照以下步骤进行操作：
+
+1. 打开 PowerShell 作为管理员。您可以在开始菜单中搜索 "PowerShell"，右键单击它，然后选择 "以管理员身份运行"。
+
+2. 运行以下命令启用WSL功能：
+
+   ```powershell
+   dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+   ```
+
+   这会启用WSL功能，但不会要求重新启动计算机。
+
+3. 接下来，运行以下命令以启用虚拟机平台功能：
+
+   ```powershell
+   dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+   ```
+
+4. 重新启动计算机，以确保已经启用了虚拟机平台功能。
+
+5. 安装WSL 2内核更新包。您可以从以下链接下载并安装最新的WSL 2内核更新包：[WSL 2 内核更新包](https://aka.ms/wsl2kernel)
+
+6. 设置WSL 2为默认版本。在 PowerShell 中运行以下命令：
+
+   ```powershell
+   wsl --set-default-version 2
+   ```
+
+7. 最后，安装您选择的Linux发行版。您可以从Microsoft Store中安装各种Linux发行版，如Ubuntu、Debian、或openSUSE。
+
+   ```powershell
+   # 查看可选发行版
+   wsl --list --online
+   wsl --install -d Ubuntu-22.04
+   ```
+
+8. [安装 Windows 终端](https://learn.microsoft.com/zh-cn/windows/terminal/install)
+
 ## 1. WSL 切换软件安装源
 
 [切换apt源](https://www.cnblogs.com/hgzero/p/13187748.html)
@@ -6,31 +45,17 @@
 ```shell
 # 备份源
 sudo cp /etc/apt/sources.list{,.bak}
+
 # 修改源
 sudo vim /etc/apt/sources.list
 
-# 清华源
-# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-updates main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-backports main restricted universe multiverse
-deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
-# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ bionic-security main restricted universe multiverse
+# 一键替换 清华源
+sudo sed -i "s@http://archive.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g" /etc/apt/sources.list
+sudo sed -i "s@http://security.ubuntu.com/ubuntu/@https://mirrors.tuna.tsinghua.edu.cn/ubuntu/@g" /etc/apt/sources.list
 
-# 阿里源
-deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse
+# 一键替换 阿里源
+sudo sed -i "s@http://archive.ubuntu.com/ubuntu/@http://mirrors.aliyun.com/ubuntu/@g" /etc/apt/sources.list
+sudo sed -i "s@http://security.ubuntu.com/ubuntu/@http://mirrors.aliyun.com/ubuntu/@g" /etc/apt/sources.list
 
 # 刷新源
 sudo apt update && sudo apt upgrade
@@ -62,6 +87,7 @@ sudo vim /etc/ssh/sshd_config
 
 [安装Docker](https://docs.docker.com/engine/install/ubuntu/)
 [非root用户使用docker](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user)
+[阿里镜像加速](https://cr.console.aliyun.com/cn-hangzhou/instances/mirrors)
 
 ```shell
 # Set up the repository
@@ -76,18 +102,19 @@ $ sudo apt-get install \
 # Add Docker’s official GPG key:
 $ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
-# set up the stable repository
+# Add the repository to Apt sources:
 $ echo \
-  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-# Install Docker Engine
 $ sudo apt-get update
-$ sudo apt-get install docker-ce docker-ce-cli containerd.io
-# To install a specific version of Docker Engine
-$ apt-cache madison docker-ce
-$ sudo apt-get install docker-ce=5:20.10.8~3-0~ubuntu-focal docker-ce-cli=5:20.10.8~3-0~ubuntu-focal containerd.io
 
+# List the available versions:
+$ apt-cache madison docker-ce | awk '{ print $3 }'
+
+# Select the desired version and install:
+$ VERSION_STRING=5:24.0.6-1~ubuntu.22.04~jammy
+$ sudo apt-get install docker-ce=$VERSION_STRING docker-ce-cli=$VERSION_STRING containerd.io docker-buildx-plugin docker-compose-plugin
 
 # Manage Docker as a non-root user
 sudo groupadd docker
@@ -97,6 +124,7 @@ sudo usermod -aG docker $USER
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
+# Additional config for speed up
 sudo vim /etc/docker/daemon.json
 echo  '{
   "registry-mirrors" : [
@@ -118,8 +146,7 @@ echo  '{
 sudo systemctl daemon-reload && sudo systemctl restart docker.service
 sudo netstat -lntp | grep dockerd
 
-
-# uninstall
+# Uninstall Docker
 sudo apt-get purge docker-ce docker-ce-cli containerd.io
 sudo rm -rf /var/lib/docker
 sudo rm -rf /var/lib/containerd
