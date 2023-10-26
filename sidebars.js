@@ -90,7 +90,6 @@ const sidebars = {
         'zh-cn/devenv/Docker-Sonarqube',
         'zh-cn/devenv/Docker-Nodered',
         'zh-cn/devenv/Docker-Chat2DB',
-        'zh-cn/devenv/Docker-Port-Bind-Error-In-Windows',
       ],
     },
     {
@@ -106,6 +105,14 @@ const sidebars = {
       items: [
         // 'zh-cn/java',
         'zh-cn/java/Bytecode-toolkit-Javassist',
+        'zh-cn/java/AQS',
+        'zh-cn/java/CompletableFuture1',
+        'zh-cn/java/CompletableFuture2',
+        'zh-cn/java/CompletableFuture3',
+        'zh-cn/java/GC-Exception-Analysis',
+        'zh-cn/java/Java-Instrumentation-JavaAgent',
+        'zh-cn/java/jvm_dump',
+        'zh-cn/java/https',
       ],
     },
     {
@@ -199,12 +206,18 @@ const sidebars = {
         type: 'generated-index',
         title: 'Database',
         description: 'Database',
-        keywords: ['database', 'mysql', 'pgsql', 'oracle', 'microsoft ssqlserver', 'Dameng'],
+        keywords: ['database', 'mysql', 'pgsql', 'oracle', 'mssql', 'microsoft sqlserver', 'Dameng'],
         image: 'img/docusaurus.png'
       },
       items: [
         // 'zh-cn/database',
         'zh-cn/database/PDManer',
+        'zh-cn/database/Druid-Disable-Ad',
+        'zh-cn/database/Mssql-Syntax',
+        'zh-cn/database/Mysql-Syntax',
+        'zh-cn/database/Oracle-Syntax',
+        'zh-cn/database/Pgsql-Syntax',
+        'zh-cn/database/Dameng-Syntax',
       ],
     },
     {
@@ -294,6 +307,7 @@ const sidebars = {
         // 'zh-cn/docker',
         'zh-cn/docker/Docker-Install',
         'zh-cn/docker/Docker-Add-Hosts-For-Container',
+        'zh-cn/docker/Docker-Port-Bind-Error-In-Windows',
         'zh-cn/docker/Play-With-Docker',
         'zh-cn/docker/Oracle-Cloud-Free-Tier',
         'zh-cn/docker/Containerd',
