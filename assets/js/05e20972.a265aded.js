@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[6805],{2814:a=>{a.exports=JSON.parse('{"label":"algolia","permalink":"/light-docusaurus/blog/tags/algolia","allTagsPath":"/light-docusaurus/blog/tags","count":1}')}}]);
