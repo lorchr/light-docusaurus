@@ -1,6 +1,7 @@
 [EMQX Offical](https://www.emqx.io/)
 [EMQX Offical Docker](https://www.emqx.io/docs/en/v4.4/getting-started/install.html#running-emqx-in-docker-contain-a-simple-docker-compose-cluster)
 [EMQX Docker](https://hub.docker.com/_/emqx)
+[EMQX MQTTX Web](https://hub.docker.com/r/emqx/mqttx-web)
 
 ## 1. Docker安装
 ```shell
@@ -10,9 +11,24 @@ docker network create dev
 # 创建数据卷
 docker volume create emqx_data
 
+# 获取默认配置文件
+docker run -d --env HOCON_ENV_OVERRIDE_PREFIX=DEV_ \
+  --env DEV_EMQX_MQTT__SHARED_SUBSCRIPTION=true \
+  --env DEV_EMQX_ZONE__EXTERNAL__SHARED_SUBSCRIPTION=true \
+  --env DEV_EMQX_BROKER__SHARED_SUBSCRIPTION_STRATEGY=round_robin \
+  --env DEV_EMQX_BROKER__SHARED_DISPATCH_ACK_ENABLE=true \
+  --name emqx_temp emqx:4.3 \
+&& docker cp emqx_temp:/opt/emqx/etc/ D:/docker/emqx/etc/ \
+&& cp -r D:/docker/emqx/etc/* D:/docker/emqx/conf/ \
+&& docker stop emqx_temp && docker rm emqx_temp
+
 docker run -d \
-  --publish 18083:18083 \
   --publish 1883:1883 \
+  --publish 8081:8081 \
+  --publish 8083:8083 \
+  --publish 8084:8084 \
+  --publish 8883:8883 \
+  --publish 18083:18083 \
   --volume //d/docker/emqx/data:/opt/emqx/data \
   --volume //d/docker/emqx/conf:/opt/emqx/etc \
   --volume //d/docker/emqx/log:/opt/emqx/log \
@@ -45,11 +61,19 @@ docker exec -it -u root emqx /bin/bash
 
 # 默认配置文件
 vim /etc/emqx/emqx.conf
+
+# MQTTX Web 只能使用Websocket连接MQTT
+docker run -d \
+  --publish 1880:80 \
+  --net dev \
+  --restart=no \
+  --name mqttx \
+  emqx/mqttx-web:v1.9.6
 ```
 
 - [Dashboard](http://localhost:18083)
   - admin/public
-- [MQTTX](https://mqttx.app/zh/downloads)
+- [MQTTX](https://mqttx.app/zh/downloads) [Dashboard](http://localhost:1880)
 
 **注：** 使用环境变量修改默认配置只支持[Configuration Files](https://www.emqx.io/docs/en/v5.0/admin/cfg.html)列表中的属性，共享订阅的配置使用环境变量设置无效
 

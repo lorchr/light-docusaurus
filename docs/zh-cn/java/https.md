@@ -1,5 +1,3 @@
-##
-
 
 ## 调用HTTPS接口报错
 ### unable to find valid certification path to requested target
@@ -42,10 +40,3 @@ public static void main(String[] args) {
     // 发起https调用
 }
 ```
-
-keytool -import -alias test -keystore "D:/Develop/Java/jdk1.8/jre/lib/security/cacerts"  -storepass changeit -trustcacerts -file D://test.cer
-
-keytool -delete -alias test -keystore "D:/Develop/Java/jdk1.8/jre/lib/security/cacerts" -storepass changeit
-
-keytool -list -keystore "D:/Develop/Java/jdk1.8/jre/lib/security/cacerts" -storepass changeit
-
