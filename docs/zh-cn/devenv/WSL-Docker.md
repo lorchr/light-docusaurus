@@ -472,3 +472,26 @@ wsl --import docker-desktop      D:\\wsl\\docker\\desktop  D:\\wsl\\docker\\desk
 # 切换默认用户，安装时设置的默认用户名是 light
 Ubuntu-20.04 config --default-user light
 ```
+
+
+## 11. 修改WSL的内存及CPU占用
+关于详细的配置，看：[Advanced settings configuration in WSL | Microsoft Learn](https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configure-global-options-with-wslconfig)
+
+今天偶尔发现  WSL占用的内存是真实内存的一半（通过`htop`命令查看即可）
+
+现在需要修改配置到使用全部的CPU资源：
+1. `Windows + R` 键，
+2. 输入 `%UserProfile%` 并运行进入用户文件夹,
+3. 新建文件 `.wslconfig`，文件内容如下：
+```shell
+#.wslconfig
+[wsl2]
+memory=12G        # 限制最大使用内存，不使用16G，是为了为Windows保存一些内存，不这么卡
+swap=10G          # 限制最大使用虚拟内存
+# processors=12   # 限制最大使用cpu个数,如果不设置，默认是使用全部的核心
+```
+- `processors` 顾名思义就是限制CPU核心数（会体现在`/proc/cpuinfo`等节点上）
+- `memory` 则是可使用的内存总大小（会体现在`/proc/meminfo`等节点上）
+- `swap` 则是交换空间的总大小（会体现在`/proc/meminfo`等节点上）
+
+4. 然后运行Windows cmd，输入` wsl --shutdown` 来关闭当前的子系统，重新运行`bash`进入子系统

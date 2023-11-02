@@ -41,10 +41,10 @@ docker container restart postgres
 
 1. 备份命令
 ```shell
-pg_dump -h 164.82.233.54 -U postgres test > D:\postgres.bak
+pg_dump -h localhost -U postgres test > D:\postgres.bak
 
 1. pg_dump          是备份数据库指令；
-2. 164.82.233.54    是数据库的 ip 地址；
+2. localhost        是数据库的 ip 地址；
 3. postgres         是数据库的用户名；
 4. test             是数据库名；
 5. >                意思是导出到指定目录；
@@ -65,12 +65,12 @@ psql -h localhost -U postgres -d test < D:\postgres.bak
 
 1. 备份
 ```shell
-/opt/PostgreSQL/9.5/bin/pg_dump -h 164.82.233.54 -U postgres databasename > databasename.bak
+pg_dump -h localhost -U postgres databasename > databasename.bak
 ```
 
 2. 恢复
 ```shell
-/opt/PostgreSQL/9.5/bin/psql -h localhost -U postgres -d databasename < databasename.bak
+psql -h localhost -U postgres -d databasename < databasename.bak
 ```
 
 ### SQL方式备份和恢复

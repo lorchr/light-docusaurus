@@ -162,3 +162,291 @@ for iter, value in ipairs(keys) do
 end
 return temp
 ```
+
+
+## 5. Docker Compose运行Redis集群
+
+### 5.1 Cluster集群 
+1. redis.conf
+
+配置以`6381`节点为例，其余节点将文件中的所有`6381`改为对应值即可，如：`6382` `6383`等
+
+`sed -i 's/6381/6382/g' redis.conf`
+
+```conf
+# 端口
+port 6381
+# 绑定客户端访问IP
+bind 0.0.0.0 -::0
+# 密码
+requirepass admin
+masterauth admin
+# 关闭保护模式
+protected-mode no
+# 是否以守进程模式运行
+daemonize no
+
+# 超时时间
+tcp-keepalive 500
+timeout 100
+# aof
+appendonly yes
+appendfilename "appendonly-redis.aof"
+# 当daemonize=yes时候才会生效
+pidfile /var/run/redis_6381.pid
+# log 日志级别
+loglevel notice
+# 日志文件存放路径
+logfile "redis_6381.log"
+
+# 开启集群模式
+cluster-enabled yes 
+# 集群配置文件
+cluster-config-file nodes-6381.conf
+# 集群超时时间
+cluster-node-timeout 5000
+
+# 以下配置用于Docker NAT网络环境中
+# 集群对外ip  宿主机的IP地址
+cluster-announce-ip  192.168.9.75
+cluster-announce-port 6381
+cluster-announce-bus-port 16381
+```
+
+2. redis-cluster.yaml
+
+```yaml
+version: "3.7"
+
+services:
+  redis-node-1:
+    image: redis:6.2
+    container_name: redis-node-1
+    hostname: redis-node-1
+    ports:
+      - 6381:6381
+      - 16381:16381
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.11
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6381/data:/data
+      - //d/docker/redis-cluster/6381:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  
+  redis-node-2:
+    image: redis:6.2
+    container_name: redis-node-2
+    hostname: redis-node-2
+    ports:
+      - 6382:6382
+      - 16382:16382
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.12
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6382/data:/data
+      - //d/docker/redis-cluster/6382:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  
+  redis-node-3:
+    image: redis:6.2
+    container_name: redis-node-3
+    hostname: redis-node-3
+    ports:
+      - 6383:6383
+      - 16383:16383
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.13
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6383/data:/data
+      - //d/docker/redis-cluster/6383:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  
+  redis-node-4:
+    image: redis:6.2
+    container_name: redis-node-4
+    hostname: redis-node-4
+    ports:
+      - 6384:6384
+      - 16384:16384
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.14
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6384/data:/data
+      - //d/docker/redis-cluster/6384:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+  
+  redis-node-5:
+    image: redis:6.2
+    container_name: redis-node-5
+    hostname: redis-node-5
+    ports:
+      - 6385:6385
+      - 16385:16385
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.15
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6385/data:/data
+      - //d/docker/redis-cluster/6385:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+
+  redis-node-6:
+    image: redis:6.2
+    container_name: redis-node-6
+    hostname: redis-node-6
+    ports:
+      - 6386:6386
+      - 16386:16386
+    networks:
+      redis-network:
+        ipv4_address: 172.222.0.16
+    extra_hosts:
+      - "redis-node-1:172.222.0.11"
+      - "redis-node-2:172.222.0.12"
+      - "redis-node-3:172.222.0.13"
+      - "redis-node-4:172.222.0.14"
+      - "redis-node-5:172.222.0.15"
+      - "redis-node-6:172.222.0.16"
+    volumes:
+      - //d/docker/redis-cluster/6386/data:/data
+      - //d/docker/redis-cluster/6386:/usr/local/etc/redis
+    restart: no
+    command:
+      redis-server /usr/local/etc/redis/redis.conf
+
+  redis-cluster:
+    image: redis:6.2
+    # 注意： 如果集群有密码，需要用 -a 指定密码，否则会初始化失败
+    command: 'redis-cli -a admin --cluster create 
+              172.222.0.11:6381 172.222.0.12:6382 172.222.0.13:6383 
+              172.222.0.14:6384 172.222.0.15:6385 172.222.0.16:6386
+              --cluster-replicas 1 --cluster-yes'
+    networks:
+      - redis-network
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+      - redis-node-6
+
+networks:
+  redis-network:
+    name: redis-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.222.0.0/24
+```
+
+3. 启动集群
+
+上面脚本启动之后将会是三主三从模式；
+```shell
+# 创建目录
+mkdir -p //d/docker/redis-cluster/temp/data
+
+# 创建配置文件
+cd //d/docker/redis-cluster/
+touch temp/redis.conf
+vim temp/redis.conf
+
+# 复制其他节点的目录
+cp -R temp 6381
+cp -R temp 6382
+cp -R temp 6383
+cp -R temp 6384
+cp -R temp 6385
+cp -R temp 6386
+
+# 修改节点的端口配置
+sed -i 's/6379/6381/g' 6381/redis.conf
+sed -i 's/6379/6382/g' 6382/redis.conf
+sed -i 's/6379/6383/g' 6383/redis.conf
+sed -i 's/6379/6384/g' 6384/redis.conf
+sed -i 's/6379/6385/g' 6385/redis.conf
+sed -i 's/6379/6386/g' 6386/redis.conf
+
+# 启动redis集群
+docker compose -f redis-cluster.yaml up -d
+# docker compose -f redis-cluster.yaml down
+
+# 目前只是将 redis 各个容器启动成功，还需要将 6 个节点配置成集群模式；
+# 随便选择一台机器，进入终端模式，通过下面命令即可绑定 redis 集群: 
+redis-cli -h 172.222.0.11 -p 6381 -a admin --cluster create 172.222.0.16:6381 172.222.0.11:6382 172.222.0.12:6383 172.222.0.13:6384 172.222.0.14:6385 172.222.0.15:6386 --cluster-replicas 1 --cluster-yes
+
+# 进入一个节点容器
+docker exec -it -u root redis-node-1 /bin/bash
+
+# 登录集群
+redis-cli -h 172.222.0.11 -p 6381 -a admin -c
+
+# 查看集群信息
+cluster info
+
+# 查看集群节点
+cluster nodes
+
+# 查看哈希槽信息
+cluster slots
+
+# 测试
+redis-cli -h 172.222.0.11 -p 6381 -a admin -c
+set foo bar
+exit
+redis-cli -h 172.222.0.12 -p 6382 -a admin -c
+get foo
+```
+
+**注意** 集群模式下登录需要带 `-c`启用集群模式，否则执行指令会出现 `(error) MOVED 12182 172.222.0.13:6383`错误
