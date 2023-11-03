@@ -114,6 +114,7 @@
           //   dirName: 'homeassistant',
           // },
           'homeassistant/Install-HA-Core-With-LinuxDeploy',
+          'homeassistant/Install-HA-In-PVE-And-Exsi',
         ],
       },
       {
