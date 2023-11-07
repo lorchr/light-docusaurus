@@ -1,3 +1,9 @@
+---
+id: geek-diyer
+slug: geek-diyer
+title: Geek Diyer
+---
+
 ## B站
 1. [司波图](https://space.bilibili.com/28457) 
    - [Gitee](https://gitee.com/spoto)

@@ -12,6 +12,7 @@
  module.exports = {
     diy: [
       'README',
+      'Boot-U-Disk-By-Ventoy',
       'device-and-software-plan',
       'geek-diyer',
       {
