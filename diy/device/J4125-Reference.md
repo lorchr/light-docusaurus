@@ -1,9 +1,3 @@
----
-id: J4125
-slug: J4125
-title: J4125
----
-
 [J4125四口i226软路由allinone历程及全过程教程（附截图及注意事项）](https://www.right.com.cn/forum/thread-8277970-1-8.html)
 
 ## 前言
