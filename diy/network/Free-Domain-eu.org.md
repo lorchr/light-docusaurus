@@ -3,8 +3,8 @@
 ## 1. 账号注册
 1. 访问 [https://eu.org](https://nic.eu.org)
 2. 点击 Sign-in or sign-up [here](https://nic.eu.org/arf/)! 
-3. 点击 Register 
-4. 输入以下信息，并点击 Create
+3. 点击 Register
+4. 输入以下信息，并点击 Create，强烈建议[使用国外信息](https://www.haoweichi.com/)，可以提高通过概率
    1. Name      : zhangsan
    2. E-mail    : zhangsan@163.com
    3. Address1  : hubei
@@ -71,8 +71,8 @@
    ```
 
 4. 域名可以注册后，登录[Cloudflare](https://dash.cloudflare.com/)
-5. 添加站点，输入注册的域名 zhangsan.eu.org ，一路点击默认项到最后即可
-6. 最后会进到 https://dash.cloudflare.com/1111111111/zhangsan.eu.org/nameserver-directions，复制 DNS地址到 eu.org的域名注册页面(上面第二步) Name1 Name2
+5. 添加站点，输入注册的域名 `zhangsan.eu.org` ，一路点击默认项到最后即可
+6. 最后会进到 `https://dash.cloudflare.com/1111111111/zhangsan.eu.org/nameserver-directions`，复制 DNS地址到 eu.org的域名注册页面(上面第二步) Name1 Name2
 7. 重新提交即可，显示以下内容表示注册成功，等待1-30天审核，一个账号只能注册4个域名
    
    ```shell
@@ -118,3 +118,11 @@
 
     Done
    ```
+
+| 域名          | 状态   |
+| ------------- | ------ |
+| lorch.eu.org  | 已申请 |
+| lorchr.eu.org | 已申请 |
+| liuzl.eu.org  | 已申请 |
+| daiyd.eu.org  | 已申请 |
+| hydzl.eu.org  | 未申请 |

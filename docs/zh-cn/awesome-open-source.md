@@ -19,7 +19,8 @@
 - [南生论坛（仿掘金）](https://github.com/maliangnansheng/bbs-springboot)
 - [一站式开源持续测试平台](https://github.com/metersphere/metersphere)
 - [自建家庭服务器](https://github.com/awesome-selfhosted/awesome-selfhosted)
-
+- [在线编译Openwrt](https://openwrt.ai)
+ 
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
 - [Javascript Markdown 编辑器](https://github.com/Tencent/cherry-markdown)
