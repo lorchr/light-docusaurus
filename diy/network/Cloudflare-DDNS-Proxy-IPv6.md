@@ -1,7 +1,7 @@
-[基于 Cloudflare DNS API 部署 IPv6 DDNS](https://zhuanlan.zhihu.com/p/69379645)
-[利用Cloudflare + Python 免费开启(IPV4/IPV6)DDNS](https://blog.csdn.net/qq_36350600/article/details/113465378)
-[cloudflare动态域名解析-并实现自定义内外网混合动态域名DDNS脚本](https://blog.csdn.net/m0_57690774/article/details/128345106)
-[阿里云域名使用cloudflare的DNS解析隐藏真实IP](https://blog.csdn.net/HunterKM/article/details/90719473)
+- [基于 Cloudflare DNS API 部署 IPv6 DDNS](https://zhuanlan.zhihu.com/p/69379645)
+- [利用Cloudflare + Python 免费开启(IPV4/IPV6)DDNS](https://blog.csdn.net/qq_36350600/article/details/113465378)
+- [cloudflare动态域名解析-并实现自定义内外网混合动态域名DDNS脚本](https://blog.csdn.net/m0_57690774/article/details/128345106)
+- [阿里云域名使用cloudflare的DNS解析隐藏真实IP](https://blog.csdn.net/HunterKM/article/details/90719473)
 
 ## 一、前言
 随着国内 IPv6 网络的普及，现在普通家庭宽带基本上都能拿到公网 IPv6 地址了。
@@ -22,16 +22,18 @@
 
 ## 三、操作步骤
 ### 3.1 获取裸域名的 Zone ID 及 API Token
+- [登录Cloudflare](https://dash.cloudflare.com/login?lang=zh-Hans-CN)进入[Dashboard](https://dash.cloudflare.com/)
 - 添加站点 点击上方导航栏`Add site` -> 输入 `example.com` -> `Add site`
 
 - 获取ZoneId 在域名控制面板右下方的 API 一栏可直接获取到 Zone ID。
 
-- API Token 则需要点击该栏下方的「Get your API Token」，然后输入密码（可能还要验证码）确认才可获取。如下图：
-    `Create Token` -> `Edit Zone DNS` `Use template` -> `Zone Resources` `Specific zone` `example.com`-> `Continue to summary` -> `Create Token`
+- API Keys 和 API Token 则需要点击该栏下方的「Get your API Token」，然后输入密码（可能还要验证码）确认才可获取。如下图：
+    - `Global API Key` `View` -> `输入密码` -> `View`
+    - `Create Token` -> `Edit Zone DNS` `Use template` -> `Zone Resources` `Specific zone` `example.com`-> `Continue to summary` -> `Create Token`
 - 验证API Token
 ```shell
 curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
-     -H "Authorization: Bearer OdIjAMJqI1Yu-Lg--c5I55AC96WiG20nAXotzGxY" \
+     -H "Authorization: Bearer <API Token>" \
      -H "Content-Type:application/json"
 ```
 
@@ -39,7 +41,7 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 • 请妥善保管 API Token，防止泄露。
 
 ### 3.2 添加子域名的 AAAA 记录
-点击域名控制面板的「DNS」选项卡，如下图：￼
+点击域名控制面板的「DNS」选项卡，如下图：
 
 
 然后在 DNS Records 这一栏的下方按下图提示添加相应的记录：
@@ -48,12 +50,12 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 | ---- | --------- | ------------ | ---- | ------------ |
 | AAAA | ipv6-ddns | ::1          | Auto | DNS only     |
 
-1、记录类型选择「AAAA」，也就是 IPv6 地址记录。
-2、Name 一栏填写子域名。例如 DDNS 域名是 ipv6-ddns.example.com 的话这里就填写 ipv6-ddns。
-3、IPv6 address 一栏填写 ::1 即可。
-4、TTL 选择 「2 minutes」或者Auto。
-5、由于这里不使用 CDN 功能，所以需要点击一下橙色的云图标让其变为灰色。
-6、点击「Add Record」即可添加记录。
+1. 记录类型选择「AAAA」，也就是 IPv6 地址记录。
+2. Name 一栏填写子域名。例如 DDNS 域名是 ipv6-ddns.example.com 的话这里就填写 ipv6-ddns。
+3. IPv6 address 一栏填写 ::1 即可。
+4. TTL 选择 「2 minutes」或者Auto。
+5. 由于这里不使用 CDN 功能，所以需要点击一下橙色的云图标让其变为灰色。
+6. 点击「Add Record」即可添加记录。
 
 ### 3.3 查询刚才添加的 AAAA 记录的 ID
 按以下格式执行命令：
@@ -138,6 +140,10 @@ chmod +x /etc/ipv6-ddns.sh
 ### 3.5 试运行 DDNS 脚本
 执行以下命令：
 ```shell
+# 测试参数
+curl -X PUT "https://api.cloudflare.com/client/v4/zones/12345678901234567890/dns_records/22222222222222222222" -H "X-Auth-Email: mail@example.com" -H "X-Auth-Key: 11111111111111111111" -H "Content-Type: application/json" --data '{"type":"AAAA","name":"ipv6-ddns.example.com","content":"1234:5678:9012:3456:7890:1234:5678:9012","ttl":120,"proxied":false}'
+
+# 测试脚本
 /etc/ipv6-ddns.sh | python -m json.tool
 ```
 稍等片刻。如果执行结果中出现 "success":true 的话，说明域名的 AAAA 记录已经更新成功。例如：
