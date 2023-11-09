@@ -3,6 +3,10 @@
 - [MallChat后端 | mallchat.cn](https://github.com/zongzibinbin/MallChat) [MallChat前端](https://github.com/Evansy/MallChatWeb)
 - [基于 Spring Cloud Alibaba 的微服务架构，Saas开发平台](https://github.com/matevip/matecloud)
 - [分析Spring应用启动过程的工具](https://github.com/linyimin0812/spring-startup-analyzer)
+- [内网穿透神器](https://gitee.com/dromara/neutrino-proxy)
+- [轻量级 Binlog 客户端](https://gitee.com/dromara/binlog4j)
+- [PDF 工具箱](https://github.com/Frooodle/Stirling-PDF)
+- [Spring Boot 的 Jasypt 集成](https://github.com/ulisesbocchio/jasypt-spring-boot)
 
 ## Linux
 - [开源堡垒机](https://github.com/jumpserver/jumpserver)
@@ -10,6 +14,7 @@
 - [一个面向DevOps领域的低代码(GitOps)工具](https://gitee.com/jianmu-dev/jianmu)
 - [一款足够简单、足够好用、足够强的免费 WAF(Web Application Firewall)](https://github.com/chaitin/SafeLine)
 - [一个Docker容器化的SSH蜜罐](https://github.com/fffaraz/fakessh)
+- [开源监控工具](https://github.com/louislam/uptime-kuma)
 
 ## 实用类
 - [潘多拉，一个让你呼吸顺畅的ChatGPT](https://github.com/pengzhile/pandora) [体验地址](https://chat.zhile.io)

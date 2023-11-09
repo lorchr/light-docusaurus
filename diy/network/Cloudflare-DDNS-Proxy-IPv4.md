@@ -4,9 +4,7 @@
 打开[Cloudflare](https://www.cloudflare.com/zh-cn/)，登陆账号添加网站按照提示操作
 
 ## 2. 获取Global API Key
-访问 [Dashboard](https://dash.cloudflare.com/profile) 在页面下方找到 Global API Key，点击右侧的 View 查看 Key，并保存下来 ，在页面下方找到 Global API Key，点击右侧的 View 查看 Key，并保存下来
-
-
+访问 [Dashboard](https://dash.cloudflare.com/profile) 在页面下方找到 `Global API Key`，点击右侧的 `View` 查看 Key，并保存下来
 
 ## 3. 设置用于 DDNS 解析的二级域名，流量不经过CDN(云朵变灰)
 添加一条A记录，例如：`hkt.test.com`，Proxy status设置成`DNS only`
@@ -74,9 +72,3 @@ service crond status  #查看 crontab 状态
 chkconfig crond on  #Centos6 允许 crontab 自启动
 systemctl enable crond.service  #Centos7 允许 crontab 自启动
 ```
-
-版权属于：大漠孤狼
-
-本文链接：
-
-转载时须注明出处及本声明

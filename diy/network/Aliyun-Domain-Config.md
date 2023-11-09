@@ -1,17 +1,17 @@
 
 ## 1. 域名购买
-1. 域名搜索 https://wanwang.aliyun.com/domain/searchresult
-2. 选择合适的域名 example.com
+1. 域名搜索 `https://wanwang.aliyun.com/domain/searchresult`
+2. 选择合适的域名 `example.com`
 3. 加入清单，在清单中进行结算
 4. 选择年限
 5. 添加【持有者信息】（包括邮箱 身份证 手机号 地址等），此步骤需要【注册局核验】
 6. 信息核验完毕后购买即可
 
 ## 2. ICP备案
-1. 进入阿里云`控制台`，点击`ICP备案` https://beian.aliyun.com/pcContainer/formpage
+1. 进入阿里云`控制台`，点击`ICP备案` `https://beian.aliyun.com/pcContainer/formpage`
 
 ## 3. 开启SSL
-1. 进入阿里云`控制台`，点击`SSL证书` `免费证书` https://yundun.console.aliyun.com/
+1. 进入阿里云`控制台`，点击`SSL证书` `免费证书` `https://yundun.console.aliyun.com/`
 2. 点击`创建证书`，填写相关信息
    1. `证书绑定域名` `fun.example.com` 
    2. `域名验证方式` `手工DNS验证`
@@ -26,8 +26,8 @@
 | 记录值           | 20230625xxxx |
 
 ## 4. 修改DNS
-1. 进入阿里云`控制台`，点击`域名`，`域名列表` https://dc.console.aliyun.com/next/index
-2. 点击`管理`，找到`DNS修改`，修改为 Cloudflare的DNS
+1. 进入阿里云`控制台`，点击`域名`，`域名列表` `https://dc.console.aliyun.com/next/index`
+2. 点击`管理`，找到`DNS修改`，修改为 `Cloudflare` 的DNS
 ```shell
 henry.ns.cloudflare.com
 margaret.ns.cloudflare.com
