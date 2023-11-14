@@ -37,6 +37,8 @@
 - [一个用Markdown来设计HTML表单的小工具](https://createhtmlform.com/)
 - [一个为家庭用户打造的库存和组织系统](https://github.com/hay-kot/homebox)
 - [开源笔记软件(替代Notion)](https://github.com/toeverything/AFFiNE)
+- [安卓投屏工具](https://github.com/barry-ran/QtScrcpy)
+- [一个开源的代码仓库带CI/CD](https://gitness.com)
 
 
 ## 学习类

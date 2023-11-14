@@ -142,10 +142,7 @@ XDEL maintenance_order:event_alarm record_id;
 
 # 删除stream
 DEL maintenance_order:event_alarm;
-```
 
-## 4. Redis Lua脚本
-```lua
 -- 删除stream
 DEL maintenance_order:event_alarm;
 
@@ -155,14 +152,84 @@ del device_alarm_matching:
 
 -- 删除告警历史
 keys thing_alarm_matching*
-local keys = redis.call('keys', KEYS[1])
-local temp = {}
-for iter, value in ipairs(keys) do
-    table.insert(temp, {value, redis.call('del', value) })
-end
-return temp
 ```
 
+## 4. Redis Lua脚本
+### 4.1 批量删除相同前缀的元素
+```lua
+local keys = redis.call('keys', ARGV[1] .. '*'); 
+for idx, val in ipairs(keys) do 
+    redis.call('del', val); 
+end 
+return keys;
+```
+
+命令行用法：
+```shell
+EVAL "local keys = redis.call('keys', ARGV[1] .. '*'); for i, key in ipairs(keys) do redis.call('del', key); end return keys;" 0 <prefix>
+```
+
+```lua
+local keys = redis.call('keys', ARGV[1]);
+local temp = {};
+for idx, val in ipairs(keys) do
+    table.insert(temp, {val, redis.call('del', val)});
+end
+return temp;
+```
+
+命令行用法：
+```shell
+EVAL "local keys = redis.call('keys', ARGV[1]); local temp = {}; for idx, val in ipairs(keys) do table.insert(temp, {val, redis.call('del', val) }); end return temp;" 0 prefix*
+```
+
+## 4.2 获取分布式锁
+```lua
+if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then
+    return redis.call('expire', KEYS[1], ARGV[2]);
+else
+    return 0;
+end
+```
+
+可重入版
+```lua
+if ((redis.call('exists', KEYS[1]) == 0)
+      or (redis.call('hexists', KEYS[1], ARGV[1]) == 1)) then
+    redis.call('hincrby', KEYS[1], ARGV[1], 1);
+    redis.call('expire', KEYS[1], ARGV[2]);
+    return nil;
+end
+                
+return redis.call('ttl', KEYS[1]);
+```
+
+## 4.3  释放分布式锁
+```lua
+if redis.call('exists', KEYS[1]) == 0 then
+    return 1;
+end
+                
+if redis.call('get', KEYS[1]) == ARGV[1] then
+    return redis.call('del', KEYS[1]);
+else
+    return 0;
+end
+```
+
+## 4.4 分布式锁续约
+```lua
+if redis.call('exists', KEYS[1]) == 0 then
+    return 0;
+end
+                
+if redis.call('get', KEYS[1]) == ARGV[1] then
+    local ttl = redis.call('ttl', KEYS[1]);
+    return redis.call('expire', KEYS[1], ARGV[2]);
+else
+    return 0;
+end
+```
 
 ## 5. Docker Compose运行Redis集群
 

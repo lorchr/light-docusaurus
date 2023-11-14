@@ -136,7 +136,6 @@
           // },
           'nas/NAS-Reference',
           'nas/Synology-7.2',
-          'nas/Aria2',
           'nas/Opensource-CloudDriver',
         ],
       },

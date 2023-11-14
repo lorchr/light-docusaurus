@@ -41,7 +41,7 @@ const sidebars = {
     },
   ],
   troch: [
-    'zh-cn/README',
+    // 'zh-cn/README',
     {
       type: 'category',
       label: 'Guide',

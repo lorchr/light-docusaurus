@@ -24,12 +24,19 @@ docker volume create minio_data;
 
 # 获取默认配置文件
 # 见 https://min.io/docs/minio/container/operations/install-deploy-manage/deploy-minio-single-node-single-drive.html#id4
+cat >> D:/docker//minio/conf/config.env << EOF
+MINIO_ROOT_USER=minioaccess
+MINIO_ROOT_PASSWORD=miniosecret
+
+MINIO_VOLUMES="/mnt/data"
+# MINIO_SERVER_URL="http://minio.example.net:9000"
+EOF
 
 # 运行容器
 docker run -d \
   --publish 9000:9000 \
   --publish 9001:9001 \
-  --volume //d/docker/minio/data:/data \
+  --volume //d/docker/minio/data:/mnt/data \
   --volume //d/docker/minio/conf/config.env:/etc/minio/config.env \
   --env MINIO_CONFIG_ENV_FILE=/etc/minio/config.env \
   --net dev \
