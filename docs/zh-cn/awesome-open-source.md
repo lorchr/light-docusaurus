@@ -38,8 +38,8 @@
 - [一个为家庭用户打造的库存和组织系统](https://github.com/hay-kot/homebox)
 - [开源笔记软件(替代Notion)](https://github.com/toeverything/AFFiNE)
 - [安卓投屏工具](https://github.com/barry-ran/QtScrcpy)
-- [一个开源的代码仓库带CI/CD](https://gitness.com)
-
+- [一个开源的代码仓库带CI/CD](https://github.com/harness/gitness)
+- [截图转网页](https://github.com/abi/screenshot-to-code)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)

@@ -53,8 +53,24 @@ docker-compose up -d
 ```
 
 ## 可视化工具
+- [Kafka UI Offical](https://docs.kafka-ui.provectus.io)
+- [Kafka UI Github](https://github.com/provectus/kafka-ui)
+- [Kafdrop Github](https://github.com/obsidiandynamics/kafdrop)
+
 ```shell
-docker run -d --rm -p 9000:9000 \
+docker run -d \
+    --publish 8080:8080 \
+    --env DYNAMIC_CONFIG_ENABLED=true \
+    --env AUTH_TYPE="LOGIN_FORM" \
+    --env SPRING_SECURITY_USER_NAME=admin \
+    --env SPRING_SECURITY_USER_PASSWORD=admin \
+    --network dev \
+    --restart no \
+    --name kafka-ui \
+    provectuslabs/kafka-ui
+
+docker run -d --rm \
+    --publish 9000:9000 \
     --env KAFKA_BROKERCONNECT=kafka-server:9092 \
     --env JVM_OPTS="-Xms32M -Xmx64M" \
     --env SERVER_SERVLET_CONTEXTPATH="/" \

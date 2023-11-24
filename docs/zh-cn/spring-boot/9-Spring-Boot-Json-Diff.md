@@ -432,7 +432,7 @@ public class JsonAndMapSortUtils {
 
 ## 源码走读
 整个源码调用链路如下图，简单来说过程就是：object拆分解析-新旧数据逐个对比-结果信息组装三个步骤
-![json-diff.png](../img/json-diff.png)
+![json-diff.png](./img/json-diff.png)
 
 ## 其他
 原始代码中有些小bug，已修复。目前这个工具主要被我拿来用在了一个接口数据对比工具中，来检测迭代前后的接口协议数据变更，以完善迭代变更范围来确认测试范围

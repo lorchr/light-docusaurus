@@ -187,6 +187,33 @@ rm -rf node_modules
 npm install
 ```
 
+4. 安装插件
+```shell
+# 代理 设置 获取 取消
+npm config set proxy=http://localhost:4780
+npm config get proxy
+npm config delete proxy
+
+# 镜像站 设置 获取 取消
+npm config set registry=https://registry.npm.taobao.org
+npm config get registry
+npm config delete registry
+
+# 安装插件
+# 文档插件 博客插件 页面插件
+npm install --save @docusaurus/plugin-content-docs@2.4.3
+npm install --save @docusaurus/plugin-content-blog@2.4.3
+npm install --save @docusaurus/plugin-content-pages@2.4.3
+# 站点地图 方便algoia爬取数据
+npm install --save @docusaurus/plugin-sitemap@2.4.3
+
+# Algoia 搜索支持
+npm install --save @docusaurus/theme-search-algolia@2.4.3
+# Mermaid markdown绘图支持
+npm install --save @docusaurus/theme-mermaid@2.4.3
+# 可交互的代码块
+npm install --save @docusaurus/theme-live-codeblock@2.4.3
+```
 
 ## Yarn
 ```shell
