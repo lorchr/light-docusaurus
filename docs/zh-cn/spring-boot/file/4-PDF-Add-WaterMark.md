@@ -1,4 +1,4 @@
-- [](https://cnblogs.com/hushaojun/p/16285486.html)
+- [SpringBoot 实现 PDF 添加水印有哪些方案](https://blog.csdn.net/m0_71777195/article/details/131283334)
 
 ## 简介
 PDF（Portable Document Format，便携式文档格式）是一种流行的文件格式，它可以在多个操作系统和应用程序中进行查看和打印。在某些情况下，我们需要对 PDF 文件添加水印，以使其更具有辨识度或者保护其版权。本文将介绍如何使用 Spring Boot 来实现 PDF 添加水印的方式。

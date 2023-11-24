@@ -1,9 +1,9 @@
 - [大文件上传最全方案：秒传、断点续传、分片上传](https://mp.weixin.qq.com/s/0WRZQHzoM1ffxD_eIrGHkg)
+- [Html直接表单直传阿里云存储OSS示例](https://www.cnblogs.com/ossteam/p/4942227.html)
 
 ## 前言
 
 文件上传是一个老生常谈的话题了，在文件相对比较小的情况下，可以直接把文件转化为字节流上传到服务器，但在文件比较大的情况下，用普通的方式进行上传，这可不是一个好的办法，毕竟很少有人会忍受，当文件上传到一半中断后，继续上传却只能重头开始上传，这种让人不爽的体验。那有没有比较好的上传体验呢，答案有的，就是下边要介绍的几种上传方式
-
 
 
 ## 详细教程
@@ -332,5 +332,3 @@ public abstract class SliceUploadTemplate implements SliceUploadStrategy {
 阿里的oss它本质是一个对象存储服务器，而非文件服务器，因此如果有涉及到大量删除或者修改文件的需求，oss可能就不是一个好的选择。
 
 文末提供一个oss表单上传的链接demo，通过oss表单上传，可以直接从前端把文件上传到oss服务器，把上传的压力都推给oss服务器:
-
-> https://www.cnblogs.com/ossteam/p/4942227.html

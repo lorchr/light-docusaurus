@@ -6,7 +6,7 @@
 
 那么我们对于视频文件的上传可以采取断点续传，上传过程中，如果出现网络异常或程序崩溃导致文件上传失败时，将从断点记录处继续上传未上传完成的部分，断点续传依赖于MD5和分片上传，对于本demo分片上传的流程如图
 
-![img](./../../img/file-upload-timeserial.png)
+![img](../img/file-upload-timeserial.png)
 
 通过文件唯一标识MD5，在数据库中查询此前是否创建过该SysUploadTask，如果存在，直接返回TaskInfo；如果不存在，通过amazonS3获取到UploadId并新建一个SysUploadTask返回。
 
