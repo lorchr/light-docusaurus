@@ -20,7 +20,7 @@ top c
 
 4. 输入`top -H -p pid` 通过此命令可以查看实际占用CPU最高的的线程的id，pid为刚才资源使用高的pid号图片
 ```shell
-top -H -p 1
+top -Hp 1
 ```
 
 5. 出现具体线程的资源使用情况，表格里的pid代表线程的id，我们称他为tid图片
@@ -44,7 +44,7 @@ printf "%x\n" 746
 
 7. 输入`jstack pid | grep 2ea > gc.stack`图片解释一下，jstack是jdk给提供的监控调优小工具之一，jstack会生成JVM当前时刻的线程快照，然后我们可以通过它查看某个Java进程内的线程堆栈信息，之后我们把堆栈信息通过管道收集2ea线程的信息，然后将信息生成为`gc.stack`文件，我随便起的，随意
 ```shell
-jstack pid | grep 2ea > gc.stack
+jstack pid | grep 2ea -C 10 > gc.stack
 ```
 
 8. 当时我先`cat gc.stack` 发现数据有点多在容器里看不方便，于是我下载到本地浏览，因为公司对各个机器的访问做了限制，我只能用跳板机先找到一台没用的机器a，把文件下载到a然后我再把a里的文件下载到本地（本地访问跳板机OK），先输入`python -m SimpleHTTPServer 8080`，linux自带python，这个是开启一个简单http服务供外界访问，图片然后登录跳板机，使用curl下载`curl -o http://ip地址/gcInfo.stack` 为方便演示，我在图中把ip换了一个假的图片之后用同样的方法从本地下载跳板机就可以了，记得关闭python开启的建议服务嗷

@@ -25,6 +25,7 @@
 - [一站式开源持续测试平台](https://github.com/metersphere/metersphere)
 - [自建家庭服务器](https://github.com/awesome-selfhosted/awesome-selfhosted)
 - [在线编译Openwrt](https://openwrt.ai)
+- [多种开发环境的管理利器](https://github.com/jetpack-io/devbox)
  
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
@@ -34,12 +35,14 @@
 - [浏览器自动化操作](https://github.com/AutomaApp/automa)
 - [LocalSend本地文件传输](https://github.com/localsend/localsend)
 - [一个开源协作式数字白板](https://github.com/tldraw/tldraw)
+- [开源白板+AI](https://github.com/SawyerHood/draw-a-ui)
 - [一个用Markdown来设计HTML表单的小工具](https://createhtmlform.com/)
 - [一个为家庭用户打造的库存和组织系统](https://github.com/hay-kot/homebox)
 - [开源笔记软件(替代Notion)](https://github.com/toeverything/AFFiNE)
 - [安卓投屏工具](https://github.com/barry-ran/QtScrcpy)
 - [一个开源的代码仓库带CI/CD](https://github.com/harness/gitness)
 - [截图转网页](https://github.com/abi/screenshot-to-code)
+- [开源去马赛克工具](https://github.com/beurtschipper)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)

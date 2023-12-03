@@ -136,3 +136,17 @@ docker run -d \
 ## Github action
 - [nektos/act](https://github.com/nektos/act)
 - [Github Action本地测试](https://zhuanlan.zhihu.com/p/535798453)
+
+## IT-Tools
+- [IT-Tools Docker Hub](https://hub.docker.com/r/corentinth/it-tools)
+- [IT-Tools Github](https://github.com/CorentinTh/it-tools)
+- [IT-Tools Offical](https://it-tools.tech/)
+
+```shell
+docker run -d \
+  --publish 38080:80 \
+  --net dev \
+  --restart=on-failure:3 \
+  --name it-tools \
+  corentinth/it-tools
+```
