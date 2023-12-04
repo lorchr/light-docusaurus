@@ -210,7 +210,7 @@ public class OAuth2AuthorizationServerConfig {
 
 ## 1.2 测试流程
 
-具体见[OAuth2开放端点](OAuth2.1开放端点.md)
+具体见[OAuth2开放端点](./0-OAuth2.1-Endpoints.md)
 
 1. 调用授权接口
 2. 登录账户
