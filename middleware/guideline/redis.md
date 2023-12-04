@@ -15,8 +15,8 @@
 # 5. Redis Memory Usage
 [Redis Memory Usage](../redis/5-Redis-Memory-Usage.md ':include')
 
-# 6. Redis data persistence
-[Redis data persistence](../redis/6-Redis-data-persistence.md ':include')
+# 6. Redis Data Persistence
+[Redis Data Persistence](../redis/6-Redis-Data-Persistence.md ':include')
 
 # 7. Feed Stream System
 [Feed Stream System](../redis/7-Feed-Stream-System.md ':include')
