@@ -1,3 +1,4 @@
+- [40 个定时任务，带你理解 RocketMQ 设计精髓！](https://mp.weixin.qq.com/s/5Cl2QmP7CptfQXEUtuZ4PA)
 - [40 个定时任务，带你理解 RocketMQ 设计精髓！](https://mp.weixin.qq.com/s/tgVUcBMpRMTBr5rCzmUNWA)
 
 今天来分享 RocketMQ 的定时任务。通过这些定时任务，能让我们更加理解 RocketMQ 的消息处理机制和设计理念。
@@ -7,7 +8,8 @@
 ## 1 架构回顾
 首先再来回顾一下 RocketMQ 的架构图：
 
-图片
+![img](./img/rocketmq-timer-task-1.png)
+
 Name Server 集群部署，但是节点之间并不会同步数据，因为每个节点都会保存完整的数据。因此单个节点挂掉，并不会对集群产生影响。
 
 Broker 可以采用主从集群部署，实现多副本存储和高可用。每个 Broker 节点都要跟所有的 Name Server 节点建立长连接，定义注册 Topic 路由信息和发送心跳。
@@ -337,7 +339,8 @@ this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
 这样消费者拉取消息时首先从 FilterServer 拉取消息，FilterServer 从 Broker 拉取消息后进行过滤，只把消费者感兴趣的消息返回给消费者。一个 Broker 可以有多个 FilterServer。如下图：
 
-图片
+![img](./img/rocketmq-timer-task-2.png)
+
 ### 3.6 记录消息总量
 Broker 每天会记录前一天收发消息的总数量，定时任务如下（period 是 1 天）：
 ```java

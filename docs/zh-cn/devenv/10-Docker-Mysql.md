@@ -54,7 +54,7 @@ docker container restart mysql5
 ## 2. Docker安装Mysql 8.0
 ```shell
 docker run -d \
-  --publish 3308:3308 \
+  --publish 3308:3306 \
   --volume //d/docker/mysql/data:/var/lib/mysql \
   --volume //d/docker/mysql/conf:/etc/mysql/conf.d \
   --volume //d/docker/mysql/log:/var/log/mysql \
