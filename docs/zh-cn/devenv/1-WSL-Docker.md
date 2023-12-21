@@ -208,112 +208,127 @@ docker run -e PASSWORD=Liuhui1993 -p 8388:8388 -p 8388:8388/udp -d shadowsocks/s
 ## 6. 修改Docker容器内部的软件源地址
 
 1. 使用sed替换
-    
-    ```shell
-    # 使用root用户执行命令行操作
-    docker exec -it -u root <container-id(name)> /bin/bash
 
-    # 查看软件源
-    cat /etc/apt/sources.list
+```shell
+# 使用root用户执行命令行操作
+docker exec -it -u root <container-id(name)> /bin/bash
 
-    # 替换软件源
-    sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
-    sed -i "s@http://security.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
-    ```
+# 查看软件源
+cat /etc/apt/sources.list
+
+# 替换软件源
+sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
+sed -i "s@http://security.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list
+```
 
 如果使用的https源，则需要执行`apt install apt-transport-https`，再执行`apt update`更新源索引
 
 2. 直接编辑 sources.list
 
-    ```shell
-    # 使用root用户执行命令行操作
-    docker exec -it -u root <container-id(name)> /bin/bash
+```shell
+# 使用root用户执行命令行操作
+docker exec -it -u root <container-id(name)> /bin/bash
 
-    # 查看系统版本
-    cat /etc/os-release
+# 查看系统版本
+cat /etc/os-release
 
-    ## 追加
-    cat << EOF >> /etc/apt/sources.list
-    # Debian 10 buster
+## 追加
+cat << EOF >> /etc/apt/sources.list
+# Debian 10 buster
 
-    # 中科大源
+# 中科大源
 
-    deb http://mirrors.ustc.edu.cn/debian buster main contrib non-free
-    deb http://mirrors.ustc.edu.cn/debian buster-updates main contrib non-free
-    deb http://mirrors.ustc.edu.cn/debian buster-backports main contrib non-free
-    deb http://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian buster main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian buster-updates main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian buster-backports main contrib non-free
+deb http://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free
 
-    deb-src http://mirrors.ustc.edu.cn/debian buster main contrib non-free
-    deb-src http://mirrors.ustc.edu.cn/debian buster-updates main contrib non-free
-    deb-src http://mirrors.ustc.edu.cn/debian buster-backports main contrib non-free
-    deb-src http://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian buster main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian buster-updates main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian buster-backports main contrib non-free
+deb-src http://mirrors.ustc.edu.cn/debian-security/ buster/updates main contrib non-free
 
-    # 官方源
+# 官方源
 
-    # deb http://deb.debian.org/debian buster main contrib non-free
-    # deb http://deb.debian.org/debian buster-updates main contrib non-free
-    # deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+# deb http://deb.debian.org/debian buster main contrib non-free
+# deb http://deb.debian.org/debian buster-updates main contrib non-free
+# deb http://deb.debian.org/debian-security/ buster/updates main contrib non-free
 
-    # deb-src http://deb.debian.org/debian buster main contrib non-free
-    # deb-src http://deb.debian.org/debian buster-updates main contrib non-free
-    # deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
+# deb-src http://deb.debian.org/debian buster main contrib non-free
+# deb-src http://deb.debian.org/debian buster-updates main contrib non-free
+# deb-src http://deb.debian.org/debian-security/ buster/updates main contrib non-free
 
-    # 网易源
+# 网易源
 
-    # deb http://mirrors.163.com/debian/ buster main non-free contrib
-    # deb http://mirrors.163.com/debian/ buster-updates main non-free contrib
-    # deb http://mirrors.163.com/debian/ buster-backports main non-free contrib
-    # deb http://mirrors.163.com/debian-security/ buster/updates main non-free contrib
+# deb http://mirrors.163.com/debian/ buster main non-free contrib
+# deb http://mirrors.163.com/debian/ buster-updates main non-free contrib
+# deb http://mirrors.163.com/debian/ buster-backports main non-free contrib
+# deb http://mirrors.163.com/debian-security/ buster/updates main non-free contrib
 
-    # deb-src http://mirrors.163.com/debian/ buster main non-free contrib
-    # deb-src http://mirrors.163.com/debian/ buster-updates main non-free contrib
-    # deb-src http://mirrors.163.com/debian/ buster-backports main non-free contrib
-    # deb-src http://mirrors.163.com/debian-security/ buster/updates main non-free contrib
+# deb-src http://mirrors.163.com/debian/ buster main non-free contrib
+# deb-src http://mirrors.163.com/debian/ buster-updates main non-free contrib
+# deb-src http://mirrors.163.com/debian/ buster-backports main non-free contrib
+# deb-src http://mirrors.163.com/debian-security/ buster/updates main non-free contrib
 
-    # 阿里云
+# 阿里云
 
-    # deb http://mirrors.aliyun.com/debian/ buster main non-free contrib
-    # deb http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib
-    # deb http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib
-    # deb http://mirrors.aliyun.com/debian-security buster/updates main
+# deb http://mirrors.aliyun.com/debian/ buster main non-free contrib
+# deb http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib
+# deb http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib
+# deb http://mirrors.aliyun.com/debian-security buster/updates main
 
-    # deb-src http://mirrors.aliyun.com/debian/ buster main non-free contrib
-    # deb-src http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib
-    # deb-src http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib
-    # deb-src http://mirrors.aliyun.com/debian-security buster/updates main
-    EOF
-    ```
+# deb-src http://mirrors.aliyun.com/debian/ buster main non-free contrib
+# deb-src http://mirrors.aliyun.com/debian/ buster-updates main non-free contrib
+# deb-src http://mirrors.aliyun.com/debian/ buster-backports main non-free contrib
+# deb-src http://mirrors.aliyun.com/debian-security buster/updates main
+EOF
+```
 
 3. 安装软件
-   
-   ```shell
-    # 更新软件源
-    apt-get update && apt-get upgrade -y
 
-    # 安装apt-file
-    apt-get install -y apt-file && apt-file update
+```shell
+# 更新软件源
+apt-get update && apt-get upgrade -y
 
-    # 查找软件
-    apt-file search /bin/ps | grep -w "bin/ps"
+# 安装apt-file
+apt-get install -y apt-file && apt-file update
 
-    # 安装软件
-    apt-get install -y vim wget
+# 查找软件
+apt-file search /bin/ps | grep -w "bin/ps"
 
-    # Docker容器交互
-    docker exec -it -u root <container-id(name)> /bin/bash
-   ```
+# 安装软件
+apt-get install -y vim wget
+
+# Docker容器交互
+docker exec -it -u root <container-id(name)> /bin/bash
+
+# 查询镜像列表
+docker images
+
+# 删除镜像
+docker rmi <image-id>
+
+# 删除所有镜像
+docker rmi $(docker images -q)
+
+# 删除 untaged 镜像
+docker rmi $(docker images -q -f "dangling=true")
+
+# 删除 untaged 镜像
+docker image prune --force --filter "dangling=true"
+```
 
 4. 上传下载文件
-   
-   ```shell
-    # 上传
-    docker cp <local_file_path> <container-id(name)>:<container_path>
-    docker cp C://users/light/Desktop/elasticsearch-analysis-ik elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-ik
 
-    # 下载
-    docker cp <container-id(name)>:<container_path> <local_file_path>
-    docker cp elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-ik C://users/light/Desktop/elasticsearch-analysis-ik
-   ```
+```shell
+# 上传
+docker cp <local_file_path> <container-id(name)>:<container_path>
+docker cp C://users/light/Desktop/elasticsearch-analysis-ik elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-ik
+
+# 下载
+docker cp <container-id(name)>:<container_path> <local_file_path>
+docker cp elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-ik C://users/light/Desktop/elasticsearch-analysis-ik
+```
 
 
 ## 7. 镜像备份加载

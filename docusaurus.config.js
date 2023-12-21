@@ -214,7 +214,7 @@ const config = {
             items: [
               {
                 label: 'Torch',
-                to: '/docs/zh-cn',
+                to: '/docs/category/guide',
               },
               {
                 label: 'Middleware',
