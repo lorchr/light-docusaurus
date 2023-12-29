@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[4198],{88729:s=>{s.exports=JSON.parse('{"label":"localFileSystem","permalink":"/light-docusaurus/blog/tags/local-file-system","allTagsPath":"/light-docusaurus/blog/tags","count":1}')}}]);
