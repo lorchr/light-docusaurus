@@ -51,6 +51,6 @@ docker exec -it -u root nodered /bin/bash
    2. [ ] 控制台
    3. [x] 节点状态 自动的
 5. 使用 [MQTTX](https://mqttx.app/zh/) 
-   1. 连接Broker: broker.emqx.io:1883
-   2. 发送Topic: test/data,  msg: {"msg": "Hello World"}
+   1. 连接Broker: `broker.emqx.io:1883`
+   2. 发送Topic: `test/data`,  msg: `{"msg": "Hello World"}`
 6. 发送完成后将在 NodeRed的流程界面看到输出参数，在debug界面也会有对应的输出

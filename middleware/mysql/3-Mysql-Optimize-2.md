@@ -1360,9 +1360,9 @@ explain select * from book where authorid = 1 and typeid > 2 ;
 | --- | ----------- | ----- | ---------- | ----- | ------------------------------- | ------------------- | ------- | --- | ---- | -------- | --------------------- |
 | 1   | SIMPLE      | book  |            | range | authorid_typeid_bid,idx_book_at | authorid_typeid_bid | 8       |     | 1    | 100.00   | Using index condition |
 
-结论：复合索引中如果有【>】，则自身和右侧索引全部失效。
+结论：复合索引中如果有`【>】`，则自身和右侧索引全部失效。
 
-在看看复合索引中有【<】的情况：
+在看看复合索引中有`【<】`的情况：
 ```sql
 explain select * from book where authorid < 1 and typeid = 2 ;
 explain select * from book where authorid < 4 and typeid = 2 ;

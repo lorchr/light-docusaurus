@@ -362,7 +362,7 @@ runtimeService.createProcessInstanceModification(instanceId)
 
 1. 写死，就比如 zhangsan
 
-2. 表达式，比如上面写的 ${user}，这种需要传入参数，其实就是启动参数的时候传入，传入参数，可选值为一个Map<String, Object>，之后的流程可查看次参数，上面写的是 user， 所以map里面的key需要带着user，不然会报错。
+2. 表达式，比如上面写的 `${user}`，这种需要传入参数，其实就是启动参数的时候传入，传入参数，可选值为一个`Map<String, Object>`，之后的流程可查看次参数，上面写的是 `user`， 所以map里面的key需要带着user，不然会报错。
 
 关于扩展变量，可在流程图绘制这么设定，传递方式还是一样，流程图里面在下面写：
 

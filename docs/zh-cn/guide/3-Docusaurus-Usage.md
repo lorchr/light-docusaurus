@@ -167,6 +167,7 @@ jobs:
 
 2. 安装升级
 ```shell
+# https://www.npmjs.com/
 # 安装升级
 npm install
 
@@ -174,7 +175,9 @@ npm install
 npx docusaurus --version
 
 # 或者一键升级
-yarn upgrade @docusaurus/core@latest @docusaurus/preset-classic@latest @docusaurus/remark-plugin-npm2yarn@latest @docusaurus/module-type-aliases@latest
+yarn upgrade @docusaurus/core@latest @docusaurus/plugin-content-blog@latest @docusaurus/plugin-content-docs@latest @docusaurus/plugin-content-pages@latest @docusaurus/plugin-sitemap@latest @docusaurus/preset-classic@latest @docusaurus/remark-plugin-npm2yarn@latest @docusaurus/theme-live-codeblock@latest @docusaurus/theme-mermaid@latest @docusaurus/theme-search-algolia@latest @docusaurus/module-type-aliases@latest
+
+npm uninstall -g @docusaurus/core @docusaurus/plugin-content-blog @docusaurus/plugin-content-docs @docusaurus/plugin-content-pages @docusaurus/plugin-sitemap @docusaurus/preset-classic @docusaurus/remark-plugin-npm2yarn @docusaurus/theme-live-codeblock @docusaurus/theme-mermaid @docusaurus/theme-search-algolia @docusaurus/module-type-aliases
 ```
 
 3. 运行
@@ -201,18 +204,18 @@ npm config delete registry
 
 # 安装插件
 # 文档插件 博客插件 页面插件
-npm install --save @docusaurus/plugin-content-docs@2.4.3
-npm install --save @docusaurus/plugin-content-blog@2.4.3
-npm install --save @docusaurus/plugin-content-pages@2.4.3
+npm install --save @docusaurus/plugin-content-docs
+npm install --save @docusaurus/plugin-content-blog
+npm install --save @docusaurus/plugin-content-pages
 # 站点地图 方便algoia爬取数据
-npm install --save @docusaurus/plugin-sitemap@2.4.3
+npm install --save @docusaurus/plugin-sitemap
 
 # Algoia 搜索支持
-npm install --save @docusaurus/theme-search-algolia@2.4.3
+npm install --save @docusaurus/theme-search-algolia
 # Mermaid markdown绘图支持
-npm install --save @docusaurus/theme-mermaid@2.4.3
+npm install --save @docusaurus/theme-mermaid
 # 可交互的代码块
-npm install --save @docusaurus/theme-live-codeblock@2.4.3
+npm install --save @docusaurus/theme-live-codeblock
 ```
 
 ## Yarn

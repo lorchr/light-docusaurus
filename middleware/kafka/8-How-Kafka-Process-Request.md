@@ -151,7 +151,7 @@ while(true) {
 在上面 Kafka 高性能、高吞吐量架构演进的时候，我们提到了 Java NIO 以及 Reactor 设计模式。实际上，搞透了「Kafka 究竟是怎么使用 NIO 来实现网络通信的」，不仅能让我们掌握 Kafka 请求处理全流程处理，也能让我们对 Reactor 设计模式有更深的理解，还能帮助我们解决很多实际问题。 
 
 
-在[<kafka 三高架构设计剖析>](https://mp.weixin.qq.com/s/kmRnukY5P2GuvaoctyBHQA) 和 [<聊聊 Kafka Producer 那点事>](https://mp.weixin.qq.com/s/AtGyvCRT5cv5jipQxbNPZg) 中也讲过关于 Kafka 网络架构，读者可以去查阅，今天我们再次深入的对其进行剖析。
+在[kafka 三高架构设计剖析](https://mp.weixin.qq.com/s/kmRnukY5P2GuvaoctyBHQA) 和 [聊聊 Kafka Producer 那点事](https://mp.weixin.qq.com/s/AtGyvCRT5cv5jipQxbNPZg) 中也讲过关于 Kafka 网络架构，读者可以去查阅，今天我们再次深入的对其进行剖析。
 
 
 那么接下来我们就来深入剖析下 Kafka 的 NIO 通讯机制吧。

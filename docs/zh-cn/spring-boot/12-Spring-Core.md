@@ -190,7 +190,7 @@ public interface PropertyResolver {
 
 - `getProperty(String key)`，很明显是通过配置的key获取对应的value值
 - `getProperty(String key, Class<T> targetType)`，这是获取配置，并转换成对应的类型，比如你获取的是个字符串的"true"，这里就可以给你转换成布尔值的true，具体的底层实现留到下一节讲
-- `resolvePlaceholders(String text)`，这类方法可以处理${...}占位符，也就是先取出${...}占位符中的key，然后再通过key获取到值
+- `resolvePlaceholders(String text)`，这类方法可以处理`${...}`占位符，也就是先取出`${...}`占位符中的key，然后再通过key获取到值
 
 所以Environment主要有一下几种功能：
 
@@ -630,14 +630,15 @@ ResolvableType secondFirstGenericType = secondGenericType.getGeneric(0);
 Class<?> secondFirstGenericClass = secondFirstGenericType.resolve();
 ```
 
-从上面的演示下来可以发现，其实每变化一步，其实就是获取对应泛型或者是父类等等对应的ResolvableType，父类或者是泛型参数又可能有泛型之类的，只需要一步一步获取就可以了，当需要获取到具体的class类型的时候，通过ResolvableType#resolve()方法就行了。
+从上面的演示下来可以发现，其实每变化一步，其实就是获取对应泛型或者是父类等等对应的`ResolvableType`，父类或者是泛型参数又可能有泛型之类的，只需要一步一步获取就可以了，当需要获取到具体的class类型的时候，通过`ResolvableType#resolve()`方法就行了。
 
-除了上面提到的通过ResolvableType#forClass方法创建ResolvableType之外，还可以通过一下几个方法创建：
+除了上面提到的通过`ResolvableType#forClass`方法创建`ResolvableType`之外，还可以通过一下几个方法创建：
 
-- forField(Field field)：获取字段类型对应的ResolvableType
-- forMethodReturnType(Method method)：获取方法返回值类型对应的ResolvableType
-- forMethodParameter(Method method, int parameterIndex)：获取方法某个位置方法参数对应的ResolvableType
-- forConstructorParameter(Constructor<?> constructor, int parameterIndex)：获取构造方法某个构造参数对应的ResolvableType
+- `forField(Field field)`：获取字段类型对应的`ResolvableType`
+- `forMethodReturnType(Method method)`：获取方法返回值类型对应的`ResolvableType`
+- `forMethodParameter(Method method, int parameterIndex)`：获取方法某个位置方法参数对应的`ResolvableType`
+- `forConstructorParameter(Constructor<?> constructor, int parameterIndex)`：获取构造方法某个构造参数对应的`ResolvableType`
+
 通过上面解释可以看出，对于一个类方法参数，方法返回值，字段等等都可以获取到对应的ResolvableType
 
 ## 国际化

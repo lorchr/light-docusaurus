@@ -63,18 +63,18 @@
    - loopCounter: 循环计数器，办理人在列表中的索引
 
 参考配置
-- 当是或签时，直接固定配置： ${nrOfCompletedInstances>=1} 即可
-- 当是会签时，固定配置： ${nrOfCompletedInstances==nrOfInstances} 即可
+- 当是或签时，直接固定配置： `${nrOfCompletedInstances >= 1}` 即可
+- 当是会签时，固定配置： `${nrOfCompletedInstances == nrOfInstances}` 即可
 
 ​
 
 ### 3.2 重要点
-1. 在会签、或签节点增加 multiInstanceLoopCharacteristics 相应的标签
-2. 指定生成的任务数。这里更建议使用 collection。 因为它可以相关配置做到 给生成的任务实例时就有assign
-3. 任务标签上属性 flowable:assignee="${approver}" 必须固定这么指定，否则创建的多任务记录里面 assign还是没值
+1. 在会签、或签节点增加 `multiInstanceLoopCharacteristics` 相应的标签
+2. 指定生成的任务数。这里更建议使用 `collection`。 因为它可以相关配置做到 给生成的任务实例时就有assign
+3. 任务标签上属性 `flowable:assignee="${approver}"` 必须固定这么指定，否则创建的多任务记录里面 assign还是没值
 
-   - 属性assignee 取 Element varible的值，比如Element varible设置为approver，Assignents就设置为${approver}
-4. 如果节点是审批节点，那么一定需要在用户任务节点 的 extensionElements下添加 监听器
+   - 属性assignee 取 Element varible的值，比如`Element varible`设置为`approver`，Assignents就设置为`${approver}`
+4. 如果节点是审批节点，那么一定需要在用户任务节点 的 `extensionElements` 下添加 监听器
 5. 完成条件。放在后文单独讲
 
 ## 4、collection 赋值

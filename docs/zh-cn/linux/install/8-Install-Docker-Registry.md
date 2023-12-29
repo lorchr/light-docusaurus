@@ -64,7 +64,7 @@ docker run -d \
 ### 3. 删除已经上传的镜像
 
 1. 打开镜像的存储目录，如有-V操作打开挂载目录也可以，删除镜像文件夹
-> docker exec <容器名> rm -rf /var/lib/registry/docker/registry/v2/repositories/<镜像名>
+> `docker exec <容器名> rm -rf /var/lib/registry/docker/registry/v2/repositories/<镜像名>`
 
 2. 执行垃圾回收操作，注意2.4版本以上的registry才有此功能
-> docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml
+> `docker exec registry bin/registry garbage-collect /etc/docker/registry/config.yml`

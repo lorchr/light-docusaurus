@@ -199,10 +199,10 @@ spring:
 ```
 rules节点下为分片规则的配置，sharding-algorithms 节点为自定义的分片算法模块，分片算法可以在后边配置表的分片规则时被引用，其中：
 
-- database-inline：自定义的分片算法名称；
-- type：该分片算法的类型，这里先以 inline 为例，后续会有详细章节介绍；
-- props：指定该分片算法的具体内容，其中 algorithm-expression 是该分片算法的表达式，即根据分片键值计算出要访问的真实数据库名或表名，。
-- db$->{order_id % 2} 这种为 Groovy 语言表达式，表示对分片键 order_id 进行取模，根据取模结果计算出db0、db1，分表的表达式同理。
+- `database-inline`：自定义的分片算法名称；
+- `type`：该分片算法的类型，这里先以 `inline` 为例，后续会有详细章节介绍；
+- `props`：指定该分片算法的具体内容，其中 `algorithm-expression` 是该分片算法的表达式，即根据分片键值计算出要访问的真实数据库名或表名，。
+- `db$->{order_id % 2}` 这种为 Groovy 语言表达式，表示对分片键 `order_id` 进行取模，根据取模结果计算出db0、db1，分表的表达式同理。
 
 ```yaml
 spring:
@@ -226,9 +226,10 @@ spring:
               algorithm-expression: t_order_$->{order_id % 3}
 ```
 
-tables节点定义了逻辑表名t_order的分库分表规则。actual-data-nodes 用于设置物理数据节点的数量。
+`tables`节点定义了逻辑表名`t_order`的分库分表规则。`actual-data-nodes` 用于设置物理数据节点的数量。
 
-db${0..1}.t_order_${0..3} 表达式意思此逻辑表在不同数据库实例中的分布情况，如果只想单纯的分库或者分表，可以调整表达式，分库db${0..1}、分表t_order_${0..3}。
+`db${0..1}.t_order_${0..3} `表达式意思此逻辑表在不同数据库实例中的分布情况，如果只想单纯的分库或者分表，可以调整表达式，分库`db${0..1}`、分表`t_order_${0..3}`。
+
 ```shell
 db0
 ├── t_order_0
