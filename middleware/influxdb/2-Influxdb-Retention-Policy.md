@@ -80,9 +80,9 @@ duration 这一列，表示的就是这个策略定义的数据保存时间
 
 | Retention Policy’s DURATION | Shard Group Duration |
 | --------------------------- | -------------------- |
-| < 2 days                    | 1 hour               |
-| >= 2 days and <= 6 months   | 1 day                |
-| > 6 months                  | 7 days               |
+| `< 2 days`                  | 1 hour               |
+| `>= 2 days and <= 6 months` | 1 day                |
+| `> 6 months`                | 7 days               |
 
 ### 3. 副本
 副本这个指定了数据有多少个独立的备份存在

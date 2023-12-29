@@ -34,15 +34,16 @@ private @Nullable ClusterCommandExecutor clusterCommandExecutor;
 ```
 
 ### 主要属性:
-- LettuceClientConfiguration：client的配置，基于commons pool的连接池目前也是基于它；
-- AbstractRedisClient client：内部维持的redis client对象;
-- LettuceConnectionProvider connectionProvider: 连接提供者，连接池就是由它来提供
-- LettuceConnectionProvider reactiveConnectionProvider: reactive模式下的连接提供者
-- validateConnection：是否校验连接•shareNativeConnection：是否共享本地连接
-- SharedConnection<byte[]> connection：用于共享的连接，如果shareNativeConnection为false则此处为null
-- SharedConnection reactiveConnection：用于reactive模式下的共享连接
-- LettucePool pool：旧版本的lettuce连接池，目前由commons pool替代了
-- Object connectionMonitor: 共享的连接之间用于同步的monitor
+- `LettuceClientConfiguration`：`client`的配置，基于`commons pool`的连接池目前也是基于它；
+- `AbstractRedisClient client`：内部维持的`redis client`对象;
+- `LettuceConnectionProvider connectionProvider`: 连接提供者，连接池就是由它来提供
+- `LettuceConnectionProvider reactiveConnectionProvider`: `reactive`模式下的连接提供者
+- `validateConnection`：是否校验连接 
+- `shareNativeConnection`：是否共享本地连接
+- `SharedConnection<byte[]> connection`：用于共享的连接，如果`shareNativeConnection`为`false`则此处为`null`
+- `SharedConnection reactiveConnection`：用于`reactive`模式下的共享连接
+- `LettucePool pool`：旧版本的`lettuce`连接池，目前由`commons pool`替代了
+- `Object connectionMonitor`: 共享的连接之间用于同步的`monitor`
 
 ### 主要方法:
 1. 连接池

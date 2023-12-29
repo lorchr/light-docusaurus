@@ -167,11 +167,11 @@ public String update(@Validated({Update.class}) User user) {
     return "success";
 }
 ```
-如果Update不继承Default，@Validated({Update.class})就只会校验属于Update.class分组的参数字段；如果继承了，会校验了其他默认属于Default.class分组的字段。
+如果`Update`不继承`Default`，`@Validated({Update.class})`就只会校验属于`Update.class`分组的参数字段；如果继承了，会校验了其他默认属于`Default.class`分组的字段。
 
 
 
-对于递归校验（比如类中类），只要在相应属性类上增加@Valid注解即可实现（对于集合同样适用）
+对于递归校验（比如类中类），只要在相应属性类上增加`@Valid`注解即可实现（对于集合同样适用）
 
 
 

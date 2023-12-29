@@ -983,7 +983,7 @@ pkg install php-fpm
 
 
 #### 配置 php-fpm
-编辑 php-fpm 的配置文件 www.conf：
+编辑 `php-fpm` 的配置文件 `www.conf`：
 ```shell
 vim $PREFIX/etc/php-fpm.d/www.conf
 ```
@@ -1001,14 +1001,14 @@ listen = 127.0.0.1:9000
 ？？？啥 你不会使用 vim 搜索 ㄟ (▔,▔) ㄏ 那就老老实实一个个翻页吧。
 
 #### 配置 Nginx
-编辑 Nginx 的配置文件 nginx.conf：
+编辑 Nginx 的配置文件 `nginx.conf`：
 ```shell
 vim $PREFIX/etc/nginx/nginx.conf
 ```
 
 下面国光贴出配置好的完整配置文件，大家可以参考下面这些图，只需要两大步骤：
 
-添加 index.php 到默认首页的规则里面：
+添加 `index.php` 到默认首页的规则里面：
 
 
 取消 `location ~ \.php$` 这些注释，按照图片上的 提示修改：
@@ -1064,7 +1064,7 @@ Nginx 默认网站的根目录为：
 /data/data/com.termux/files/usr/share/nginx/html
 ```
 
-在这个网站根目录下新建 info.php 内容为：<?php phpinfo(); ?>
+在这个网站根目录下新建 `info.php` 内容为：`<?php phpinfo(); ?>`
 ```shell
 echo '<?php phpinfo(); ?>' > $PREFIX/share/nginx/html/info.php
 ```
