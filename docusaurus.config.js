@@ -30,7 +30,7 @@ const config = {
   markdown: {
     mermaid: true,
   },
-  themes: ['@docusaurus/theme-mermaid'],
+  themes: ['@docusaurus/theme-mermaid', '@docusaurus/theme-live-codeblock'],
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
   // to replace "en" with "zh-Hans".
@@ -257,6 +257,23 @@ const config = {
               {
                 label: 'GitHub',
                 href: 'https://github.com/lorchr/light-docusaurus',
+              },
+            ],
+          },
+          {
+            title: 'Offical',
+            items: [
+              {
+                label: 'Home',
+                href: 'https://docusaurus.io',
+              },
+              {
+                label: 'Github',
+                href: 'https://github.com/facebook/docusaurus',
+              },
+              {
+                label: 'Playground',
+                href: 'https://docusaurus.io/docs/playground',
               },
             ],
           },
