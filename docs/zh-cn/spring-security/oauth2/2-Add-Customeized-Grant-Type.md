@@ -1,4 +1,5 @@
-[Spring Authorization Server 自定义授权模式](https://blog.csdn.net/moresi/article/details/128927500)
+- [Spring Authorization Server 自定义授权模式](https://blog.csdn.net/moresi/article/details/128927500)
+- [Implement an Extension Authorization Grant Type](https://docs.spring.io/spring-authorization-server/docs/1.1.x/reference/html/guides/how-to-ext-grant-type.html)
 
 在本小节中，我们将自定义 `Spring Authorization Server` 授权模式 - 密码模式（password）
 

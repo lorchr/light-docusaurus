@@ -8,6 +8,10 @@
 - [Microsoft - 自定义 SAML 令牌声明](https://learn.microsoft.com/zh-cn/entra/identity-platform/saml-claims-customization#edit-nameid)
 - [Microsoft - 疑难解答](https://learn.microsoft.com/zh-cn/entra/identity/enterprise-apps/troubleshoot-password-based-sso)
 
+- [阿里云 - 使用AD FS进行角色SSO的示例](https://help.aliyun.com/zh/ram/user-guide/implement-role-based-sso-from-ad-fs)
+- [腾讯云 - ADFS 用户 SSO 使用说明](https://cloud.tencent.com/document/product/598/84174)
+- [Keeper SSO Connect - Microsoft AD FS](https://docs.keeper.io/sso-connect-cloud/identity-provider-setup/ad-fs-keeper)
+
 - [解析SAML Request Response](https://www.samltool.com/decode.php)
 - [校验SAML Request](https://www.samltool.com/validate_authn_req.php)
 - [校验SAML Response](https://www.samltool.com/validate_response.php)
@@ -442,7 +446,7 @@ at Microsoft.IdentityServer.Web.Protocols.Saml.SamlProtocolManager.Issue(HttpSam
 </ds:Signature>
 ```
 
-- SP 的摘要算法默认为 `SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256`，可以通过[asserting-party](https://docs.spring.io/spring-security/reference/servlet/appendix/namespace/http.html#nsa-asserting-party-attributes)来设置
+- SP(Spring Security) 的摘要算法默认为 `SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256`，可以通过[asserting-party](https://docs.spring.io/spring-security/reference/servlet/appendix/namespace/http.html#nsa-asserting-party-attributes)或者[配置文件](https://docs.spring.io/spring-security/reference/servlet/saml2/login/authentication-requests.html#servlet-saml2login-sp-initiated-factory-signing)来设置
 
 ```java
 @Bean
@@ -453,8 +457,8 @@ InMemoryRelyingPartyRegistrationRepository repository(Saml2RelyingPartyPropertie
             .registrationId("adfs")
             .entityId(registration.getEntityId())
             .assertingPartyDetails(party ->
-                    party.signingAlgorithms(consumer ->
-                            consumer.add(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256)))
+                    party.signingAlgorithms(sign ->
+                            sign.add(SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256)))
             .assertionConsumerServiceLocation(registration.getAcs().getLocation())
             .build());
 }

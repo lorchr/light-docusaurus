@@ -327,14 +327,14 @@ public class OAuth2AuthorizationServerConfiguration {
 
 有了这个bean，就会支持如下协议端点：
 
-- [OAuth2 Authorization endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oauth2-authorization-endpoint)
-- [OAuth2 Token endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oauth2-token-endpoint)
-- [OAuth2 Token Introspection endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oauth2-token-introspection-endpoint)
-- [OAuth2 Token Revocation endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oauth2-token-revocation-endpoint)
-- [OAuth2 Authorization Server Metadata endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oauth2-authorization-server-metadata-endpoint)
-- [JWK Set endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23jwk-set-endpoint)
-- [OpenID Connect 1.0 Provider Configuration endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oidc-provider-configuration-endpoint)
-- [OpenID Connect 1.0 UserInfo endpoint](https://link.zhihu.com/?target=https%3A//docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html%23oidc-user-info-endpoint)
+- [OAuth2 Authorization endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oauth2-authorization-endpoint)
+- [OAuth2 Token endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oauth2-token-endpoint)
+- [OAuth2 Token Introspection endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oauth2-token-introspection-endpoint)
+- [OAuth2 Token Revocation endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oauth2-token-revocation-endpoint)
+- [OAuth2 Authorization Server Metadata endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oauth2-authorization-server-metadata-endpoint)
+- [JWK Set endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#jwk-set-endpoint)
+- [OpenID Connect 1.0 Provider Configuration endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oidc-provider-configuration-endpoint)
+- [OpenID Connect 1.0 UserInfo endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oidc-user-info-endpoint)
 
 # 三、标准配置
 基于`OAuth2AuthorizationServerConfiguration`这个类来实现一个`Authorization Server`。

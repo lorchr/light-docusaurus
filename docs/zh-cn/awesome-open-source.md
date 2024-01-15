@@ -15,6 +15,8 @@
 - [一款足够简单、足够好用、足够强的免费 WAF(Web Application Firewall)](https://github.com/chaitin/SafeLine)
 - [一个Docker容器化的SSH蜜罐](https://github.com/fffaraz/fakessh)
 - [开源监控工具](https://github.com/louislam/uptime-kuma)
+- [网站统计分析工具 umami](https://github.com/umami-software/umami)
+- [网站统计分析工具 matomo](https://github.com/matomo-org/matomo)
 
 ## 实用类
 - [潘多拉，一个让你呼吸顺畅的ChatGPT](https://github.com/pengzhile/pandora) [体验地址](https://chat.zhile.io)

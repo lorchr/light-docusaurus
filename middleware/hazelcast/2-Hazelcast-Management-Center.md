@@ -11,6 +11,12 @@ docker run -d \
  --network dev \
  --name hazelcast-management-center \
  hazelcast/management-center:5.3.3
+
+docker exec -it -u root hazelcast-management-center /bin/bash
+
+docker cp hazelcast-management-center:/opt/hazelcast/management-center/bin/hz-mc        ./hz-mc
+docker cp hazelcast-management-center:/opt/hazelcast/management-center/bin/mc-conf.sh   ./mc-conf.sh
+docker cp hazelcast-management-center:/opt/hazelcast/management-center/bin/mc-start.sh  ./mc-start.sh
 ```
 
 1. 安装完成后打开[Web管理页面](http://localhost:35700)，选择 `Local`
