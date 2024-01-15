@@ -1,0 +1,991 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">SAS-Optimize-Customlize-UserDetailService | Light Docusaurus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="SAS-Optimize-Customlize-UserDetailService | Light Docusaurus"><meta data-rh="true" name="description" content="- Spring Authorization Server优化篇：自定义UserDetailsService实现从数据库获取用户信息"><meta data-rh="true" property="og:description" content="- Spring Authorization Server优化篇：自定义UserDetailsService实现从数据库获取用户信息"><link data-rh="true" rel="icon" href="/light-docusaurus/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://TLGHDZ3Y2I-dsn.algolia.net" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="/light-docusaurus/blog/rss.xml" title="Light Docusaurus RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/light-docusaurus/blog/atom.xml" title="Light Docusaurus Atom Feed">
+
+
+
+<link rel="search" type="application/opensearchdescription+xml" title="Light Docusaurus" href="/light-docusaurus/opensearch.xml"><link rel="stylesheet" href="/light-docusaurus/assets/css/styles.609e5209.css">
+<script src="/light-docusaurus/assets/js/runtime~main.79436775.js" defer="defer"></script>
+<script src="/light-docusaurus/assets/js/main.af3b976d.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/light-docusaurus/"><div class="navbar__logo"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Torch</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/light-docusaurus/docs/category/guide/">Torch</a><a class="navbar__item navbar__link" href="/light-docusaurus/blog/">Blog</a><a class="navbar__item navbar__link" href="/light-docusaurus/middleware/">Middleware</a><a class="navbar__item navbar__link" href="/light-docusaurus/electron/">Electron</a><a class="navbar__item navbar__link" href="/light-docusaurus/postman/">Postman</a><a class="navbar__item navbar__link" href="/light-docusaurus/diy/">DIY</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li></ul></div><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><button type="button" class="DocSearch DocSearch-Button" aria-label="搜索"><span class="DocSearch-Button-Container"><svg width="20" height="20" class="DocSearch-Search-Icon" viewBox="0 0 20 20"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="DocSearch-Button-Placeholder">搜索</span></span><span class="DocSearch-Button-Keys"></span></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/guide/">Guide</a><button aria-label="展开侧边栏分类 &#x27;Guide&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/develop-environment/">Develop Environment</a><button aria-label="展开侧边栏分类 &#x27;Develop Environment&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/java-jvm/">Java (JVM)</a><button aria-label="展开侧边栏分类 &#x27;Java (JVM)&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-boot/">Spring Boot</a><button aria-label="展开侧边栏分类 &#x27;Spring Boot&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-cloud/">Spring Cloud</a><button aria-label="展开侧边栏分类 &#x27;Spring Cloud&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-security/">Spring Security</a><button aria-label="展开侧边栏分类 &#x27;Spring Security&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/light-docusaurus/docs/category/spring-authorization-server/">Spring Authorization Server</a><button aria-label="折叠侧边栏分类 &#x27;Spring Authorization Server&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Geting-Start-Index/">SAS-Geting-Start-Index</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2.1-Protocol/">SAS-OAuth2.1-Protocol</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server/">SAS-Spring-Boot-Authorization-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server-Addition/">SAS-Spring-Boot-Authorization-Server-Addition</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Device-Authorization/">SAS-Device-Authorization</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Customlize-Exception-Configurer/">SAS-Customlize-Exception-Configurer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Token-Enhancer-And-Parser/">SAS-Token-Enhancer-And-Parser</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Image-Captcha/">SAS-Image-Captcha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Client/">SAS-OAuth2-Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Resource-Server/">SAS-OAuth2-Resource-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/">SAS-SMS-Code-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Extension-Grant-Type copy/">SAS-OAuth2-Extension-Grant-Type copy</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Frontend-Backend-Separate/">SAS-Frontend-Backend-Separate</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Github-Gitee-Login/">SAS-Github-Gitee-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Wechat-Login/">SAS-Wechat-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Separate-Authorize-And-Device-Code-Page/">SAS-Separate-Authorize-And-Device-Code-Page</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Cloud-Gateway/">SAS-Spring-Cloud-Gateway</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-Authorization-Code/">SAS-Vue-Authorization-Code</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-PKCE/">SAS-Vue-PKCE</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Store-Token-And-UserInfo-With-Redis/">SAS-Store-Token-And-UserInfo-With-Redis</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/">SAS-Optimize-Customlize-UserDetailService</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Add-Redis-Cache/">SAS-Optimize-Add-Redis-Cache</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Persistance-JWKSource/">SAS-Optimize-Persistance-JWKSource</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin/">SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-FAQ/">SAS-FAQ</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/database/">Database</a><button aria-label="展开侧边栏分类 &#x27;Database&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/git/">Git</a><button aria-label="展开侧边栏分类 &#x27;Git&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/linux/">Linux</a><button aria-label="展开侧边栏分类 &#x27;Linux&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/docker/">Docker</a><button aria-label="展开侧边栏分类 &#x27;Docker&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/kubernetes/">Kubernetes</a><button aria-label="展开侧边栏分类 &#x27;Kubernetes&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/test/">Test</a><button aria-label="展开侧边栏分类 &#x27;Test&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/others/">Others</a><button aria-label="展开侧边栏分类 &#x27;Others&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/awesome-open-source/">Awesome open source</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/windows/">Windows</a></li></ul></nav><button type="button" title="收起侧边栏" aria-label="收起侧边栏" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/light-docusaurus/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/light-docusaurus/docs/category/spring-authorization-server/"><span itemprop="name">Spring Authorization Server</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">SAS-Optimize-Customlize-UserDetailService</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>SAS-Optimize-Customlize-UserDetailService</h1></header><ul>
+<li><a href="https://juejin.cn/post/7252251628090294309">Spring Authorization Server优化篇：自定义UserDetailsService实现从数据库获取用户信息</a></li>
+</ul>
+<h2 id="一前言">一、前言</h2>
+<p>本篇文章会带大家实现自定义的<code>UserDetailsService</code>，从数据库获取用户及权限信息；也会带大家了解一下框架是怎么获取用户信息的。</p>
+<h2 id="二实现步骤">二、实现步骤</h2>
+<ul>
+<li>初始化数据库表结构</li>
+<li>编写相关表的实体、mapper接口和mapper文件</li>
+<li>实现<code>UserDetailsService</code>接口，实现<code>loadUserByUsername</code>抽象方法。</li>
+</ul>
+<h2 id="三初始化数据库表结构">三、初始化数据库表结构</h2>
+<p>数据库表结构使用经典的RBAC模型，一共有五张表：用户、角色、权限、用户角色关联和角色权限关联表；关于三方登录账户信息表需要的可以加一下，该表主要存储三方登录获取到的用户信息。因为只是示例，所以表中字段都很简陋，大家替换成自己的用户表即可。</p>
+<pre><code class="language-sql">SET NAMES utf8mb4;
+SET
+FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for oauth2_basic_user
+-- ----------------------------
+DROP TABLE IF EXISTS `oauth2_basic_user`;
+CREATE TABLE `oauth2_basic_user`
+(
+    `id`          int(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;自增id&#x27;,
+    `name`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;用户名、昵称&#x27;,
+    `account`     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;账号&#x27;,
+    `password`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;密码&#x27;,
+    `mobile`      varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;手机号&#x27;,
+    `email`       varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;邮箱&#x27;,
+    `avatar_url`  varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;头像地址&#x27;,
+    `deleted`     tinyint(1) NULL DEFAULT NULL COMMENT &#x27;是否已删除&#x27;,
+    `source_from` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;用户来源&#x27;,
+    `create_time` datetime(0) NULL DEFAULT NULL COMMENT &#x27;创建时间&#x27;,
+    `update_time` datetime(0) NULL DEFAULT NULL COMMENT &#x27;修改时间&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = &#x27;基础用户信息表&#x27;;
+
+-- ----------------------------
+-- Records of oauth2_basic_user
+-- ----------------------------
+BEGIN;
+INSERT INTO `oauth2_basic_user`
+VALUES (1, &#x27;云逸&#x27;, &#x27;admin&#x27;, &#x27;$2a$10$K7nVcC.75YZSZU1Fq6G6buYujG.dolGYGPboh7eQbtkdFmB0EfN5K&#x27;, &#x27;17683906991&#x27;,
+        &#x27;17683906991@163.com&#x27;, NULL, 0, &#x27;system&#x27;, &#x27;2023-06-20 15:20:42&#x27;, &#x27;2023-06-20 15:20:42&#x27;);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for oauth2_third_Account
+-- ----------------------------
+DROP TABLE IF EXISTS `oauth2_third_Account`;
+CREATE TABLE `oauth2_third_account`
+(
+    `id`          int(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;自增id&#x27;,
+    `user_id`     int(11) NULL DEFAULT NULL COMMENT &#x27;用户表主键&#x27;,
+    `unique_id`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;三方登录唯一id&#x27;,
+    `type`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;三方登录类型&#x27;,
+    `blog`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;博客地址&#x27;,
+    `location`    varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;地址&#x27;,
+    `create_time` datetime(0) NULL DEFAULT NULL COMMENT &#x27;绑定时间&#x27;,
+    `update_time` datetime(0) NULL DEFAULT NULL COMMENT &#x27;修改时间&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = &#x27;三方登录账户信息表&#x27;;
+
+-- ----------------------------
+-- Table structure for sys_authority
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_authority`;
+CREATE TABLE `sys_authority`
+(
+    `id`             int(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;菜单自增ID&#x27;,
+    `name`           varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT &#x27;菜单名称&#x27;,
+    `menu_pid`       int(11) NOT NULL COMMENT &#x27;父菜单ID&#x27;,
+    `url`            varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT &#x27;跳转URL&#x27;,
+    `authority`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT &#x27;所需权限&#x27;,
+    `sort`           tinyint(4) NULL DEFAULT NULL COMMENT &#x27;排序&#x27;,
+    `type`           tinyint(4) NOT NULL COMMENT &#x27;0:菜单,1:接口&#x27;,
+    `deleted`        tinyint(1) NOT NULL COMMENT &#x27;0:启用,1:删除&#x27;,
+    `create_time`    datetime(0) NOT NULL COMMENT &#x27;创建时间&#x27;,
+    `create_user_id` int(11) NOT NULL COMMENT &#x27;创建人&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = &#x27;系统菜单表&#x27;;
+
+-- ----------------------------
+-- Records of sys_authority
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_authority`
+VALUES (1, &#x27;系统管理&#x27;, 0, &#x27;/system&#x27;, &#x27;system&#x27;, 0, 0, 0, &#x27;2022-03-25 23:52:03&#x27;, 1),
+       (2, &#x27;app&#x27;, 0, &#x27;/**&#x27;, &#x27;app&#x27;, 1, 1, 0, &#x27;2023-06-20 15:18:49&#x27;, 1),
+       (3, &#x27;web&#x27;, 0, &#x27;/**&#x27;, &#x27;web&#x27;, 2, 1, 0, &#x27;2023-06-20 15:19:12&#x27;, 1);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role`
+(
+    `id`             int(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;角色自增ID&#x27;,
+    `role_name`      varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT &#x27;角色名&#x27;,
+    `deleted`        tinyint(1) NULL DEFAULT NULL COMMENT &#x27;0:启用,1:删除&#x27;,
+    `sort`           int(11) NULL DEFAULT NULL COMMENT &#x27;排序&#x27;,
+    `create_time`    datetime(0) NOT NULL COMMENT &#x27;创建时间&#x27;,
+    `create_user_id` int(11) NOT NULL COMMENT &#x27;创建人&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = &#x27;系统角色表&#x27;;
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_role`
+VALUES (1, &#x27;管理员&#x27;, 0, 0, &#x27;2022-03-25 23:51:04&#x27;, 1);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_role_authority
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_authority`;
+CREATE TABLE `sys_role_authority`
+(
+    `id`           int(11) NOT NULL AUTO_INCREMENT COMMENT &#x27;角色菜单关联表自增ID&#x27;,
+    `role_id`      int(16) NOT NULL COMMENT &#x27;角色ID&#x27;,
+    `authority_id` int(11) NOT NULL COMMENT &#x27;权限菜单ID&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = &#x27;角色菜单多对多关联表&#x27;;
+
+-- ----------------------------
+-- Records of sys_role_authority
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_role_authority`
+VALUES (1, 1, 1),
+       (2, 1, 2),
+       (3, 1, 3);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for sys_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_role`;
+CREATE TABLE `sys_user_role`
+(
+    `id`      int(11) NOT NULL AUTO_INCREMENT,
+    `role_id` int(16) NULL DEFAULT NULL COMMENT &#x27;角色ID&#x27;,
+    `user_id` int(18) NULL DEFAULT NULL COMMENT &#x27;用户ID&#x27;,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci;
+
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+BEGIN;
+INSERT INTO `sys_user_role`
+VALUES (1, 1, 1);
+COMMIT;
+
+SET
+FOREIGN_KEY_CHECKS = 1;
+</code></pre>
+<h2 id="四通过代码生成器生成entitymappermapper文件">四、通过代码生成器生成entity、mapper、mapper文件</h2>
+<p>这些东西在使用MybatisPlus时基本是固定的，所以没必要去浪费时间，直接通过生成器生成代码。
+<a href="https://www.baomidou.com/pages/779a6e/#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8">文档地址</a></p>
+<h3 id="1-项目中引入生成器依赖">1. 项目中引入生成器依赖</h3>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.baomidou&lt;/groupId&gt;
+    &lt;artifactId&gt;mybatis-plus-generator&lt;/artifactId&gt;
+    &lt;version&gt;3.5.3.1&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.velocity&lt;/groupId&gt;
+    &lt;artifactId&gt;velocity-engine-core&lt;/artifactId&gt;
+    &lt;version&gt;2.3&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="2-编写生成代码">2. 编写生成代码</h3>
+<pre><code class="language-java">package com.example;
+
+import com.baomidou.mybatisplus.generator.FastAutoGenerator;
+import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * 代码生成测试
+ *
+ * @author vains
+ */
+public class CodeGeneratorTest {
+
+    private static final DataSourceConfig.Builder DATA_SOURCE_CONFIG = new DataSourceConfig.Builder(&quot;jdbc:mysql://localhost:3306/authorization-example?serverTimezone=UTC&amp;userUnicode=true&amp;characterEncoding=utf-8&quot;, &quot;root&quot;, &quot;root&quot;);
+
+    public static void main(String[] args) {
+        FastAutoGenerator.create(DATA_SOURCE_CONFIG)
+                // 全局配置
+                .globalConfig((scanner, builder) -&gt; builder.author(scanner.apply(&quot;请输入作者名称？&quot;)).fileOverride())
+                // 包配置
+                .packageConfig((scanner, builder) -&gt; builder.parent(scanner.apply(&quot;请输入包名？&quot;)))
+                // 策略配置
+                .strategyConfig((scanner, builder) -&gt; builder.addInclude(getTables(scanner.apply(&quot;请输入表名，多个英文逗号分隔？所有输入 all&quot;)))
+                        .controllerBuilder().enableRestStyle().enableHyphenStyle()
+                        .entityBuilder().enableLombok()
+//                        .addTableFills(
+//                                new Column(&quot;create_time&quot;, FieldFill.INSERT)
+//                        )
+                        .build())
+                /*
+                    模板引擎配置，默认 Velocity 可选模板引擎 Beetl 或 Freemarker
+                   .templateEngine(new BeetlTemplateEngine())
+                   .templateEngine(new FreemarkerTemplateEngine())
+                 */
+                .execute();
+    }
+
+    protected static List&lt;String&gt; getTables(String tables) {
+        return &quot;all&quot;.equals(tables) ? Collections.emptyList() : Arrays.asList(tables.split(&quot;,&quot;));
+    }
+
+}
+</code></pre>
+<h3 id="3-说明">3. 说明</h3>
+<p>生成后代码会在D盘根目录下，按照控制台提示输入包名、作者和表名就会在d盘根目录生成对应的持久层代码，生成的代码就不贴出来了，太长了，后边会贴出核心代码；结构如下</p>
+<h2 id="五实现自定义的userdetailsservice">五、实现自定义的<code>UserDetailsService</code></h2>
+<h3 id="1-oauth2basicuser实体类实现userdetails接口">1. <code>Oauth2BasicUser</code>实体类实现<code>UserDetails</code>接口</h3>
+<p>实现该接口的原因有两个，</p>
+<ul>
+<li>一是可以用自己的用户属性替换框架默认的用户属性，</li>
+<li>二是因为<code>UserDetailsService</code>的<code>loadUserByUsername</code>方法返回的类型只能是<code>UserDetails</code>及其子类。</li>
+</ul>
+<p>有就是要注意非数据库字段要添加注解<code>@TableField(exist = false)</code>声明该字段非数据库列，如下边代码中的<code>authorities</code>属性</p>
+<pre><code class="language-java">package com.example.entity;
+
+import com.baomidou.mybatisplus.annotation.*;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Collection;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+/**
+ * &lt;p&gt;
+ * 基础用户信息表
+ * &lt;/p&gt;
+ *
+ * @author vains
+ */
+@Getter
+@Setter
+@JsonSerialize
+@TableName(&quot;oauth2_basic_user&quot;)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Oauth2BasicUser implements UserDetails, Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 自增id
+     */
+    @TableId(value = &quot;id&quot;, type = IdType.AUTO)
+    private Integer id;
+
+    /**
+     * 用户名、昵称
+     */
+    private String name;
+
+    /**
+     * 账号
+     */
+    private String account;
+
+    /**
+     * 密码
+     */
+    private String password;
+
+    /**
+     * 手机号
+     */
+    private String mobile;
+
+    /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
+     * 头像地址
+     */
+    private String avatarUrl;
+
+    /**
+     * 是否已删除
+     */
+    private Boolean deleted;
+
+    /**
+     * 用户来源
+     */
+    private String sourceFrom;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private LocalDateTime createTime;
+
+    /**
+     * 修改时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
+
+    /**
+     * 权限信息
+     *  非数据库字段
+     */
+    @TableField(exist = false)
+    private Collection&lt;? extends GrantedAuthority&gt; authorities;
+
+    @Override
+    public Collection&lt;? extends GrantedAuthority&gt; getAuthorities() {
+        return this.authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.account;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return !this.deleted;
+    }
+}
+</code></pre>
+<h3 id="2-oauth2basicuserserviceimpl实现userdetailsservice接口">2. <code>Oauth2BasicUserServiceImpl</code>实现<code>UserDetailsService</code>接口</h3>
+<pre><code class="language-java">package com.example.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.entity.Oauth2BasicUser;
+import com.example.entity.SysAuthority;
+import com.example.entity.SysRoleAuthority;
+import com.example.entity.SysUserRole;
+import com.example.mapper.Oauth2BasicUserMapper;
+import com.example.mapper.SysAuthorityMapper;
+import com.example.mapper.SysRoleAuthorityMapper;
+import com.example.mapper.SysUserRoleMapper;
+import com.example.service.IOauth2BasicUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+/**
+ * &lt;p&gt;
+ * 基础用户信息表 服务实现类
+ * &lt;/p&gt;
+ *
+ * @author vains
+ */
+@Service
+@RequiredArgsConstructor
+public class Oauth2BasicUserServiceImpl extends ServiceImpl&lt;Oauth2BasicUserMapper, Oauth2BasicUser&gt; implements IOauth2BasicUserService, UserDetailsService {
+
+    private final SysUserRoleMapper sysUserRoleMapper;
+
+    private final SysAuthorityMapper sysAuthorityMapper;
+
+    private final SysRoleAuthorityMapper sysRoleAuthorityMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 在Security中“username”就代表了用户登录时输入的账号，在重写该方法时它可以代表以下内容：账号、手机号、邮箱、姓名等
+        // “username”在数据库中不一定非要是一样的列，它可以是手机号、邮箱，也可以都是，最主要的目的就是根据输入的内容获取到对应的用户信息，如下方所示
+        // 通过传入的账号信息查询对应的用户信息
+        LambdaQueryWrapper&lt;Oauth2BasicUser&gt; wrapper = Wrappers.lambdaQuery(Oauth2BasicUser.class)
+                .or(o -&gt; o.eq(Oauth2BasicUser::getEmail, username))
+                .or(o -&gt; o.eq(Oauth2BasicUser::getMobile, username))
+                .or(o -&gt; o.eq(Oauth2BasicUser::getAccount, username));
+        Oauth2BasicUser basicUser = baseMapper.selectOne(wrapper);
+        if (basicUser == null) {
+            throw new UsernameNotFoundException(&quot;账号不存在&quot;);
+        }
+
+        // 通过用户角色关联表查询对应的角色
+        List&lt;SysUserRole&gt; userRoles = sysUserRoleMapper.selectList(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserId, basicUser.getId()));
+        List&lt;Integer&gt; rolesId = Optional.ofNullable(userRoles).orElse(Collections.emptyList()).stream().map(SysUserRole::getRoleId).collect(Collectors.toList());
+        if (ObjectUtils.isEmpty(rolesId)) {
+            return basicUser;
+        }
+        // 通过角色菜单关联表查出对应的菜单
+        List&lt;SysRoleAuthority&gt; roleMenus = sysRoleAuthorityMapper.selectList(Wrappers.lambdaQuery(SysRoleAuthority.class).in(SysRoleAuthority::getRoleId, rolesId));
+        List&lt;Integer&gt; menusId = Optional.ofNullable(roleMenus).orElse(Collections.emptyList()).stream().map(SysRoleAuthority::getAuthorityId).collect(Collectors.toList());
+        if (ObjectUtils.isEmpty(menusId)) {
+            return basicUser;
+        }
+
+        // 根据菜单ID查出菜单
+        List&lt;SysAuthority&gt; menus = sysAuthorityMapper.selectBatchIds(menusId);
+        Set&lt;SimpleGrantedAuthority&gt; authorities = Optional.ofNullable(menus).orElse(Collections.emptyList()).stream().map(SysAuthority::getUrl).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+        basicUser.setAuthorities(authorities);
+        return basicUser;
+    }
+}
+</code></pre>
+<h3 id="3-编写mybatisplus配置类">3. 编写MybatisPlus配置类</h3>
+<pre><code class="language-java">package com.example.config;
+
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import org.apache.ibatis.reflection.MetaObject;
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.time.LocalDateTime;
+
+/**
+ * MybatisPlus分页插件
+ *
+ * @author vains
+ */
+@Configuration
+// Mapper接口的包路径，记得替换为自己的mapper接口包路径
+@MapperScan(&quot;com.example.mapper&quot;)
+public class MybatisPlusConfig {
+
+    /**
+     * 新的分页插件,一缓和二缓遵循mybatis的规则,
+     * 需要设置 MybatisConfiguration#useDeprecatedExecutor = false
+     * 避免缓存出现问题(该属性会在旧插件移除后一同移除)
+     */
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        return interceptor;
+    }
+
+    /**
+     * 这里对应的是实体类中的`@TableField(fill = FieldFill.INSERT_UPDATE)`注解
+     * fill的值可以是INSERT、UPDATE和INSERT_UPDATE
+     * INSERT：插入时填充字段
+     * UPDATE：修改时填充字段
+     * INSERT_UPDATE：插入与修改时都触发
+     */
+    @Bean
+    public MetaObjectHandler metaObjectHandler() {
+        return new MetaObjectHandler() {
+
+            @Override
+            public void insertFill(MetaObject metaObject) {
+                // 添加自动填充逻辑
+                this.strictInsertFill(metaObject, &quot;createTime&quot;, LocalDateTime::now, LocalDateTime.class);
+                this.strictInsertFill(metaObject, &quot;updateTime&quot;, LocalDateTime::now, LocalDateTime.class);
+            }
+
+            @Override
+            public void updateFill(MetaObject metaObject) {
+                // 修改自动填充逻辑
+                this.strictUpdateFill(metaObject, &quot;updateTime&quot;, LocalDateTime::now, LocalDateTime.class);
+            }
+
+        };
+    }
+
+}
+</code></pre>
+<h3 id="4-applicationyml中添加配置">4. <code>application.yml</code>中添加配置</h3>
+<pre><code class="language-yml">spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/authorization-example?serverTimezone=UTC&amp;userUnicode=true&amp;characterEncoding=utf-8
+    username: root
+    password: root
+
+# Mybatis-Plus 配置
+mybatis-plus:
+  # 扫描mapper文件
+  mapper-locations:
+    - classpath:com/vains/mapper/xml/*Mapper.xml
+</code></pre>
+<h3 id="5-移除authorizationconfig的用户配置">5. 移除<code>AuthorizationConfig</code>的用户配置</h3>
+<p>完整代码如下</p>
+<pre><code class="language-java">package com.example.config;
+
+import com.example.authorization.device.DeviceClientAuthenticationConverter;
+import com.example.authorization.device.DeviceClientAuthenticationProvider;
+import com.example.authorization.sms.SmsCaptchaGrantAuthenticationConverter;
+import com.example.authorization.sms.SmsCaptchaGrantAuthenticationProvider;
+import com.example.constant.SecurityConstants;
+import com.example.util.SecurityUtils;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+import lombok.SneakyThrows;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.util.*;
+import java.util.stream.Collectors;
+
+/**
+ * 认证配置
+ * {@link EnableMethodSecurity} 开启全局方法认证，启用JSR250注解支持，启用注解 {@link Secured} 支持，
+ * 在Spring Security 6.0版本中将@Configuration注解从@EnableWebSecurity, @EnableMethodSecurity, @EnableGlobalMethodSecurity
+ * 和 @EnableGlobalAuthentication 中移除，使用这些注解需手动添加 @Configuration 注解
+ * {@link EnableWebSecurity} 注解有两个作用:
+ * 1. 加载了WebSecurityConfiguration配置类, 配置安全认证策略。
+ * 2. 加载了AuthenticationConfiguration, 配置了认证信息。
+ *
+ * @author vains
+ */
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
+public class AuthorizationConfig {
+
+    private static final String CUSTOM_CONSENT_PAGE_URI = &quot;/oauth2/consent&quot;;
+
+    /**
+     * 配置端点的过滤器链
+     *
+     * @param http spring security核心配置类
+     * @return 过滤器链
+     * @throws Exception 抛出
+     */
+    @Bean
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
+                                                                      RegisteredClientRepository registeredClientRepository,
+                                                                      AuthorizationServerSettings authorizationServerSettings) throws Exception {
+        // 配置默认的设置，忽略认证端点的csrf校验
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+
+        // 新建设备码converter和provider
+        DeviceClientAuthenticationConverter deviceClientAuthenticationConverter =
+                new DeviceClientAuthenticationConverter(
+                        authorizationServerSettings.getDeviceAuthorizationEndpoint());
+        DeviceClientAuthenticationProvider deviceClientAuthenticationProvider =
+                new DeviceClientAuthenticationProvider(registeredClientRepository);
+
+
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                // 开启OpenID Connect 1.0协议相关端点
+                .oidc(Customizer.withDefaults())
+                // 设置自定义用户确认授权页
+                .authorizationEndpoint(authorizationEndpoint -&gt; authorizationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI))
+                // 设置设备码用户验证url(自定义用户验证页)
+                .deviceAuthorizationEndpoint(deviceAuthorizationEndpoint -&gt;
+                        deviceAuthorizationEndpoint.verificationUri(&quot;/activate&quot;)
+                )
+                // 设置验证设备码用户确认页面
+                .deviceVerificationEndpoint(deviceVerificationEndpoint -&gt;
+                        deviceVerificationEndpoint.consentPage(CUSTOM_CONSENT_PAGE_URI)
+                )
+                .clientAuthentication(clientAuthentication -&gt;
+                        // 客户端认证添加设备码的converter和provider
+                        clientAuthentication
+                                .authenticationConverter(deviceClientAuthenticationConverter)
+                                .authenticationProvider(deviceClientAuthenticationProvider)
+                );
+        http
+                // 当未登录时访问认证端点时重定向至login页面
+                .exceptionHandling((exceptions) -&gt; exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint(&quot;/login&quot;),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                )
+                // 处理使用access token访问用户信息端点和客户端注册端点
+                .oauth2ResourceServer((resourceServer) -&gt; resourceServer
+                        .jwt(Customizer.withDefaults()));
+
+        // 自定义短信认证登录转换器
+        SmsCaptchaGrantAuthenticationConverter converter = new SmsCaptchaGrantAuthenticationConverter();
+        // 自定义短信认证登录认证提供
+        SmsCaptchaGrantAuthenticationProvider provider = new SmsCaptchaGrantAuthenticationProvider();
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                // 让认证服务器元数据中有自定义的认证方式
+                .authorizationServerMetadataEndpoint(metadata -&gt; metadata.authorizationServerMetadataCustomizer(customizer -&gt; customizer.grantType(SecurityConstants.GRANT_TYPE_SMS_CODE)))
+                // 添加自定义grant_type——短信认证登录
+                .tokenEndpoint(tokenEndpoint -&gt; tokenEndpoint
+                        .accessTokenRequestConverter(converter)
+                        .authenticationProvider(provider));
+
+        DefaultSecurityFilterChain build = http.build();
+
+        // 从框架中获取provider中所需的bean
+        OAuth2TokenGenerator&lt;?&gt; tokenGenerator = http.getSharedObject(OAuth2TokenGenerator.class);
+        AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
+        OAuth2AuthorizationService authorizationService = http.getSharedObject(OAuth2AuthorizationService.class);
+        // 以上三个bean在build()方法之后调用是因为调用build方法时框架会尝试获取这些类，
+        // 如果获取不到则初始化一个实例放入SharedObject中，所以要在build方法调用之后获取
+        // 在通过set方法设置进provider中，但是如果在build方法之后调用authenticationProvider(provider)
+        // 框架会提示unsupported_grant_type，因为已经初始化完了，在添加就不会生效了
+        provider.setTokenGenerator(tokenGenerator);
+        provider.setAuthorizationService(authorizationService);
+        provider.setAuthenticationManager(authenticationManager);
+
+        return build;
+    }
+
+    /**
+     * 配置认证相关的过滤器链
+     *
+     * @param http spring security核心配置类
+     * @return 过滤器链
+     * @throws Exception 抛出
+     */
+    @Bean
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests((authorize) -&gt; authorize
+                        // 放行静态资源
+                        .requestMatchers(&quot;/assets/**&quot;, &quot;/webjars/**&quot;, &quot;/login&quot;, &quot;/getCaptcha&quot;, &quot;/getSmsCaptcha&quot;).permitAll()
+                        .anyRequest().authenticated()
+                )
+                // 指定登录页面
+                .formLogin(formLogin -&gt;
+                        formLogin.loginPage(&quot;/login&quot;)
+                );
+        // 添加BearerTokenAuthenticationFilter，将认证服务当做一个资源服务，解析请求头中的token
+        http.oauth2ResourceServer((resourceServer) -&gt; resourceServer
+                .jwt(Customizer.withDefaults())
+                .accessDeniedHandler(SecurityUtils::exceptionHandler)
+                .authenticationEntryPoint(SecurityUtils::exceptionHandler)
+        );
+
+        return http.build();
+    }
+
+    /**
+     * 自定义jwt，将权限信息放至jwt中
+     *
+     * @return OAuth2TokenCustomizer的实例
+     */
+    @Bean
+    public OAuth2TokenCustomizer&lt;JwtEncodingContext&gt; oAuth2TokenCustomizer() {
+        return context -&gt; {
+            // 检查登录用户信息是不是UserDetails，排除掉没有用户参与的流程
+            if (context.getPrincipal().getPrincipal() instanceof UserDetails user) {
+                // 获取申请的scopes
+                Set&lt;String&gt; scopes = context.getAuthorizedScopes();
+                // 获取用户的权限
+                Collection&lt;? extends GrantedAuthority&gt; authorities = user.getAuthorities();
+                // 提取权限并转为字符串
+                Set&lt;String&gt; authoritySet = Optional.ofNullable(authorities).orElse(Collections.emptyList()).stream()
+                        // 获取权限字符串
+                        .map(GrantedAuthority::getAuthority)
+                        // 去重
+                        .collect(Collectors.toSet());
+
+                // 合并scope与用户信息
+                authoritySet.addAll(scopes);
+
+                JwtClaimsSet.Builder claims = context.getClaims();
+                // 将权限信息放入jwt的claims中（也可以生成一个以指定字符分割的字符串放入）
+                claims.claim(SecurityConstants.AUTHORITIES_KEY, authoritySet);
+                // 放入其它自定内容
+                // 角色、头像...
+            }
+        };
+    }
+
+    /**
+     * 自定义jwt解析器，设置解析出来的权限信息的前缀与在jwt中的key
+     *
+     * @return jwt解析器 JwtAuthenticationConverter
+     */
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        // 设置解析权限信息的前缀，设置为空是去掉前缀
+        grantedAuthoritiesConverter.setAuthorityPrefix(&quot;&quot;);
+        // 设置权限信息在jwt claims中的key
+        grantedAuthoritiesConverter.setAuthoritiesClaimName(SecurityConstants.AUTHORITIES_KEY);
+
+        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+        return jwtAuthenticationConverter;
+    }
+
+
+    /**
+     * 将AuthenticationManager注入ioc中，其它需要使用地方可以直接从ioc中获取
+     * @param authenticationConfiguration 导出认证配置
+     * @return AuthenticationManager 认证管理器
+     */
+    @Bean
+    @SneakyThrows
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    /**
+     * 配置密码解析器，使用BCrypt的方式对密码进行加密和验证
+     *
+     * @return BCryptPasswordEncoder
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * 配置客户端Repository
+     *
+     * @param jdbcTemplate    db 数据源信息
+     * @param passwordEncoder 密码解析器
+     * @return 基于数据库的repository
+     */
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate, PasswordEncoder passwordEncoder) {
+        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                // 客户端id
+                .clientId(&quot;messaging-client&quot;)
+                // 客户端秘钥，使用密码解析器加密
+                .clientSecret(passwordEncoder.encode(&quot;123456&quot;))
+                // 客户端认证方式，基于请求头的认证
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                // 配置资源服务器使用该客户端获取授权时支持的方式
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                // 客户端添加自定义认证
+                .authorizationGrantType(new AuthorizationGrantType(SecurityConstants.GRANT_TYPE_SMS_CODE))
+                // 授权码模式回调地址，oauth2.1已改为精准匹配，不能只设置域名，并且屏蔽了localhost，本机使用127.0.0.1访问
+                .redirectUri(&quot;http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc&quot;)
+                .redirectUri(&quot;https://www.baidu.com&quot;)
+                // 该客户端的授权范围，OPENID与PROFILE是IdToken的scope，获取授权时请求OPENID的scope时认证服务会返回IdToken
+                .scope(OidcScopes.OPENID)
+                .scope(OidcScopes.PROFILE)
+                // 自定scope
+                .scope(&quot;message.read&quot;)
+                .scope(&quot;message.write&quot;)
+                // 客户端设置，设置用户需要确认授权
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+                .build();
+
+        // 基于db存储客户端，还有一个基于内存的实现 InMemoryRegisteredClientRepository
+        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
+
+        // 初始化客户端
+        RegisteredClient repositoryByClientId = registeredClientRepository.findByClientId(registeredClient.getClientId());
+        if (repositoryByClientId == null) {
+            registeredClientRepository.save(registeredClient);
+        }
+        // 设备码授权客户端
+        RegisteredClient deviceClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId(&quot;device-message-client&quot;)
+                // 公共客户端
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                // 设备码授权
+                .authorizationGrantType(AuthorizationGrantType.DEVICE_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                // 自定scope
+                .scope(&quot;message.read&quot;)
+                .scope(&quot;message.write&quot;)
+                .build();
+        RegisteredClient byClientId = registeredClientRepository.findByClientId(deviceClient.getClientId());
+        if (byClientId == null) {
+            registeredClientRepository.save(deviceClient);
+        }
+
+        // PKCE客户端
+        RegisteredClient pkceClient = RegisteredClient.withId(UUID.randomUUID().toString())
+                .clientId(&quot;pkce-message-client&quot;)
+                // 公共客户端
+                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+                // 授权码模式，因为是扩展授权码流程，所以流程还是授权码的流程，改变的只是参数
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                // 授权码模式回调地址，oauth2.1已改为精准匹配，不能只设置域名，并且屏蔽了localhost，本机使用127.0.0.1访问
+                .redirectUri(&quot;http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc&quot;)
+                .clientSettings(ClientSettings.builder().requireProofKey(Boolean.TRUE).build())
+                // 自定scope
+                .scope(&quot;message.read&quot;)
+                .scope(&quot;message.write&quot;)
+                .build();
+        RegisteredClient findPkceClient = registeredClientRepository.findByClientId(pkceClient.getClientId());
+        if (findPkceClient == null) {
+            registeredClientRepository.save(pkceClient);
+        }
+        return registeredClientRepository;
+    }
+
+    /**
+     * 配置基于db的oauth2的授权管理服务
+     *
+     * @param jdbcTemplate               db数据源信息
+     * @param registeredClientRepository 上边注入的客户端repository
+     * @return JdbcOAuth2AuthorizationService
+     */
+    @Bean
+    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        // 基于db的oauth2认证服务，还有一个基于内存的服务实现InMemoryOAuth2AuthorizationService
+        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
+    }
+
+    /**
+     * 配置基于db的授权确认管理服务
+     *
+     * @param jdbcTemplate               db数据源信息
+     * @param registeredClientRepository 客户端repository
+     * @return JdbcOAuth2AuthorizationConsentService
+     */
+    @Bean
+    public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        // 基于db的授权确认管理服务，还有一个基于内存的服务实现InMemoryOAuth2AuthorizationConsentService
+        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+    }
+
+    /**
+     * 配置jwk源，使用非对称加密，公开用于检索匹配指定选择器的JWK的方法
+     *
+     * @return JWKSource
+     */
+    @Bean
+    public JWKSource&lt;SecurityContext&gt; jwkSource() {
+        KeyPair keyPair = generateRsaKey();
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+        RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+        RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .keyID(UUID.randomUUID().toString())
+                .build();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return new ImmutableJWKSet&lt;&gt;(jwkSet);
+    }
+
+    /**
+     * 生成rsa密钥对，提供给jwk
+     *
+     * @return 密钥对
+     */
+    private static KeyPair generateRsaKey() {
+        KeyPair keyPair;
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(&quot;RSA&quot;);
+            keyPairGenerator.initialize(2048);
+            keyPair = keyPairGenerator.generateKeyPair();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+        return keyPair;
+    }
+
+    /**
+     * 配置jwt解析器
+     *
+     * @param jwkSource jwk源
+     * @return JwtDecoder
+     */
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource&lt;SecurityContext&gt; jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
+
+    /**
+     * 添加认证服务器配置，设置jwt签发者、默认端点请求地址等
+     *
+     * @return AuthorizationServerSettings
+     */
+    @Bean
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder()
+                /*
+                    设置token签发地址(http(s)://{ip}:{port}/context-path, http(s)://domain.com/context-path)
+                    如果需要通过ip访问这里就是ip，如果是有域名映射就填域名，通过什么方式访问该服务这里就填什么
+                 */
+                .issuer(&quot;http://192.168.120.33:8080&quot;)
+                .build();
+    }
+
+}
+</code></pre>
+<p>到这里就完成了自定义的<code>UserDetailsService</code></p>
+<h2 id="六测试">六、测试</h2>
+<h3 id="1-访问oauth2authorize接口">1. 访问<code>/oauth2/authorize</code>接口</h3>
+<pre><code class="language-shell">http://127.0.0.1:8080/oauth2/authorize?response_type=code&amp;client_id=pkce-message-client&amp;redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc&amp;scope=message.read&amp;code_challenge=kfis_wJYpmCAPO-Ap1Sc6GXyz_x2dhhMsm9FOA7eEWY&amp;code_challenge_method=S256
+</code></pre>
+<p>重定向至登录页面</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/100-1-62ca952608dc6f25588c307c2c14b379.webp" width="1512" height="742"></p>
+<h3 id="2-输入数据库中的手机号或者邮箱">2. 输入数据库中的手机号或者邮箱</h3>
+<p><img alt="img" src="/light-docusaurus/assets/images/100-2-1e27becb17488332d97ef5316b87460a.webp" width="1512" height="742"></p>
+<h3 id="3-登录成功后携带code重定向至回调地址">3. 登录成功后携带code重定向至回调地址</h3>
+<p><img alt="img" src="/light-docusaurus/assets/images/100-3-ae906c65f2bbd8456b138ccb858c7030.webp" width="1512" height="772"></p>
+<h2 id="七框架在什么时候调用自定义的userdetailsservice">七、框架在什么时候调用自定义的<code>UserDetailsService</code></h2>
+<p>在<code>loadUserByUsername</code>方法中打一个断点，查看请求执行经过的类，发现是在<code>DaoAuthenticationProvider</code>中调用的<code>loadUserByUsername</code>方法；所以在上边为了符合框架的规则去实现<code>UserDetails</code>与<code>UserDetailsService</code>接口，这样注入ioc中后不需要别的配置即可生效。如果看过我之前文章的读者可能就比较熟悉了，这一快儿的东西在之前的文章中也有提到过，特别是在登录添加图形验证码一文中有过详细的说明。</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/100-4-d268c742e55edc13c9eda8d7bcf001f4.webp" width="1350" height="963"></p>
+<p>代码已提交至码云<a href="https://gitee.com/vains-Sofia/authorization-example">authorization-example</a></p>
+<p>如果有什么问题请在评论区指出，以防误人子弟</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/lorchr/light-docusaurus/tree/main/docs/zh-cn/spring-authorization-server/100-SAS-Optimize-Customlize-UserDetailService.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Store-Token-And-UserInfo-With-Redis/"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">SAS-Store-Token-And-UserInfo-With-Redis</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Add-Redis-Cache/"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">SAS-Optimize-Add-Redis-Cache</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#一前言" class="table-of-contents__link toc-highlight">一、前言</a></li><li><a href="#二实现步骤" class="table-of-contents__link toc-highlight">二、实现步骤</a></li><li><a href="#三初始化数据库表结构" class="table-of-contents__link toc-highlight">三、初始化数据库表结构</a></li><li><a href="#四通过代码生成器生成entitymappermapper文件" class="table-of-contents__link toc-highlight">四、通过代码生成器生成entity、mapper、mapper文件</a><ul><li><a href="#1-项目中引入生成器依赖" class="table-of-contents__link toc-highlight">1. 项目中引入生成器依赖</a></li><li><a href="#2-编写生成代码" class="table-of-contents__link toc-highlight">2. 编写生成代码</a></li><li><a href="#3-说明" class="table-of-contents__link toc-highlight">3. 说明</a></li></ul></li><li><a href="#五实现自定义的userdetailsservice" class="table-of-contents__link toc-highlight">五、实现自定义的<code>UserDetailsService</code></a><ul><li><a href="#1-oauth2basicuser实体类实现userdetails接口" class="table-of-contents__link toc-highlight">1. <code>Oauth2BasicUser</code>实体类实现<code>UserDetails</code>接口</a></li><li><a href="#2-oauth2basicuserserviceimpl实现userdetailsservice接口" class="table-of-contents__link toc-highlight">2. <code>Oauth2BasicUserServiceImpl</code>实现<code>UserDetailsService</code>接口</a></li><li><a href="#3-编写mybatisplus配置类" class="table-of-contents__link toc-highlight">3. 编写MybatisPlus配置类</a></li><li><a href="#4-applicationyml中添加配置" class="table-of-contents__link toc-highlight">4. <code>application.yml</code>中添加配置</a></li><li><a href="#5-移除authorizationconfig的用户配置" class="table-of-contents__link toc-highlight">5. 移除<code>AuthorizationConfig</code>的用户配置</a></li></ul></li><li><a href="#六测试" class="table-of-contents__link toc-highlight">六、测试</a><ul><li><a href="#1-访问oauth2authorize接口" class="table-of-contents__link toc-highlight">1. 访问<code>/oauth2/authorize</code>接口</a></li><li><a href="#2-输入数据库中的手机号或者邮箱" class="table-of-contents__link toc-highlight">2. 输入数据库中的手机号或者邮箱</a></li><li><a href="#3-登录成功后携带code重定向至 回调地址" class="table-of-contents__link toc-highlight">3. 登录成功后携带code重定向至回调地址</a></li></ul></li><li><a href="#七框架在什么时候调用自定义的userdetailsservice" class="table-of-contents__link toc-highlight">七、框架在什么时候调用自定义的<code>UserDetailsService</code></a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/docs/category/guide/">Torch</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/middleware/">Middleware</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/electron/">Electron</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/blog/">Blog</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/diy/">DIY</a></li><li class="footer__item"><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Offical</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer" class="footer__link-item">Home<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://docusaurus.io/docs/playground" target="_blank" rel="noopener noreferrer" class="footer__link-item">Playground<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Light-Docusaurus, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

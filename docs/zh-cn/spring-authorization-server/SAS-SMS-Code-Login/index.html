@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-zh-cn/spring-authorization-server/SAS-SMS-Code-Login" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">SAS-SMS-Code-Login | Light Docusaurus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="SAS-SMS-Code-Login | Light Docusaurus"><meta data-rh="true" name="description" content="- Spring Authorization Server入门 (十) 添加短信验证码方式登录"><meta data-rh="true" property="og:description" content="- Spring Authorization Server入门 (十) 添加短信验证码方式登录"><link data-rh="true" rel="icon" href="/light-docusaurus/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://TLGHDZ3Y2I-dsn.algolia.net" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="/light-docusaurus/blog/rss.xml" title="Light Docusaurus RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/light-docusaurus/blog/atom.xml" title="Light Docusaurus Atom Feed">
+
+
+
+<link rel="search" type="application/opensearchdescription+xml" title="Light Docusaurus" href="/light-docusaurus/opensearch.xml"><link rel="stylesheet" href="/light-docusaurus/assets/css/styles.609e5209.css">
+<script src="/light-docusaurus/assets/js/runtime~main.79436775.js" defer="defer"></script>
+<script src="/light-docusaurus/assets/js/main.af3b976d.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/light-docusaurus/"><div class="navbar__logo"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Torch</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/light-docusaurus/docs/category/guide/">Torch</a><a class="navbar__item navbar__link" href="/light-docusaurus/blog/">Blog</a><a class="navbar__item navbar__link" href="/light-docusaurus/middleware/">Middleware</a><a class="navbar__item navbar__link" href="/light-docusaurus/electron/">Electron</a><a class="navbar__item navbar__link" href="/light-docusaurus/postman/">Postman</a><a class="navbar__item navbar__link" href="/light-docusaurus/diy/">DIY</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li></ul></div><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><button type="button" class="DocSearch DocSearch-Button" aria-label="搜索"><span class="DocSearch-Button-Container"><svg width="20" height="20" class="DocSearch-Search-Icon" viewBox="0 0 20 20"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="DocSearch-Button-Placeholder">搜索</span></span><span class="DocSearch-Button-Keys"></span></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/guide/">Guide</a><button aria-label="展开侧边栏分类 &#x27;Guide&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/develop-environment/">Develop Environment</a><button aria-label="展开侧边栏分类 &#x27;Develop Environment&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/java-jvm/">Java (JVM)</a><button aria-label="展开侧边栏分类 &#x27;Java (JVM)&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-boot/">Spring Boot</a><button aria-label="展开侧边栏分类 &#x27;Spring Boot&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-cloud/">Spring Cloud</a><button aria-label="展开侧边栏分类 &#x27;Spring Cloud&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-security/">Spring Security</a><button aria-label="展开侧边栏分类 &#x27;Spring Security&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/light-docusaurus/docs/category/spring-authorization-server/">Spring Authorization Server</a><button aria-label="折叠侧边栏分类 &#x27;Spring Authorization Server&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Geting-Start-Index/">SAS-Geting-Start-Index</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2.1-Protocol/">SAS-OAuth2.1-Protocol</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server/">SAS-Spring-Boot-Authorization-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server-Addition/">SAS-Spring-Boot-Authorization-Server-Addition</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Device-Authorization/">SAS-Device-Authorization</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Customlize-Exception-Configurer/">SAS-Customlize-Exception-Configurer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Token-Enhancer-And-Parser/">SAS-Token-Enhancer-And-Parser</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Image-Captcha/">SAS-Image-Captcha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Client/">SAS-OAuth2-Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Resource-Server/">SAS-OAuth2-Resource-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/">SAS-SMS-Code-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Extension-Grant-Type copy/">SAS-OAuth2-Extension-Grant-Type copy</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Frontend-Backend-Separate/">SAS-Frontend-Backend-Separate</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Github-Gitee-Login/">SAS-Github-Gitee-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Wechat-Login/">SAS-Wechat-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Separate-Authorize-And-Device-Code-Page/">SAS-Separate-Authorize-And-Device-Code-Page</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Cloud-Gateway/">SAS-Spring-Cloud-Gateway</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-Authorization-Code/">SAS-Vue-Authorization-Code</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-PKCE/">SAS-Vue-PKCE</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Store-Token-And-UserInfo-With-Redis/">SAS-Store-Token-And-UserInfo-With-Redis</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/">SAS-Optimize-Customlize-UserDetailService</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Add-Redis-Cache/">SAS-Optimize-Add-Redis-Cache</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Persistance-JWKSource/">SAS-Optimize-Persistance-JWKSource</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin/">SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-FAQ/">SAS-FAQ</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/database/">Database</a><button aria-label="展开侧边栏分类 &#x27;Database&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/git/">Git</a><button aria-label="展开侧边栏分类 &#x27;Git&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/linux/">Linux</a><button aria-label="展开侧边栏分类 &#x27;Linux&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/docker/">Docker</a><button aria-label="展开侧边栏分类 &#x27;Docker&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/kubernetes/">Kubernetes</a><button aria-label="展开侧边栏分类 &#x27;Kubernetes&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/test/">Test</a><button aria-label="展开侧边栏分类 &#x27;Test&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/others/">Others</a><button aria-label="展开侧边栏分类 &#x27;Others&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/awesome-open-source/">Awesome open source</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/windows/">Windows</a></li></ul></nav><button type="button" title="收起侧边栏" aria-label="收起侧边栏" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/light-docusaurus/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/light-docusaurus/docs/category/spring-authorization-server/"><span itemprop="name">Spring Authorization Server</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">SAS-SMS-Code-Login</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>SAS-SMS-Code-Login</h1></header><ul>
+<li><a href="https://juejin.cn/post/7245538214114492474">Spring Authorization Server入门 (十) 添加短信验证码方式登录</a></li>
+</ul>
+<h2 id="一前言">一、前言</h2>
+<p>各种网站应用的登录方式一直在往一个简单、方便且安全的方向发展，传统的账号密码已经不能满足需求了，现在通常都是短信验证码登录、扫码登录、刷脸登录等等，今天这篇文章就写一下如何使用Spring Authorization Server实现短信验证码登录；实际上这些也都是Spring security的内容。</p>
+<h2 id="二实现思路">二、实现思路</h2>
+<p>在<a href="https://juejin.cn/post/7242476048005709879">Spring Authorization Server入门 (七) 登录添加图形验证码</a>一文中本人带各位读者了解了一下登录时框架所做的处理，当页面发起post方式的<code>/login</code>请求时会由<code>UsernamePasswordAuthenticationFilter</code>拦截处理，之后从请求参数中获取账号密码生成一个<code>UsernamePasswordAuthenticationToken</code>，然后交由<code>ProviderManager</code>处理，<code>ProviderManager</code>会根据token找到<code>DaoAuthenticationProvider</code>去处理账号密码的认证，上文中添加图形验证码去拦截非法请求的逻辑便是通过继承<code>DaoAuthenticationProvider</code>并重写认证方法实现的。今天就来了解一下<code>DaoAuthenticationProvider</code>中的认证逻辑，找到校验密码的地方，然后尝试重写校验方式。</p>
+<h2 id="三账号密码认证逻辑分析">三、账号密码认证逻辑分析</h2>
+<p>在<code>DaoAuthenticationProvider</code>中搜索<code>authenticate</code>方法没有搜索到</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-1-2dbdaf5fad551e7fe5086a0e1427064d.webp" width="1362" height="866"></p>
+<p>看一下父类<code>AbstractUserDetailsAuthenticationProvider</code>中的<code>authenticate</code>方法实现</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-2-f09d7a3e1caf641919a6d0a2a7eaaf51.webp" width="1512" height="901"></p>
+<ol>
+<li>获取用户信息</li>
+<li>检查密码是否过期</li>
+<li>检查密码是否正确</li>
+</ol>
+<p>着重看一下<code>additionalAuthenticationChecks</code>方法</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-3-7fd12856c0187db202bd1cb93c87576f.webp" width="1079" height="379"></p>
+<p>这是一个抽象方法，方法注释中说明了该方法的用处，允许子类使用<code>userDetails</code>做任何附加校验，如果需要实现自定义逻辑实现应该要重写该方法以提供认证。那就说明<code>DaoAuthenticationProvider</code>也实现了该方法，来看下子类实现。</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-4-3394ee09f3beb54025a345361a84d04f.webp" width="1512" height="777"></p>
+<p>这里边做了两个校验，一个判断密码是否为空，一个判断数据库中的密码是否匹配用户输入的密码，到这里就很清晰了，写一个子类来重写该方法实现短信验证码的校验。</p>
+<h2 id="四代码实现">四、代码实现</h2>
+<h3 id="1-在authorizationcontroller接口中添加一个获取验证码的接口">1. 在<code>AuthorizationController</code>接口中添加一个获取验证码的接口</h3>
+<p>现在是demo就先固定1234</p>
+<pre><code class="language-java">@ResponseBody
+@GetMapping(&quot;/getSmsCaptcha&quot;)
+public Map&lt;String,Object&gt; getSmsCaptcha(String phone, HttpSession session) {
+    // 这里应该返回一个统一响应类，暂时使用map代替
+    Map&lt;String,Object&gt; result = new HashMap&lt;&gt;();
+    result.put(&quot;code&quot;, HttpStatus.OK.value());
+    result.put(&quot;success&quot;, true);
+    result.put(&quot;message&quot;, &quot;获取短信验证码成功.&quot;);
+    // 固定1234
+    result.put(&quot;data&quot;, &quot;1234&quot;);
+    // 存入session中
+    session.setAttribute(phone, &quot;1234&quot;);
+    return result;
+}
+</code></pre>
+<h3 id="2-authorizationconfig中放行getsmscaptcha">2. <code>AuthorizationConfig</code>中放行<code>/getSmsCaptcha</code></h3>
+<pre><code class="language-java">/**
+ * 配置认证相关的过滤器链
+ *
+ * @param http spring security核心配置类
+ * @return 过滤器链
+ * @throws Exception 抛出
+ */
+@Bean
+public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+    http.authorizeHttpRequests((authorize) -&gt; authorize
+                    // 放行静态资源
+                    .requestMatchers(&quot;/assets/**&quot;, &quot;/webjars/**&quot;, &quot;/login&quot;, &quot;/getCaptcha&quot;, &quot;/getSmsCaptcha&quot;).permitAll()
+                    .anyRequest().authenticated()
+            )
+            // 指定登录页面
+            .formLogin(formLogin -&gt;
+                    formLogin.loginPage(&quot;/login&quot;)
+            );
+    // 添加BearerTokenAuthenticationFilter，将认证服务当做一个资源服务，解析请求头中的token
+    http.oauth2ResourceServer((resourceServer) -&gt; resourceServer
+            .jwt(Customizer.withDefaults())
+            .accessDeniedHandler(SecurityUtils::exceptionHandler)
+            .authenticationEntryPoint(SecurityUtils::exceptionHandler)
+    );
+
+    return http.build();
+}
+</code></pre>
+<h3 id="3-继承captchaauthenticationprovider并重写additionalauthenticationchecks方法">3. 继承<code>CaptchaAuthenticationProvider</code>并重写<code>additionalAuthenticationChecks</code>方法</h3>
+<p>这里没有修改默认的key，如果想自定义key可以重写<code>authenticate</code>方法然后构建一个<code>UsernamePasswordAuthencationToken</code>再调用父类的<code>authenticate</code>方法就行，下方代码中有示例</p>
+<pre><code class="language-java">package com.example.authorization.sms;
+
+import com.example.authorization.captcha.CaptchaAuthenticationProvider;
+import com.example.constant.SecurityConstants;
+import com.example.exception.InvalidCaptchaException;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Objects;
+
+/**
+ * 短信验证码校验实现
+ *
+ * @author vains
+ */
+@Slf4j
+@Component
+public class SmsCaptchaLoginAuthenticationProvider extends CaptchaAuthenticationProvider {
+
+    /**
+     * 利用构造方法在通过{@link Component}注解初始化时
+     * 注入UserDetailsService和passwordEncoder，然后
+     * 设置调用父类关于这两个属性的set方法设置进去
+     *
+     * @param userDetailsService 用户服务，给框架提供用户信息
+     * @param passwordEncoder    密码解析器，用于加密和校验密码
+     */
+    public SmsCaptchaLoginAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        super(userDetailsService, passwordEncoder);
+    }
+
+    /*@Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        // 获取当前request
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            throw new InvalidCaptchaException(&quot;Failed to get the current request.&quot;);
+        }
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+        
+        // 获取手机号与验证码
+        String phone = request.getParameter(&quot;phone&quot;);
+        String smsCaptcha = request.getParameter(&quot;smsCaptcha&quot;);
+        // 非空校验
+        if (ObjectUtils.isEmpty(phone) || ObjectUtils.isEmpty(smsCaptcha)) {
+            throw new BadCredentialsException(&quot;账号密码不能为空.&quot;);
+        }
+
+        // 构建UsernamePasswordAuthenticationToken
+        UsernamePasswordAuthenticationToken unauthenticated = UsernamePasswordAuthenticationToken.unauthenticated(phone, smsCaptcha);
+        unauthenticated.setDetails(new WebAuthenticationDetails(request));
+
+        return super.authenticate(unauthenticated);
+    }*/
+
+    @Override
+    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+        log.info(&quot;Authenticate sms captcha...&quot;);
+
+        if (authentication.getCredentials() == null) {
+            this.logger.debug(&quot;Failed to authenticate since no credentials provided&quot;);
+            throw new BadCredentialsException(&quot;The sms captcha cannot be empty.&quot;);
+        }
+
+        // 获取当前request
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            throw new InvalidCaptchaException(&quot;Failed to get the current request.&quot;);
+        }
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+
+        // 获取当前登录方式
+        String loginType = request.getParameter(&quot;loginType&quot;);
+        if (Objects.equals(loginType, SecurityConstants.SMS_LOGIN_TYPE)) {
+            // 获取存入session的验证码(UsernamePasswordAuthenticationToken的principal中现在存入的是手机号)
+            String smsCaptcha = (String) request.getSession(Boolean.FALSE).getAttribute((String) authentication.getPrincipal());
+            // 校验输入的验证码是否正确(UsernamePasswordAuthenticationToken的credentials中现在存入的是输入的验证码)
+            if (!Objects.equals(smsCaptcha, authentication.getCredentials())) {
+                throw new BadCredentialsException(&quot;The sms captcha is incorrect.&quot;);
+            }
+        // 在这里也可以拓展其它登录方式，比如邮箱登录什么的
+        } else {
+            log.info(&quot;Not sms captcha loginType, exit.&quot;);
+            // 其它调用父类默认实现的密码方式登录
+            super.additionalAuthenticationChecks(userDetails, authentication);
+        }
+
+        log.info(&quot;Authenticated sms captcha.&quot;);
+    }
+}
+</code></pre>
+<p>该类继承自<code>CaptchaAuthenticationProvider</code>类, 这样就会保留图形验证码的校验流程，如果同时注入两个<code>DaoAuthenticationProvider</code>的子类则都不会生效，所以需要去除<code>CaptchaAuthenticationProvider</code>类的<code>Component</code>注解，短信验证码登录时不需要图形验证码校验的可以在<code>CaptchaAuthenticationProvider</code>类中添加一个校验，判断一下登录类型，如下</p>
+<pre><code class="language-java">package com.example.authorization.captcha;
+
+import com.example.constant.SecurityConstants;
+import com.example.exception.InvalidCaptchaException;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Objects;
+
+/**
+ * 验证码校验
+ * 注入ioc中替换原先的DaoAuthenticationProvider
+ * 在authenticate方法中添加校验验证码的逻辑
+ * 最后调用父类的authenticate方法并返回
+ *
+ * @author vains
+ */
+@Slf4j
+public class CaptchaAuthenticationProvider extends DaoAuthenticationProvider {
+
+    /**
+     * 利用构造方法在通过{@link Component}注解初始化时
+     * 注入UserDetailsService和passwordEncoder，然后
+     * 设置调用父类关于这两个属性的set方法设置进去
+     *
+     * @param userDetailsService 用户服务，给框架提供用户信息
+     * @param passwordEncoder    密码解析器，用于加密和校验密码
+     */
+    public CaptchaAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+        super.setPasswordEncoder(passwordEncoder);
+        super.setUserDetailsService(userDetailsService);
+    }
+
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.info(&quot;Authenticate captcha...&quot;);
+
+        // 获取当前request
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes == null) {
+            throw new InvalidCaptchaException(&quot;Failed to get the current request.&quot;);
+        }
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+
+        // 获取当前登录方式
+        String loginType = request.getParameter(&quot;loginType&quot;);
+        if (Objects.equals(loginType, SecurityConstants.SMS_LOGIN_TYPE)) {
+            log.info(&quot;It isn&#x27;t necessary captcha authenticate.&quot;);
+            return super.authenticate(authentication);
+        }
+
+        // 获取参数中的验证码
+        String code = request.getParameter(&quot;code&quot;);
+        if (ObjectUtils.isEmpty(code)) {
+            throw new InvalidCaptchaException(&quot;The captcha cannot be empty.&quot;);
+        }
+
+        // 获取session中存储的验证码
+        Object sessionCaptcha = request.getSession(Boolean.FALSE).getAttribute(&quot;captcha&quot;);
+        if (sessionCaptcha instanceof String sessionCode) {
+            if (!sessionCode.equalsIgnoreCase(code)) {
+                throw new InvalidCaptchaException(&quot;The captcha is incorrect.&quot;);
+            }
+        } else {
+            throw new InvalidCaptchaException(&quot;The captcha is abnormal. Obtain it again.&quot;);
+        }
+
+        log.info(&quot;Captcha authenticated.&quot;);
+        return super.authenticate(authentication);
+    }
+}
+</code></pre>
+<h3 id="4-修改登录页面添加短信验证码方式登录">4. 修改登录页面，添加短信验证码方式登录</h3>
+<p>登录页面写的比较粗糙，大家使用自己的登录页面就好，主要的就是使用短信验证码登录时提交的表单数据的key与后端对应上就行。</p>
+<p><code>login.html</code></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot;&gt;
+    &lt;meta name=&quot;viewport&quot;
+          content=&quot;width=device-width, initial-scale=1 minimum-scale=1 maximum-scale=1 user-scalable=no&quot;/&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;./assets/css/style.css&quot; type=&quot;text/css&quot;/&gt;
+    &lt;title&gt;统一认证平台&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div class=&quot;bottom-container&quot;&gt;
+&lt;/div&gt;
+&lt;!-- &lt;div th:if=&quot;${error}&quot; class=&quot;alert&quot; id=&quot;alert&quot;&gt;
+&lt;div class=&quot;error-alert&quot;&gt;
+&lt;img src=&quot;./image/logo.png&quot; alt=&quot;logo&quot; width=&quot;30&quot;&gt;
+&lt;div th:text=&quot;${error}&quot;&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt; --&gt;
+&lt;div id=&quot;error_box&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;form-container&quot;&gt;
+
+    &lt;form class=&quot;form-signin&quot; method=&quot;post&quot; th:action=&quot;@{/login}&quot;&gt;
+        &lt;input type=&quot;hidden&quot; id=&quot;loginType&quot; name=&quot;loginType&quot; value=&quot;passwordLogin&quot;/&gt;
+        &lt;!-- &lt;div th:if=&quot;${param.error}&quot; class=&quot;alert alert-danger&quot; role=&quot;alert&quot; th:text=&quot;${param}&quot;&gt;
+Invalid username or password.
+&lt;/div&gt;
+&lt;div th:if=&quot;${param.logout}&quot; class=&quot;alert alert-success&quot; role=&quot;alert&quot;&gt;
+你已经登出成功.
+&lt;/div&gt; --&gt;
+
+        &lt;!--        &lt;div class=&quot;text-placeholder&quot; style=&quot;padding-bottom: 20px;&quot;&gt;--&gt;
+        &lt;!--            平台登录--&gt;
+        &lt;!--        &lt;/div&gt;--&gt;
+        &lt;div class=&quot;welcome-text&quot;&gt;
+            &lt;img src=&quot;./assets/img/logo.png&quot; alt=&quot;logo&quot; width=&quot;60&quot;&gt;
+            &lt;span&gt;
+                    统一认证平台
+                &lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; class=&quot;form-control&quot; placeholder=&quot;手机 / 邮箱&quot;
+                   autofocus onblur=&quot;leave()&quot;/&gt;
+        &lt;/div&gt;
+        &lt;div id=&quot;passContainer&quot;&gt;
+            &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; class=&quot;form-control&quot; placeholder=&quot;请输入密码&quot;
+                   onblur=&quot;leave()&quot;/&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;code-container&quot; id=&quot;codeContainer&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;code&quot; name=&quot;code&quot; class=&quot;form-control&quot; placeholder=&quot;请输入验证码&quot;
+                   onblur=&quot;leave()&quot;/&gt;
+            &lt;img src=&quot;&quot; id=&quot;code-image&quot; onclick=&quot;getVerifyCode()&quot;/&gt;
+        &lt;/div&gt;
+        &lt;div style=&quot;display: none; margin-bottom: 0&quot; class=&quot;code-container&quot; id=&quot;smsContainer&quot;&gt;
+            &lt;input type=&quot;text&quot; name=&quot;&quot; class=&quot;form-control&quot; placeholder=&quot;请输入验证码&quot; onblur=&quot;leave()&quot;/&gt;
+            &lt;a id=&quot;getSmsCaptchaBtn&quot; class=&quot;btn btn-light btn-block bg-white getCaptcha&quot;
+               href=&quot;javascript:getSmsCaptcha()&quot;&gt;获取验证码&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;change-login-type&quot;&gt;
+            &lt;div&gt;&lt;/div&gt;
+            &lt;a id=&quot;changeLoginType&quot; href=&quot;javascript:showSmsCaptchaPage()&quot;&gt;短信验证登录&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;button class=&quot;btn btn-lg btn-primary btn-block&quot; type=&quot;submit&quot;&gt;登&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;录&lt;/button&gt;
+        &lt;!--&lt;a class=&quot;btn btn-light btn-block bg-white&quot; href=&quot;/oauth2/authorization/gitee&quot; role=&quot;link&quot; style=&quot;text-transform: none;&quot;&gt;
+Sign in with Gitee
+&lt;/a&gt;--&gt;
+        &lt;!--        &lt;div class=&quot;text-placeholder&quot;&gt;--&gt;
+        &lt;!--            第三方登录--&gt;
+        &lt;!--        &lt;/div&gt;--&gt;
+        &lt;!--        &lt;div&gt;--&gt;
+        &lt;!--            &lt;a class=&quot;btn btn-light btn-block bg-white&quot; href=&quot;/oauth2/authorization/github-idp&quot; role=&quot;link&quot;--&gt;
+        &lt;!--               style=&quot;text-transform: none;&quot;&gt;--&gt;
+        &lt;!--                &lt;img width=&quot;24&quot; style=&quot;margin-right: 5px;&quot; alt=&quot;Sign in with GitHub&quot;--&gt;
+        &lt;!--                     src=&quot;https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png&quot; /&gt;--&gt;
+        &lt;!--                Github--&gt;
+        &lt;!--            &lt;/a&gt;--&gt;
+        &lt;!--        &lt;/div&gt;--&gt;
+    &lt;/form&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+&lt;script&gt;
+    function showSmsCaptchaPage() {
+        // 隐藏密码框
+        let passContainer = document.getElementById(&#x27;passContainer&#x27;);
+        passContainer.style.display = &#x27;none&#x27;;
+        // 设置password输入框的name为空
+        passContainer.children[0].setAttribute(&#x27;name&#x27;, &#x27;&#x27;)
+        // 隐藏验证码框
+        let codeContainer = document.getElementById(&#x27;codeContainer&#x27;);
+        codeContainer.style.display = &#x27;none&#x27;;
+        // 设置登录类型为短信验证码
+        let loginType = document.getElementById(&#x27;loginType&#x27;);
+        loginType.value = &#x27;smsCaptcha&#x27;;
+        // 显示获取短信验证码按钮与输入框
+        let smsContainer = document.getElementById(&#x27;smsContainer&#x27;);
+        smsContainer.style.display = &#x27;&#x27;;
+        smsContainer.children[0].setAttribute(&#x27;name&#x27;, &#x27;password&#x27;)
+        // 设置切换按钮文字与点击效果
+        let changeLoginType = document.getElementById(&#x27;changeLoginType&#x27;);
+        changeLoginType.innerText = &#x27;账号密码登录&#x27;;
+        changeLoginType.setAttribute(&#x27;href&#x27;, &#x27;javascript:showPasswordPage()&#x27;)
+        changeLoginType.style.paddingTop = &#x27;25px&#x27;;
+        changeLoginType.style.paddingBottom = &#x27;5px&#x27;;
+    }
+
+    function showPasswordPage() {
+        // 显示密码框
+        let passContainer = document.getElementById(&#x27;passContainer&#x27;);
+        passContainer.style.display = &#x27;&#x27;;
+        // 设置password输入框
+        passContainer.children[0].setAttribute(&#x27;name&#x27;, &#x27;password&#x27;)
+        // 显示验证码框
+        let codeContainer = document.getElementById(&#x27;codeContainer&#x27;);
+        codeContainer.style.display = &#x27;&#x27;;
+        // 设置登录类型为账号密码
+        let loginType = document.getElementById(&#x27;loginType&#x27;);
+        loginType.value = &#x27;passwordLogin&#x27;;
+        // 隐藏获取短信验证码按钮与输入框
+        let smsContainer = document.getElementById(&#x27;smsContainer&#x27;);
+        smsContainer.style.display = &#x27;none&#x27;;
+        smsContainer.children[0].setAttribute(&#x27;name&#x27;, &#x27;&#x27;)
+        // 设置切换按钮文字与点击效果
+        let changeLoginType = document.getElementById(&#x27;changeLoginType&#x27;);
+        changeLoginType.innerText = &#x27;短信验证登录&#x27;
+        changeLoginType.setAttribute(&#x27;href&#x27;, &#x27;javascript:showSmsCaptchaPage()&#x27;)
+        changeLoginType.style.paddingTop = &#x27;0&#x27;;
+    }
+
+    function leave() {
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+    }
+
+    function getVerifyCode() {
+        let requestOptions = {
+            method: &#x27;GET&#x27;,
+            redirect: &#x27;follow&#x27;
+        };
+
+        fetch(`${window.location.origin}/getCaptcha`, requestOptions)
+            .then(response =&gt; response.text())
+            .then(r =&gt; {
+                if (r) {
+                    let result = JSON.parse(r);
+                    document.getElementById(&#x27;code-image&#x27;).src = result.data
+                }
+            })
+            .catch(error =&gt; console.log(&#x27;error&#x27;, error));
+    }
+
+    function getSmsCaptcha() {
+
+        let phone = document.getElementById(&#x27;username&#x27;).value;
+        if (phone === null || phone === &#x27;&#x27; || typeof phone === &#x27;undefined&#x27;) {
+            showError(&#x27;手机号码不能为空.&#x27;)
+            return;
+        }
+
+        // 禁用按钮
+        let getSmsCaptchaBtn = document.getElementById(&#x27;getSmsCaptchaBtn&#x27;);
+        getSmsCaptchaBtn.style.pointerEvents = &#x27;none&#x27;;
+        // 开始1分钟倒计时
+        resetBtn(getSmsCaptchaBtn);
+
+        let requestOptions = {
+            method: &#x27;GET&#x27;,
+            redirect: &#x27;follow&#x27;
+        };
+
+        fetch(`${window.location.origin}/getSmsCaptcha?phone=${phone}`, requestOptions)
+            .then(response =&gt; response.text())
+            .then(r =&gt; {
+                if (r) {
+                    let result = JSON.parse(r);
+                    if (result.success) {
+                        showError(&#x27;获取验证码成功.固定为：&#x27; + result.data)
+                    }
+                }
+            })
+            .catch(error =&gt; console.log(&#x27;error&#x27;, error));
+    }
+
+    /**
+     * 1分钟倒计时
+     */
+    function resetBtn(getSmsCaptchaBtn) {
+        let s = 60;
+        getSmsCaptchaBtn.innerText = `重新获取(${--s})`
+        // 定时器 每隔一秒变化一次（1000ms = 1s）
+        let t = setInterval(() =&gt; {
+            getSmsCaptchaBtn.innerText = `重新获取(${--s})`
+            if (s === 0) {
+                clearInterval(t)
+                getSmsCaptchaBtn.innerText = &#x27;获取验证码&#x27;
+                getSmsCaptchaBtn.style.pointerEvents = &#x27;&#x27;;
+            }
+        }, 1000);
+
+    }
+
+    getVerifyCode();
+&lt;/script&gt;
+&lt;script th:inline=&quot;javascript&quot;&gt;
+
+    function showError(message) {
+        let errorBox = document.getElementById(&quot;error_box&quot;);
+        errorBox.innerHTML = message;
+        errorBox.style.display = &quot;block&quot;;
+        setTimeout(() =&gt; {
+            closeError();
+        }, 3000)
+    }
+
+    function closeError() {
+        let errorBox = document.getElementById(&quot;error_box&quot;);
+        errorBox.style.display = &quot;none&quot;;
+    }
+
+    let error = [[${ error }]]
+    if (error) {
+        if (window.Notification) {
+            Notification.requestPermission(function () {
+                if (Notification.permission === &#x27;granted&#x27;) {
+                    // 用户点击了允许
+                    let n = new Notification(&#x27;登录失败&#x27;, {
+                        body: error,
+                        icon: &#x27;./assets/img/logo.png&#x27;
+                    })
+
+                    setTimeout(() =&gt; {
+                        n.close();
+                    }, 3000)
+                } else {
+                    showError(error);
+                }
+            })
+        }
+    }
+&lt;/script&gt;
+</code></pre>
+<p><code>style.css</code></p>
+<pre><code class="language-css">* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(200deg, #72afd3, #96fbc4);
+}
+
+/* 上方欢迎语 */
+.welcome-text {
+    color: black;
+    display: flex;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.7;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-text img {
+    margin-right: 12px !important;
+}
+
+/* 提示文字 */
+.text-placeholder {
+    display: flex;
+    font-size: 80%;
+    color: #909399;
+    justify-content: center;
+}
+
+/* 下方背景颜色 */
+.bottom-container {
+    width: 100%;
+    height: 50vh;
+    bottom: -15vh;
+    position: absolute;
+    transform: skew(0, 3deg);
+    background: rgb(23, 43, 77);
+}
+
+/* 表单卡片样式 */
+.form-container {
+    width: 100vw;
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 表单样式 */
+.form-signin {
+    z-index: 20;
+    width: 25vw;
+    display: flex;
+    border-radius: 3%;
+    padding: 35px 50px;
+    flex-direction: column;
+    background: rgb(247, 250, 252);
+}
+
+/* 按钮样式 */
+.btn-primary {
+    height: 40px;
+    color: white;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    background: #5e72e4;
+    border: 1px #5e72e4 solid;
+    transition: all 0.15s ease;
+    /* -webkit-box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+    box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%); */
+}
+
+.btn-primary:hover {
+    transform: translateY(-3%);
+    -webkit-box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+    box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+/* 表单间距 */
+.form-signin div, button {
+    margin-bottom: 25px;
+}
+
+/* 表单输入框 */
+.form-signin input {
+    width: 100%;
+    height: 40px;
+    outline: none;
+    text-indent: 15px;
+    border-radius: 3px;
+    border: 1px #e4e7ed solid;
+}
+
+/* 表单验证码容器 */
+.code-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+/* 表单验证码容器 */
+.code-container input {
+    margin-right: 10px;
+}
+
+#code-image {
+    width: 150px;
+    height: 40px;
+}
+
+.code-btn {
+    width: 150px;
+    height: 40px;
+}
+
+/* 表单超链接 */
+.btn-light {
+    height: 40px;
+    display: flex;
+    color: #5e72e4;
+    border-radius: 3px;
+    align-items: center;
+    justify-content: center;
+    border: 1px #5e72e4 solid;
+}
+
+.form-signin img {
+    margin: 0;
+}
+
+.form-signin a {
+    text-decoration: none;
+}
+
+.btn-light:hover {
+    transform: translateY(-3%);
+    -webkit-box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+    box-shadow: 0 4px 6px rgb(50 50 93 / 11%), 0 1px 3px rgb(0 0 0 / 8%);
+}
+
+.form-signin input:focus {
+    border: 1px solid rgb(41, 50, 225);
+}
+
+.alert {
+    top: 20px;
+    width: 100%;
+    z-index: 50;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 弹框样式 */
+#error_box {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    padding: 15px;
+    display: none;
+    z-index: 500;
+    animation: shake 0.2s;
+}
+
+/* 切换登录方式按钮 */
+.change-login-type {
+    display: flex;
+    font-size: 15px;
+    justify-content: space-between;
+    margin-top: -10px !important;
+    margin-bottom: 10px !important;
+}
+
+.getCaptcha {
+    width: 150px;
+    background-color: white;
+}
+
+#error_message {
+    padding-left: 10px;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    25% {
+        transform: translate(-45%, -50%);
+    }
+
+    50% {
+        transform: translate(-50%, -50%);
+    }
+
+    75% {
+        transform: translate(-45%, -50%);
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+/*修改提示信息的文本颜色*/
+input::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #8898aa;
+}
+
+input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #8898aa;
+}
+
+input:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #8898aa;
+}
+
+/* 移动端css */
+@media screen and (orientation: portrait) {
+    .form-signin {
+        width: 100%;
+    }
+
+    .form-container {
+        width: auto;
+        height: 90vh;
+        padding: 20px;
+    }
+
+    .welcome-text {
+        top: 9vh;
+        flex-direction: column;
+    }
+}
+
+/* 宽度 */
+/* 屏幕 &gt; 666px &amp;&amp; &lt; 800px */
+@media (min-width: 667px) and (max-width: 800px) {
+    .form-signin {
+        width: 50vw;
+    }
+
+    .welcome-text {
+        top: 18vh;
+    }
+}
+
+/* 屏幕 &gt; 800px */
+@media (min-width: 800px) and (max-width: 1000px) {
+    .form-signin {
+        width: 500px;
+    }
+}
+
+/* 高度 */
+@media (min-height: 600px) and (max-height: 600px) {
+    .welcome-text {
+        top: 6%;
+    }
+}
+
+@media (min-height: 800px) and (max-height: 1000px) {
+    .welcome-text {
+        top: 12%;
+    }
+}
+</code></pre>
+<h3 id="5-测试">5. 测试</h3>
+<p>到这里编码部分就完成了，接下来测试下看看</p>
+<h4 id="1-访问请求授权接口">1. 访问请求授权接口</h4>
+<pre><code class="language-shell">http://127.0.0.1:8080/oauth2/authorize?response_type=code&amp;client_id=pkce-message-client&amp;redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc&amp;scope=message.read&amp;code_challenge=kfis_wJYpmCAPO-Ap1Sc6GXyz_x2dhhMsm9FOA7eEWY&amp;code_challenge_method=S256
+</code></pre>
+<h4 id="2-重定向至登录页面">2. 重定向至登录页面</h4>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-5-0ba8712c899b529d3d76682e47f54afd.webp" width="1512" height="780"></p>
+<h4 id="3-点击短信验证登录切换短信登录">3. 点击短信验证登录，切换短信登录</h4>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-6-19e44ad94a9d78882679c3dc454faa97.webp" width="1512" height="776"></p>
+<h4 id="4-输入手机号点击获取验证码">4. 输入手机号，点击获取验证码</h4>
+<p>因为没有重写UserDetailsService的loadByUsername方法，所以这里用账号模拟手机号。</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-7-63c306e05240212a5297c2c9b0c5f0e2.webp" width="1512" height="742"></p>
+<p>获取成功，开始倒数</p>
+<h4 id="5-输入验证码提交登录">5. 输入验证码提交登录</h4>
+<p>携带token重定向至回调地址</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-8-310fda9ca6ee314c0d0c3385975a570f.webp" width="1512" height="780"></p>
+<h4 id="6-查看控制台日志">6. 查看控制台日志</h4>
+<p>观察日志可以发现自定义的短信验证码校验已生效</p>
+<p><img alt="img" src="/light-docusaurus/assets/images/10-9-9decb0705a3eaf9f62cdda3c17b524c5.webp" width="1312" height="161"></p>
+<h2 id="五securityconstantsjava">五、SecurityConstants.java</h2>
+<p>新建一个constant包</p>
+<pre><code class="language-java">package com.example.constant;
+
+/**
+ * security 常量类
+ *
+ * @author vains
+ */
+public class SecurityConstants {
+
+    /**
+     * 登录方式——短信验证码
+     */
+    public static final String SMS_LOGIN_TYPE = &quot;smsCaptcha&quot;;
+
+    /**
+     * 权限在token中的key
+     */
+    public static final String AUTHORITIES_KEY = &quot;authorities&quot;;
+
+}
+</code></pre>
+<p>代码已提交至Gitee：<a href="https://gitee.com/vains-Sofia/authorization-example">https://gitee.com/vains-Sofia/authorization-example</a></p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/lorchr/light-docusaurus/tree/main/docs/zh-cn/spring-authorization-server/10-SAS-SMS-Code-Login.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Resource-Server/"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">SAS-OAuth2-Resource-Server</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Extension-Grant-Type copy/"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">SAS-OAuth2-Extension-Grant-Type copy</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#一前言" class="table-of-contents__link toc-highlight">一、前言</a></li><li><a href="#二实现思路" class="table-of-contents__link toc-highlight">二、实现思路</a></li><li><a href="#三账号密码认证逻辑分析" class="table-of-contents__link toc-highlight">三、账号密码认证逻辑分析</a></li><li><a href="#四代码实现" class="table-of-contents__link toc-highlight">四、代码实现</a><ul><li><a href="#1-在authorizationcontroller接口中添加一个获取验证码的接口" class="table-of-contents__link toc-highlight">1. 在<code>AuthorizationController</code>接口中添加一个获取验证码的接口</a></li><li><a href="#2-authorizationconfig中放行getsmscaptcha" class="table-of-contents__link toc-highlight">2. <code>AuthorizationConfig</code>中放行<code>/getSmsCaptcha</code></a></li><li><a href="#3-继承captchaauthenticationprovider并重写additionalauthenticationchecks方法" class="table-of-contents__link toc-highlight">3. 继承<code>CaptchaAuthenticationProvider</code>并重写<code>additionalAuthenticationChecks</code>方法</a></li><li><a href="#4-修改登录页面添加短信验证码方式登录" class="table-of-contents__link toc-highlight">4. 修改登录页面，添加短信验证码方式登录</a></li><li><a href="#5-测试" class="table-of-contents__link toc-highlight">5. 测试</a></li></ul></li><li><a href="#五securityconstantsjava" class="table-of-contents__link toc-highlight">五、SecurityConstants.java</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/docs/category/guide/">Torch</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/middleware/">Middleware</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/electron/">Electron</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/blog/">Blog</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/diy/">DIY</a></li><li class="footer__item"><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Offical</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer" class="footer__link-item">Home<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://docusaurus.io/docs/playground" target="_blank" rel="noopener noreferrer" class="footer__link-item">Playground<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Light-Docusaurus, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
