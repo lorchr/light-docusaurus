@@ -66,8 +66,8 @@
 
 ![Add Relying Party Trust](./img/4/4-4.jpeg)
 
-导入你的程元数据
-通过完成信赖方信任向导，导入之前从Spring导出的 SP Metadata元数据(见 3.4 获取 SP 元数据)，如以下步骤所示：
+导入你的客户端程序元数据
+通过完成信赖方信任向导，导入之前从Spring导出的 SP Metadata 元数据(见 3.4 获取 SP 元数据)，如以下步骤所示：
 
 Welcom步骤选择 `Claims aware`
 
@@ -89,15 +89,15 @@ Welcom步骤选择 `Claims aware`
 
 到这一步点完成就可以了
 
-但是还缺一步，ADFS需要你配置发放的字段，至少需要配置一个NameID属性，否则你会发现登录完报错，可自行尝试。接下来是配置属性
+但是还缺一步，ADFS需要你配置发放的字段，至少需要配置一个`NameID`属性，否则你会发现登录完报错，可自行尝试。接下来是配置属性
 
 **注意：** Metadata也可以手动配置，不通过导入 `Metadata.xml`，配置下面两个属性即可
-- 终结点（Assertion Consumer Endpoints）: `https://sp.example.com:8080/oauth/saml/SSO/adfs`
-- 信赖方标识符 (Identifier): `https://sp.example.com:8080/oauth`
+- 终结点（`Assertion Consumer Endpoints`）: `https://sp.example.com:8080/oauth/saml/SSO/adfs`
+- 信赖方标识符 (`Identifier`): `https://sp.example.com:8080/oauth`
 
 ### 4. 创建 Claims 签发策略规则
 
-要在 AD FS 和 App 之间映射属性，您需要创建一个声明发布策略，其中将LDAP 属性作为声明发送，并将 LDAP 属性映射到 SpringApp 属性。
+要在 AD FS 和 App 之间映射属性，您需要创建一个声明发布策略，其中将 LDAP 属性作为声明发送，并将 LDAP 属性映射到 SpringApp 属性。
 
 编辑 Claims 签发策略
 
@@ -115,7 +115,7 @@ Welcom步骤选择 `Claims aware`
 
 ![Claim Rule Name - Mapping](./img/4/4-12.png)
 
-**重要提示：** 确保 至少有个属性（“NameID“）配置为使用如上所示的准确拼写。
+**重要提示：** 确保 至少有个属性（`NameID`）配置为使用如上所示的准确拼写。
 
 到此ADFS配置完成
 
@@ -274,16 +274,17 @@ public class SecurityConfig  {
 ## 四、示例
 
 ### 1. 请求流程
-1. 访问 `https://plmmidqas2.sfdomain.com:9100/test/home` 页面
+1. 访问 `https://plmmidqas2.sfdomain.com:9100/test/#/home` 页面
 2. 发送请求 `https://plmmidqas2.sfdomain.com:31888/oauth/samlLogin`
 3. 没有认证，重定向到 `https://plmmidqas2.sfdomain.com:31888/oauth/saml2/authenticate/adfs`
   - 见 `Saml2WebSsoAuthenticationRequestFilter`，默认URL为 `/saml2/authenticate/{registrationId}`
 4. 组装SAML认证请求，重定向到 `https://adfs.sf-auto.com/adfs/ls/`
   - AD FS Server
 5. 输入用户名密码，再次请求 `https://adfs.sf-auto.com/adfs/ls/`
-6. 携带认证结果，重定向 `https://plmmidqas2.sfdomain.com:31888/saml/SSO/adfs`
+6. 携带认证结果，重定向 `https://plmmidqas2.sfdomain.com:31888/oauth/saml/SSO/adfs`
   - 见 `Saml2WebSsoAuthenticationFilter`，默认URL为 `/login/saml2/sso/{registrationId}`
 7. 根据结果进行认证，认证成功后回调开始的请求地址 `https://plmmidqas2.sfdomain.com:31888/oauth/samlLogin`
+8. 认证完成后重定向到原始的请求地址 `https://plmmidqas2.sfdomain.com:9100/test` 并携带token
 
 
 ### 2. 请求参数解析 SAMLRequest
@@ -404,7 +405,7 @@ SAMLResponse: PHNhbWxwOlJlc3BvbnNlIElEPSJfNjM2MmZjOGMtYWFkOS00M2EwLTljM2QtNTcyZT
 取值为`Status` - `StatusCode` 的 `value` 属性
 - `urn:oasis:names:tc:SAML:2.0:status:Success` 表示认证成功，没有或为其他值都是认证失败
 - `urn:oasis:names:tc:SAML:2.0:status:NoPassive` 用户未登录 [响应为NoPassive状态的被动登录](https://www.cnpython.com/java/785418) 
-- `urn:oasis:names:tc:SAML:2.0:status:Responder` IDP无法验证消息，需要看ADFS的后台日志，定位具体问题
+- `urn:oasis:names:tc:SAML:2.0:status:Responder` IDP无法验证`SAMLRequest`请求消息，需要看ADFS的后台日志，定位具体问题
 
 ```shell
 Microsoft.IdentityServer.Protocols.Saml.SamlProtocolSignatureAlgorithmMismatchException: MSIS7093: 
@@ -482,7 +483,100 @@ public static Converter<ResponseToken, Saml2Authentication> createDefaultRespons
 }
 ```
 
-- 确实没有NameID，或不能提供NameID，可以参考[此处配置](https://docs.spring.io/spring-security/reference/servlet/saml2/login/authentication.html#servlet-saml2login-opensamlauthenticationprovider-userdetailsservice)，重写 `ResponseAuthenticationConverter`，在生成认证信息时取其他属性
+- 确实没有`NameID`，或不能提供`NameID`，可以参考此处配置[Coordinating with a UserDetailsService](https://docs.spring.io/spring-security/reference/servlet/saml2/login/authentication.html#servlet-saml2login-opensamlauthenticationprovider-userdetailsservice)，重写 `ResponseAuthenticationConverter`，在生成认证信息时取其他属性
 
-### 4. 注意 `Reference` 标签引用的元素是否在响应体中存在
+```java
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        OpenSaml4AuthenticationProvider authenticationProvider = new OpenSaml4AuthenticationProvider();
+        authenticationProvider.setResponseAuthenticationConverter(responseToken -> {
+            Saml2Authentication authentication = OpenSaml4AuthenticationProvider
+                    .createDefaultResponseAuthenticationConverter() 
+                    .convert(responseToken);
+            Assertion assertion = responseToken.getResponse().getAssertions().get(0);
+            String username = assertion.getSubject().getNameID().getValue();
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username); 
+            return MySaml2Authentication(userDetails, authentication); 
+        });
+
+        http
+            .authorizeHttpRequests(authz -> authz
+                .anyRequest().authenticated()
+            )
+            .saml2Login(saml2 -> saml2
+                .authenticationManager(new ProviderManager(authenticationProvider))
+            );
+        return http.build();
+    }
+}
+```
+
+### 4. 注意 `ds:Reference` 签名需要指向 `Assertion`
 参考[Issuer of the Assertion not found or multiple](https://stackoverflow.com/questions/54617814/issuer-of-the-assertion-not-found-or-multiple-a-valid-subjectconfirmation-was-n)
+
+相应解析XML为
+```xml
+<samlp:Response ID="_6362fc8c-aad9-43a0-9c3d-572e50cab9e6" 
+        Version="2.0" 
+        IssueInstant="2024-01-07T08:20:44.025Z" 
+        Destination="https://plmmidqas2.sfdomain.com:31888/oauth/saml/SSO/adfs" 
+        Consent="urn:oasis:names:tc:SAML:2.0:consent:unspecified" 
+        InResponseTo="ARQ7199f1d-0ad5-44c0-b018-6fa34a29c322"
+  xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+  <Issuer
+    xmlns="urn:oasis:names:tc:SAML:2.0:assertion">http://adfs.sf-auto.com/adfs/services/trust
+  </Issuer>
+  <samlp:Status>
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success" />
+  </samlp:Status>
+  <Assertion ID="_7e88085f-ef2e-410a-a00d-84df8dc4518c" IssueInstant="2024-01-07T08:20:44.025Z" Version="2.0"
+    xmlns="urn:oasis:names:tc:SAML:2.0:assertion">
+    <Issuer>http://adfs.sf-auto.com/adfs/services/trust</Issuer>
+    <ds:Signature
+      xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+      <ds:SignedInfo>
+        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+        <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" />
+        <ds:Reference URI="#_7e88085f-ef2e-410a-a00d-84df8dc4518c">
+          <ds:Transforms>
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" />
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" />
+          </ds:Transforms>
+          <ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" />
+          <ds:DigestValue>31kIGNvLsA97agBQ4WJiLYk2UKC3mvPItperHKZW7ww=</ds:DigestValue>
+        </ds:Reference>
+      </ds:SignedInfo>
+      <ds:SignatureValue>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</ds:SignatureValue>
+      <KeyInfo
+        xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</ds:X509Certificate>
+        </ds:X509Data>
+      </KeyInfo>
+    </ds:Signature>
+  </Assertion>
+</samlp:Response>
+```
+
+`samlp:Response` 标签的 ID 为 `_6362fc8c-aad9-43a0-9c3d-572e50cab9e6`
+```xml
+<samlp:Response ID="_6362fc8c-aad9-43a0-9c3d-572e50cab9e6" 
+    />
+```
+
+`Assertion` 标签的 ID 为 `_7e88085f-ef2e-410a-a00d-84df8dc4518c`
+```xml
+<Assertion ID="_7e88085f-ef2e-410a-a00d-84df8dc4518c" IssueInstant="2024-01-07T08:20:44.025Z" Version="2.0"
+    xmlns="urn:oasis:names:tc:SAML:2.0:assertion">
+```
+
+`ds:Reference` 引用的ID必须指向 `Assertion` 而不是整个 `Response`
+```xml
+<ds:Reference URI="#_7e88085f-ef2e-410a-a00d-84df8dc4518c">
+```

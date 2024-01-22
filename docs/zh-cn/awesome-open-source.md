@@ -28,6 +28,8 @@
 - [自建家庭服务器](https://github.com/awesome-selfhosted/awesome-selfhosted)
 - [在线编译Openwrt](https://openwrt.ai)
 - [多种开发环境的管理利器](https://github.com/jetpack-io/devbox)
+- [网站导航页](https://reorx.github.io/sui2/)
+- [CasaOS AppStore导航](https://awesome.casaos.io/)
  
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
@@ -45,6 +47,7 @@
 - [一个开源的代码仓库带CI/CD](https://github.com/harness/gitness)
 - [截图转网页](https://github.com/abi/screenshot-to-code)
 - [开源去马赛克工具](https://github.com/beurtschipper)
+- [开源 API 调试工具](https://github.com/Kong/insomnia)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)

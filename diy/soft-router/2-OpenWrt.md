@@ -1,7 +1,57 @@
 # OpenWrt
 
+## 安装官方原版OpenWrt
+1. 安装系统，[下载地址](https://downloads.openwrt.org/releases)
+2. 配置Lan地址与路由器同网段
 
-## 插件列表
+```shell
+# 编辑网络地址
+vim /etc/config/network
+# 将 192.168.1.1 改为路由器网段地址，如: 192.168.0.251
+
+# 重启网络
+/etc/init.d/network restart
+
+# 重启系统
+reboot now
+```
+
+3. 配置网关DNS
+
+安装完先去 [Network] - [Interfaces] 里面配置网关及DNS，否则无法联网
+- 网关 `192.168.0.1`
+- DNS `114.114.114.114`
+
+4. 安装中文
+
+```shell
+# 测试网络
+ping -c 4 jd.com
+
+# 切换清华源
+sed -i 's$ownloads.openwrt.org$mirrors.tuna.tsinghua.edu.cn/openwrt$' /etc/opkg/distfeeds.conf
+
+# 更新软件列表
+opkg update
+
+# 安装中文
+opkg install luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-opkg-zh-cn
+```
+
+5. 安装主题 `luci-theme-argon`
+
+```shell
+# 更新软件源
+opkg update
+
+# 安装环境 主要是lua运行时
+opkg install luci-compat luci-lib-ipkg
+
+# 从页面下载官方安装包
+# https://github.com/jerrykuku/luci-theme-argon/releases
+```
+
+## 二、插件列表
 - [插件合集 NueXini/NueXini_Packages](https://github.com/NueXini/NueXini_Packages)
 - [插件合集 liuran001/openwrt-packages](https://github.com/liuran001/openwrt-packages)
 - [插件合集 ysx88/openwrt-packages](https://github.com/ysx88/openwrt-packages)
@@ -58,22 +108,29 @@
 - 阿里云盘Dav
 - Frpc
 
-### OpenClash
+### 配置OpenClash
 1. 检查【插件设置】-【版本更新】检查各个内核是否有显示正确的版本号
    - 如果没有，选择【编译版本（处理器架构）】并点击【检查并更新】，安装内核
 2. 在【配置订阅】中添加配置
    - 配置【自动更新】
    - 点击【添加】订阅，输入以下项目，其他可以保持默认，然后【保存配置】
      - 输入【文件名】
-     - 粘贴【订阅地址】
+     - 粘贴【订阅地址】从机场复制
      - 勾选【在线地址转换】
      - 把停用的改为【启用】
 3. 【配置管理】【配置订阅】中会生成一条配置信息，点击【更新配置】
    - 可以在【运行状态】Logo下面看到当前在更新配置，也可以在【运行日志】查看详细日志
-4. 回到【运行状态】，点击最下放的【启动OpenClash】
+4. 回到【运行状态】，点击最下方的【启动OpenClash】
 5. 启动完成后点击【打开控制面板】，点击【测速】，测试每个节点的状态，选择一个可用的节点
    - 红色的节点不可用
 
 额外设置
-1. 【插件设置】-【DNS设置】-【启用第二个DNS】 设置 114.114.114.114
+1. 【插件设置】-【DNS设置】-【启用第二个DNS】 设置 `114.114.114.114`
 2. 【插件设置】-【GEO数据订阅】 开启全部自动更新
+
+
+### AdGuard Home
+
+
+### UnblockNeteaseMusic
+

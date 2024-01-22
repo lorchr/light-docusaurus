@@ -88,3 +88,39 @@ git config --global --get https.proxy
 git config --global --unset http.proxy
 git config --global --unset https.proxy
 ```
+
+6. 修改提交记录
+
+单条修改
+```shell
+# 替换用户名、邮箱信息
+git commit --amend --author="{username} <{email}>" --no-edit
+
+# 如果已经修改了仓库的用户信息，直接执行命令重置
+git commit --amend --reset-author --no-edit
+
+# 修改并强制提交
+git commit --amend --author="xxx <xxx@163.com>" --no-edit
+git push --force
+```
+
+批量修改脚本  `git-filter-branch.sh`
+```shell
+git filter-branch --commit-filter '
+    if [ "$GIT_AUTHOR_NAME" = "xxx" ];
+    then
+            GIT_AUTHOR_NAME="xxx";
+            GIT_AUTHOR_EMAIL="xxx@163.com";
+            git commit-tree "$@";
+    else
+            git commit-tree "$@";
+    fi' HEAD
+```
+
+```shell
+# 清理缓存
+git filter-branch -f --index-filter 'git rm --cached --ignore-unmatch Rakefile' HEAD
+
+# 强制提交
+git push --force
+```

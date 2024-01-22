@@ -1,1 +1,1 @@
-* [LinuxDeploy Install HA Core](diy/ha/LinuxDeploy-Install-HA-Core)
+* [LinuxDeploy Install HA Core](0-Install-HA-Core-With-LinuxDeploy)
