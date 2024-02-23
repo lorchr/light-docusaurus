@@ -8,6 +8,9 @@
 
 ## 1. Docker安装 Nginx
 ```shell
+# 创建文件夹
+mkdir -p //d/docker/nginx/{conf,data,logs,files}
+
 # 获取默认配置文件
 docker run -d --name nginx_temp nginx:1.25 \
 && docker cp nginx_temp:/etc/nginx/nginx.conf D:/docker/nginx/conf/nginx.conf.example \
@@ -26,7 +29,7 @@ docker run -d \
   --volume //d/docker/nginx/data:/usr/share/nginx/html:ro \
   --volume //d/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
   --volume //d/docker/nginx/conf/conf.d:/etc/nginx/conf.d \
-  --volume //d/docker/nginx/log:/var/log/nginx \
+  --volume //d/docker/nginx/logs:/var/log/nginx \
   --volume //d/docker/nginx/files:/usr/share/nginx/files \
   --add-host 'nginx.light.com:192.168.0.21' \
   --add-host 'plmtest.sdlg.cn:192.168.0.21' \

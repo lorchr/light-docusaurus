@@ -124,3 +124,20 @@ git filter-branch -f --index-filter 'git rm --cached --ignore-unmatch Rakefile' 
 # 强制提交
 git push --force
 ```
+
+7. 删除提交记录
+
+- `git reset` ：回滚到某次提交。
+- `git reset --soft`：此次提交之后的修改会被退回到暂存区。
+- `git reset --hard`：此次提交之后的修改不做任何保留，`git status` 查看工作区是没有记录的。
+
+```shell
+# 查看commitlog
+git log
+
+# 回退至某次提交
+git reset --hard commit_id
+
+# 推送至Github
+git push origin HEAD --force
+```

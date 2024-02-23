@@ -8,6 +8,9 @@
 # 创建Network
 docker network create dev
 
+# 创建文件夹
+mkdir -p //d/docker/kafka/{conf,data,logs}
+
 # 运行容器
 docker run -d \
     --publish 9092:9092 \

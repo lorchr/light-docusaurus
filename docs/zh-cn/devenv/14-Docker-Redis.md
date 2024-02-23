@@ -7,6 +7,9 @@
 # 创建Network
 docker network create dev
 
+# 创建文件夹
+mkdir -p //d/docker/redis/{conf,data,logs}
+
 # 获取默认配置文件 http://download.redis.io/redis-stable/redis.conf
 curl https://raw.githubusercontent.com/redis/redis/6.2/redis.conf -o D:/docker/redis/conf/redis.conf
 

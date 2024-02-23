@@ -14,7 +14,7 @@
 
 ![img](./img/14/14-1.webp)
 
-### 1. 第一步：中用户同意授权获取code
+### 1. 第一步：用户同意授权获取code
 参数列表(摘抄自微信登录文档)
 
 | 参数             | 是否必须 | 说明                                                                                                                                                                                                           |
@@ -29,7 +29,7 @@
 
 
       参数中有一个`appid`的参数，这个参数的意思是跟`client_id`是一样的，但是名字是叫`appid`，如果直接用OAuth2 Client根据这些参数登录的话是走不下去的，因为OAuth2 Client不会带`appid`参数，只会带`client_id`参数，所以这时候就要在跳转至请求授权页面之前修改授权申请的参数。
-      
+
 去[Security OAuth2 Client文档](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/authorization-grants.html#_customizing_the_authorization_request)中找一下相关配置，发现文档中明确指出了自定义授权请求的配置，并给出了一个简单的示例，如下所示：
 
 ![img](./img/14/14-2.webp)
@@ -114,6 +114,27 @@ public class WechatAuthorizationRequestConsumer implements Consumer<OAuth2Author
             // 判断是否微信登录，如果是微信登录则将appid添加至请求参数中
             builder.additionalParameters((params) -> params.put(WECHAT_PARAMETER_FORCE_POPUP, true));
             builder.additionalParameters((params) -> params.put(WECHAT_PARAMETER_APPID, authorizationRequest.getClientId()));
+
+            // 微信的PC端认证对参数顺序有强正则校验，修改参数顺序
+            builder.parameters((params) -> {
+                // 移除oauth2参数，顺序不对不能正常获取到微信授权码
+                params.remove(OAuth2ParameterNames.RESPONSE_TYPE);
+                params.remove(OAuth2ParameterNames.CLIENT_ID);
+                params.remove(OAuth2ParameterNames.SCOPE);
+                params.remove(OAuth2ParameterNames.STATE);
+                params.remove(OAuth2ParameterNames.REDIRECT_URI);
+                params.remove(SecurityConstants.WECHAT_PARAMETER_FORCE_POPUP);
+                params.remove(SecurityConstants.WECHAT_PARAMETER_APPID);
+
+                // 重新添加到参数中
+                params.put(SecurityConstants.WECHAT_PARAMETER_APPID, authorizationRequest.getClientId());
+                params.put(OAuth2ParameterNames.REDIRECT_URI, authorizationRequest.getRedirectUri());
+                params.put(OAuth2ParameterNames.RESPONSE_TYPE, authorizationRequest.getResponseType().getValue());
+                params.put(OAuth2ParameterNames.SCOPE, StringUtils.collectionToDelimitedString(authorizationRequest.getScopes(), " "));
+                params.put(OAuth2ParameterNames.STATE, authorizationRequest.getState());
+                params.put(OAuth2ParameterNames.CLIENT_ID, authorizationRequest.getClientId());
+                params.put(SecurityConstants.WECHAT_PARAMETER_FORCE_POPUP, true);
+            });
         }
     }
 
@@ -141,6 +162,28 @@ public class WechatCodeGrantRequestEntityConverter extends OAuth2AuthorizationCo
             parameters.add(WECHAT_PARAMETER_SECRET, authorizationCodeGrantRequest.getClientRegistration().getClientSecret());
         }
         return parameters;
+    }
+
+     @Override
+    public RequestEntity<?> convert(OAuth2AuthorizationCodeGrantRequest authorizationGrantRequest) {
+        RequestEntity<?> requestEntity = super.convert(authorizationGrantRequest);
+        String registrationId = authorizationGrantRequest.getClientRegistration().getRegistrationId();
+        // 框架默认是POST请求，参数在form-data中，微信的token接口参数在queryParam中
+        if (SecurityConstants.THIRD_LOGIN_WECHAT.equals(registrationId)) {
+            URI url = requestEntity.getUrl();
+            LinkedMultiValueMap<String, List<String>> body = (LinkedMultiValueMap<String, List<String>>) requestEntity.getBody();
+
+            URI uri = UriComponentsBuilder
+                    .fromUri(url)
+                    .queryParam(SecurityConstants.WECHAT_PARAMETER_APPID, body.get(SecurityConstants.WECHAT_PARAMETER_APPID))
+                    .queryParam(SecurityConstants.WECHAT_PARAMETER_SECRET, body.get(SecurityConstants.WECHAT_PARAMETER_SECRET))
+                    .queryParam(OAuth2ParameterNames.CODE, body.get(OAuth2ParameterNames.CODE))
+                    .queryParam(OAuth2ParameterNames.GRANT_TYPE, body.get(OAuth2ParameterNames.GRANT_TYPE))
+                    .queryParam(OAuth2ParameterNames.REDIRECT_URI, body.get(OAuth2ParameterNames.REDIRECT_URI))
+                    .build().toUri();
+            return new RequestEntity<>(HttpMethod.GET, uri);
+        }
+        return requestEntity;
     }
 
 }
@@ -481,7 +524,7 @@ public class WechatUserConverter implements Oauth2UserConverterStrategy {
         Oauth2ThirdAccount thirdAccount = new Oauth2ThirdAccount();
         thirdAccount.setUniqueId(String.valueOf(attributes.get("openid")));
         thirdAccount.setThirdUsername(oAuth2User.getName());
-        thirdAccount.setType(THIRD_LOGIN_GITEE);
+        thirdAccount.setType(THIRD_LOGIN_WECHAT);
         thirdAccount.setLocation(attributes.get("province")+ " " + attributes.get("city"));
         // 设置基础用户信息
         thirdAccount.setName(oAuth2User.getName());
@@ -658,9 +701,16 @@ public static final String THIRD_LOGIN_WECHAT = "wechat";
 测试号限制了只能在微信客户端打开授权申请地址，所以本次测试要在微信内打开认证服务的授权申请地址
 
 ### 1. 微信内打开授权申请地址
-不知道为什么pc端微信跳转至微信的授权申请页面时是空白，这里我用手机进行测试。
+~~不知道为什么pc端微信跳转至微信的授权申请页面时是空白，这里我用手机进行测试。~~
+
+经评论区提醒发现是因为参数的顺序问题，微信服务器会对授权申请地址的参数顺序做强校验(移动端微信应该是没有这个校验的)，文档原文：
+
+> 尤其注意：由于授权操作安全等级较高，所以在发起授权请求时，微信会对授权链接做正则强匹配校验，如果链接的参数顺序不对，授权页面将无法正常访问。 
+
+文档说明位置请查看[第一步：用户同意授权](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html#%E7%9B%AE%E5%BD%95)，获取code下的正文内容。
+
 ```shell
-http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
 ```
 
 ### 2. 认证服务检测到未登录，重定向至登录页面

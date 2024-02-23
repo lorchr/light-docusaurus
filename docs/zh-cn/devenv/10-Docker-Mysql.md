@@ -10,6 +10,9 @@ docker network create dev
 # 创建数据卷
 docker volume create mysql_data;
 
+# 创建文件夹
+mkdir -p //d/docker/mysql/{conf,data,logs}
+
 # 获取默认配置文件
 docker run -d --env MYSQL_ROOT_PASSWORD=admin --name mysql_temp mysql:5.7 \
 && docker cp mysql_temp:/etc/mysql/conf.d/mysql.cnf  D:/docker/mysql/conf/mysql.cnf \
@@ -23,7 +26,7 @@ docker run -d \
   --publish 3306:3306 \
   --volume //d/docker/mysql/data:/var/lib/mysql \
   --volume //d/docker/mysql/conf:/etc/mysql/conf.d \
-  --volume //d/docker/mysql/log:/var/log/mysql \
+  --volume //d/docker/mysql/logs:/var/log/mysql \
   --env MYSQL_ROOT_PASSWORD=admin \
   --env MYSQL_DATABASE=light \
   --env MYSQL_USER=light \
@@ -40,6 +43,7 @@ mysql -u root -p
 SHOW DATABASES;
 USE mysql;
 SELECT user, host, authentication_string, plugin FROM user;
+DROP USER 'light'@'%';
 CREATE USER 'light'@'%' IDENTIFIED BY 'light';
 GRANT ALL PRIVILEGES ON *.* TO 'light'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
@@ -57,7 +61,7 @@ docker run -d \
   --publish 3308:3306 \
   --volume //d/docker/mysql/data:/var/lib/mysql \
   --volume //d/docker/mysql/conf:/etc/mysql/conf.d \
-  --volume //d/docker/mysql/log:/var/log/mysql \
+  --volume //d/docker/mysql/logs:/var/log/mysql \
   --env MYSQL_ROOT_PASSWORD=admin \
   --env MYSQL_DATABASE=light \
   --env MYSQL_USER=light \
@@ -74,6 +78,7 @@ mysql -u root -p
 SHOW DATABASES;
 USE mysql;
 SELECT user, host, authentication_string, plugin FROM user;
+DROP USER 'light'@'%';
 CREATE USER 'light'@'%' IDENTIFIED BY 'light';
 GRANT ALL PRIVILEGES ON *.* TO 'light'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;

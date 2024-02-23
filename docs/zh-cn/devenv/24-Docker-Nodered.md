@@ -10,6 +10,9 @@ docker network create dev
 # 创建数据卷
 docker volume create nodered_data;
 
+# 创建文件夹
+mkdir -p //d/docker/nodered/{conf,data,logs}
+
 # 获取默认配置文件
 
 # 运行容器

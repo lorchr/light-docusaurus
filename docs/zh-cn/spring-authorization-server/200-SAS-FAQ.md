@@ -96,4 +96,32 @@ java.lang.IllegalArgumentException: The class with com.example.entity.Oauth2Basi
 ### 15. 使用Oracle数据库在授权申请时会抛出异常堆栈
 框架问题，使用Oracle时确实会出现这种问题，如果需要解决可能需要重写`AuthorizationService`，详见[spring-authorization-server issues 428](https://github.com/spring-projects/spring-authorization-server/issues/428)
 
+### 16. 集成 `spring-cloud-gateway` 出现 `OAuth2AuthenticationException: [invalid_user_info_response]`
+- [Spring Security OAuth: [invalid_user_info_response]](https://stackoverflow.com/questions/76093710/spring-security-oauth-invalid-user-info-response)
+
+新版本的`spring-security-oauth2-client` 修改了获取用户信息后的处理逻辑，见 `org.springframework.security.oauth2.client.oidc.userinfo.OidcReactiveOAuth2UserService#getUserInfo`，增加了对token签发 `subject` 的校验
+
+```java
+private Mono<OidcUserInfo> getUserInfo(OidcUserRequest userRequest) {
+    if (!OidcUserRequestUtils.shouldRetrieveUserInfo(userRequest)) {
+        return Mono.empty();
+    }
+    // @formatter:off
+    return this.oauth2UserService
+            .loadUser(userRequest)
+            .map(OAuth2User::getAttributes)
+            .map((claims) -> convertClaims(claims, userRequest.getClientRegistration()))
+            .map(OidcUserInfo::new)
+            .doOnNext((userInfo) -> {
+                String subject = userInfo.getSubject();
+                if (subject == null || !subject.equals(userRequest.getIdToken().getSubject())) {
+                    OAuth2Error oauth2Error = new OAuth2Error(INVALID_USER_INFO_RESPONSE_ERROR_CODE);
+                    throw new OAuth2AuthenticationException(oauth2Error, oauth2Error.toString());
+                }
+            });
+    // @formatter:on
+}
+```
+
+
 文章会记录可能遇到的问题，并给出一个解决方案，目前框架异常提示信息不完善，所以出现问题后很难排查，这里给出一些解决方案，让大家少走一些弯路；本篇文章持续更新中，欢迎各位读者指正、补充和完善，谢谢大家

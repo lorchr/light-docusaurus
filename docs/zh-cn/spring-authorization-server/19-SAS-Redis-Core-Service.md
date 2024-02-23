@@ -1,7 +1,7 @@
 - [Spring Authorization Server入门 (十九) 基于Redis的Token、客户端信息和授权确认信息存储](https://juejin.cn/post/7294853623849254946)
 
 ## 一、怎么使用Spring Data Redis实现Spring Authorization Server的核心services？
-本文对应的是文档中的[How-to: Implement core services with JPA](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/guides/how-to-jpa.html)，文档中使用Jpa实现了核心的三个服务类：授权信息、客户端信息和授权确认的服务；
+本文对应的是文档中的[How-to: Implement core services with JPA](https://docs.spring.io/spring-authorization-server/reference/guides/how-to-jpa.html)，文档中使用Jpa实现了核心的三个服务类：授权信息、客户端信息和授权确认的服务；
 
 本文会使用Spring Data Redis参考文档来添加新的实现。在这里也放一下文档中的一句话： 本指南的目的是为您自己实现这些服务提供一个起点，以便您可以根据自己的需要进行修改。
 
@@ -1405,8 +1405,7 @@ public class RedisOAuth2AuthorizationConsentService implements OAuth2Authorizati
 ```
 
 ### 4. 去除认证服务配置文件中这三个核心service的注入
-```
-java
+```java
 /**
  * 配置客户端Repository
  *
@@ -1448,11 +1447,11 @@ public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplat
 
 ## 五、写在最后
     到此为止基本就结束了，本文章和前边的所有系列文章没有必要的关联，如果是第一次看到文章的读者也是可以很顺畅的将文章中的内容引入项目，当然，因为引用了Spring Data Redis，所以项目必须要先有Redis支持。
-文章看起来很长，但是实际上就是定义三个实体类，定义三个Repository，然后实现核心的service；逻辑并不复杂，操作Redis的内容因为使用了Spring Data Repositories，所以这两部分内容很少，内容多得地方就在每个service中实体与默认实体的转换中，一大堆的转换内容导致文章看起来内容很多，但是这些内容在文档中都已经实现，所以说这部分内容直接Copy就行，哈哈。
+
+    文章看起来很长，但是实际上就是定义三个实体类，定义三个Repository，然后实现核心的service；逻辑并不复杂，操作Redis的内容因为使用了Spring Data Repositories，所以这两部分内容很少，内容多得地方就在每个service中实体与默认实体的转换中，一大堆的转换内容导致文章看起来内容很多，但是这些内容在文档中都已经实现，所以说这部分内容直接Copy就行，哈哈。
 
 ## 六、附录
-
-- [How-to: Implement core services with JPA](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/guides/how-to-jpa.html#authorization-service)
+- [How-to: Implement core services with JPA](https://docs.spring.io/spring-authorization-server/reference/guides/how-to-jpa.html)
 - [Spring Data Redis](https://docs.spring.io/spring-data/redis/docs/current/reference/html/)
 - [Redis Repositories](https://docs.spring.io/spring-data/redis/docs/current/reference/html/#redis.repositories)
 - [@TimeToLive](https://docs.spring.io/spring-data/redis/docs/current/reference/html/#redis.repositories.expirations)

@@ -1575,7 +1575,147 @@ public class SecurityConstants {
 
 到此为止编码就结束了
 
-## 三、最后
+## 三、测试
+### 1. 授权确认
+#### 1. 组装url发起授权请求
+```shell
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
+
+```
+
+#### 2. 检测到未登录，重定向至vue项目的登录页面
+重定向时将当前请求放入target参数中，当前sessionId放入nonce参数中
+
+![](./img/15/1.png)
+
+查看一下network，认证服务按规则携带target与nonce参数重定向，没有问题
+
+#### 3. 输入账号密码提交
+
+![](./img/15/2.png)
+
+#### 4. 授权确认提交
+
+![](./img/15/3.png)
+
+授权确认后生成code并携带code重定向至回调地址(redirect_uri)
+
+![](./img/15/4.png)
+
+浏览器的完整跳转路径如下：
+```shell
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
+
+http://127.0.0.1:5173/login?target=http%3A%2F%2F127.0.0.1%3A8080%2Foauth2%2Fauthorize%3Fclient_id%3Dmessaging-client%26response_type%3Dcode%26scope%3Dmessage.read%26redirect_uri%3Dhttp%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc&nonce=ab69a56f-dd10-43ec-80ce-b3b2181478b8
+
+http://127.0.0.1:8080/login
+
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
+
+http://127.0.0.1:8080/oauth2/consent/redirect?scope=message.read&client_id=messaging-client&state=FTISsmtFYr56yaK5WkeMdvNobjdkZPbPzKS1SPvMxNM%3D
+
+http://127.0.0.1:5173/consent?scope=message.read&state=FTISsmtFYr56yaK5WkeMdvNobjdkZPbPzKS1SPvMxNM%3D&client_id=messaging-client&user_code&nonce=93182cd0-5a7e-4ea3-801a-c6212d14af4b
+
+http://127.0.0.1:8080/oauth2/consent/parameters?scope=message.read&state=FTISsmtFYr56yaK5WkeMdvNobjdkZPbPzKS1SPvMxNM%3D&client_id=messaging-client&user_code&nonce=93182cd0-5a7e-4ea3-801a-c6212d14af4b
+
+http://127.0.0.1:8080/oauth2/authorize
+
+http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc?code=tZOy8GRY-euEn7yrTY_kbrTWVS9NrGRgQeWMStoEQhaEuyi7XoezzE6hXGiGzuhNZvd_rbkqiRCos2sKI1nfIflepORsrfCea8x7wkZSbC9gZAsaRbiBmynx-t6wosLo
+```
+
+**注意:** 此认证依赖于Session，所以全程的域名（IP）需要保持一致，此处不能使用内网IP访问，如: `192.168.1.102`
+```shell
+http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
+
+```
+
+### 2. 设备授权
+授权码流程详见[rfc8628](https://datatracker.ietf.org/doc/html/rfc8628)
+
+首先，用户请求`/oauth2/device_authorization`接口，获取`user_code`、设备码和给用户在浏览器访问的地址，用户在浏览器打开地址，输入`user_code`，如果用户尚未登录则需要进行登录；输入`user_code`之后如果该客户端当前用户尚未授权则重定向至授权确认页面；授权完成后设备通过设备码换取token，设备一般是在给出用户验证地址后轮训携带设备码访问`/oauth2/token`接口，如果用户尚未验证时访问则会响应"authorization_pending"，详见：[rfc8628#section-3.5](https://datatracker.ietf.org/doc/html/rfc8628#section-3.5)
+
+#### 1. 设备发起授权请求，携带要求的参数请求`/oauth2/device_authorization`接口
+![img](./img/15/5.png)
+
+请求参数说明
+
+- `client_id`: 客户端id 
+- `scope`: 设备请求授权的范围
+
+响应参数说明
+
+- `user_code`: 用户在浏览器打开验证地址时输入的内容 
+- `device_code`：设备码，用该值换取token 
+- `verification_uri_complete`：用户在浏览器打开的验证地址，页面会自动获取参数并提交表单 
+- `verification_uri`：验证地址，需要用户输入`user_code` 
+- `expires_in`：过期时间，单位（秒）
+
+#### 2. 访问verification_uri或者verification_uri_complete
+未登录，跳转至登录页
+
+![img](./img/15/6.png)
+
+#### 3. 输入user_code并提交
+![img](./img/15/7.png)
+
+#### 4. 重定向至用户授权确认页面
+该客户端用户尚未确认过，重定向至授权确认页面，勾选scope后提交
+
+![img](./img/15/8.png)
+
+#### 5. 授权成功后跳转至成功页面
+![img](./img/15/9.png)
+
+#### 6. 设备发起请求用设备码换取token，请求`/oauth2/token`接口
+老样子，使用postman模拟设备请求
+
+![img](./img/15/10.png)
+
+这里我是重新获取了一个，之前的过期了，使用过期设备码请求如下所示
+
+![img](./img/15/11.png)
+
+用户尚未验证时使用设备码请求如下
+
+![img](./img/15/12.png)
+
+参数解释
+
+- `client_id`：客户端id 
+- `device_code`：请求`/oauth2/device_authorization`接口返回的设备码(`device_code`) 
+- `grant_type`：在设备码模式固定是`urn:ietf:params:oauth:grant-type:device_code`
+
+至此，自定义设备码流程结束
+
+
+```shell
+http://127.0.0.1:8080/activate/redirect
+
+http://127.0.0.1:5173/login?target=http%3A%2F%2F127.0.0.1%3A8080%2Factivate%2Fredirect&nonce=ee325c42-fe29-4e65-8591-5765be7da2a4
+
+http://127.0.0.1:8080/login
+
+http://127.0.0.1:8080/activate/redirect
+
+http://127.0.0.1:5173/activate?userCode&nonce=f007f0ed-19c3-48eb-af57-cd567ab9dcdc
+
+http://127.0.0.1:8080/oauth2/device_verification
+
+http://127.0.0.1:8080/oauth2/consent/redirect?scope=message.read&client_id=device-message-client&state=LQAw__LWaBe2vKj21_xCeLO4kW_ZPWb8cMEMbDoRDXM%3D&user_code=WVDX-RKPD
+
+http://127.0.0.1:5173/consent?scope=message.read&state=LQAw__LWaBe2vKj21_xCeLO4kW_ZPWb8cMEMbDoRDXM%3D&client_id=device-message-client&user_code=WVDX-RKPD&nonce=f007f0ed-19c3-48eb-af57-cd567ab9dcdc
+
+
+http://127.0.0.1:8080/oauth2/consent/parameters?scope=message.read&state=LQAw__LWaBe2vKj21_xCeLO4kW_ZPWb8cMEMbDoRDXM%3D&client_id=device-message-client&user_code=WVDX-RKPD&nonce=f007f0ed-19c3-48eb-af57-cd567ab9dcdc
+
+http://127.0.0.1:8080/oauth2/device_verification
+
+http://127.0.0.1:5173/activated
+```
+
+**注意:** 此认证依赖于Session，所以全程的域名（IP）需要保持一致，此处不能使用内网IP访问，如: 192.168.1.102
+
+## 四、最后
 因为理论部分在之前的文章中已经讲过了，这次就没写理论了，直接贴了一大堆的代码，本次代码写的比较仓促，测试的也不是很全面，如果发现有什么问题可以在评论区留言。
 
 [代码仓库地址](https://gitee.com/vains-Sofia/authorization-example)

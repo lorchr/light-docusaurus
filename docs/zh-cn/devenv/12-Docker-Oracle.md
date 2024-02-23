@@ -28,13 +28,16 @@ docker pull container-registry.oracle.com/database/enterprise:19.19.0.0
 docker pull container-registry.oracle.com/database/enterprise:12.2.0.1
 docker pull container-registry.oracle.com/database/enterprise:12.1.0.2
 
+# 创建文件夹
+mkdir -p //d/docker/oracle/{conf,data,logs}
+
 # 运行容器
 docker run -d \
   --publish 1521:1521 \
   --publish 5500:5500 \
   --env ORACLE_SID=orcl \
-  --env ORACLE_PDB=orclpdb1 \
-  --env ORACLE_PWD=123456 \
+  --env ORACLE_PDB=orclpdb \
+  --env ORACLE_PWD=Admin123 \
   --env ORACLE_CHARACTERSET=zhs16gbk \
   --env ORACLE_BASE=/opt/oracle \
   --env ORACLE_HOME=/opt/oracle/product/12.2.0.1/dbhome_1 \
@@ -47,10 +50,13 @@ docker run -d \
 
 # 进入容器
 docker exec -it -u root oracle12c /bin/bash
+
+# 命令行登录
+sqlplus system/Admin123@localhost:1521/orclpdb as sysdba;
 ```
 
 [OEM Express](https://localhost:5500/em/)
-  - Account: system/123456 容器名：orclpdb1
+  - Account: system/Admin123 容器名: orclpdb
 
 ## [laowu/oracle](https://blog.csdn.net/weixin_44032384/article/details/131404349)
 阿里云仓库地址: `docker pull registry.cn-hangzhou.aliyuncs.com/laowu/oracle`
@@ -111,7 +117,7 @@ SELECT name FROM v$tablespace;
 -- mkdir -p /home/oracle/escdb
 -- chmod 777 /home/oracle/escdb
 -- 登录数据库
-sqlplus sys/123456@localhost:1521/pdb as sysdb;
+sqlplus sys/123456@localhost:1521/pdb as sysdba;
 CREATE TABLESPACE idm_spc DATAFILE '/opt/oracle/oradata/SID/PDB/idm_spc.dbf' 
   SIZE 100M AUTOEXTEND ON MAXSIZE 500M EXTENT MANAGEMENT LOCAL UNIFORM SIZE 1M;
 

@@ -1,7 +1,6 @@
 - [Spring Authorization Server入门 (三) 集成流程说明、细节补充和各种方式获取token测试](https://juejin.cn/post/7241058098974720037)
 
 ## 一、Spring boot 与Spring authorization Server集成流程说明
-```markdown
 1. 创建项目
 2. 添加依赖
 3. 初始化数据库(用户授权确认表、用户认证信息表和客户端信息表)
@@ -11,10 +10,9 @@
 7. 添加一个接口，将登录和用户授权确认页面请求转发至自定义的页面
 8. 在`application.yml`中配置数据源信息
 9. 添加自定义页面相关静态文件
-```
 
 ## 二、细节补充
-在[上一篇文章](https://juejin.cn/post/7239953874950815804)中的AuthorizationConfig.java配置类中，类上有三个注解，分别是`@Configuration`、`@EnableWebSecurity`和`@EnableMethodSecurity`注解，虽然在类中有注释，但是这里在细讲一下，同时放一下官网的说明
+在[上一篇文章](https://juejin.cn/post/7239953874950815804)中的`AuthorizationConfig.java`配置类中，类上有三个注解，分别是`@Configuration`、`@EnableWebSecurity`和`@EnableMethodSecurity`注解，虽然在类中有注释，但是这里在细讲一下，同时放一下官网的说明
 
 ### 1. `@EnableWebSecurity`
 
@@ -37,7 +35,7 @@
 该流程上一章已经说过了，本篇文章就大概过一下
 #### 1. 组装url发起授权请求
 ```shell
-http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc
 ```
 参数解释
 
@@ -241,13 +239,13 @@ public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTe
 
 ![img](./img/3/3-17.awebp)
 
-生成示例 
+生成示例，先生成 `Code Verifier` 再生成 `Code Challenge`
 - `Code Verifier`：0q9mMHEV-E_-8vxP2Aa93Y6ZKmXCan36YfAoLQViXvo 
 - `Code Challenge`：kfis_wJYpmCAPO-Ap1Sc6GXyz_x2dhhMsm9FOA7eEWY 
 
 #### 2. 拼接请求地址
 ```shell
-http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=pkce-message-client&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc&scope=message.read&code_challenge=kfis_wJYpmCAPO-Ap1Sc6GXyz_x2dhhMsm9FOA7eEWY&code_challenge_method=S256
+http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=pkce-message-client&redirect_uri=http://127.0.0.1:8080/login/oauth2/code/messaging-client-oidc&scope=message.read&code_challenge=kfis_wJYpmCAPO-Ap1Sc6GXyz_x2dhhMsm9FOA7eEWY&code_challenge_method=S256
 ```
 参数说明
 

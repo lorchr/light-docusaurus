@@ -1,7 +1,10 @@
-- [Gitee 源码](https://gitee.com/vains-Sofia/authorization-example)
-- [Github 源码](https://github.com/vains-Sofia/authorization-example)
+- [spring-authorization-server Github](https://github.com/spring-projects/spring-authorization-server)
+- [spring-authorization-server Document](https://spring.io/projects/spring-authorization-server/)
 - 
-- [专栏](https://juejin.cn/column/7239953874950684732)
+- [教程源码 Gitee ](https://gitee.com/vains-Sofia/authorization-example)
+- [教程源码 Github](https://github.com/vains-Sofia/authorization-example)
+- 
+- [教程专栏 掘金](https://juejin.cn/column/7239953874950684732)
 - [Spring Authorization Server入门 (一) 初识SpringAuthorizationServer和OAuth2.1协议](https://juejin.cn/post/7239953874950733884)
 - [Spring Authorization Server入门 (二) Spring Boot整合Spring Authorization Server](https://juejin.cn/post/7239953874950815804)
 - [Spring Authorization Server入门 (三) 集成流程说明、细节补充和各种方式获取token测试](https://juejin.cn/post/7241058098974720037)
@@ -21,6 +24,7 @@
 - [Spring Authorization Server入门 (十七) Vue项目使用授权码模式对接认证服务](https://juejin.cn/post/7279052777888890921)
 - [Spring Authorization Server入门 (十八) Vue项目使用PKCE模式对接认证服务](https://juejin.cn/post/7279265985912225828)
 - [Spring Authorization Server入门 (十九) 基于Redis的Token、客户端信息和授权确认信息存储](https://juejin.cn/post/7294853623849254946)
+- [Spring Authorization Server入门 (二十) 实现二维码扫码登录](https://juejin.cn/post/7326546769981603866)
 - 
 - [Spring Authorization Server优化篇：自定义UserDetailsService实现从数据库获取用户信息](https://juejin.cn/post/7252251628090294309)
 - [Spring Authorization Server优化篇：添加Redis缓存支持和统一响应类](https://juejin.cn/post/7253331974050299963)

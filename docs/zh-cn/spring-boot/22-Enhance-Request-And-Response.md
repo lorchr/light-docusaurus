@@ -518,43 +518,158 @@ public class EnhanceHandlerProxy {
 
 ### `RequestBodyAdvice` 请求体增强
 ```java
+import com.light.cloud.common.core.crypto.AESTool;
+import com.light.cloud.common.core.crypto.Base64Tool;
+import com.light.cloud.common.core.crypto.RSATool;
+import com.light.cloud.common.core.enums.AlgorithmEnum;
+import com.light.cloud.common.core.exception.BizException;
+import com.light.cloud.common.core.tool.JsonTool;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 请求前处理器
  * <p>
  * 在执行目标方法之前执行，例如：参数解密，方法增强等
- * 
+ *
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdviceAdapter
  * @see org.springframework.web.servlet.mvc.method.annotation.JsonViewRequestBodyAdvice
  */
+@Slf4j
+@RestControllerAdvice
 public class CustomRequestBodyAdvice extends RequestBodyAdviceAdapter {
+
+    public static final String ENCRYPT = "Encrypt";
+    public static final String BASE64 = "base64";
+
+    /**
+     * 该方法用于判断当前请求，是否要执行beforeBodyRead方法
+     *
+     * @param methodParameter handler方法的参数对象
+     * @param targetType      handler方法的参数类型
+     * @param converterType   将会使用到的Http消息转换器类类型
+     * @return 返回true则会执行beforeBodyRead
+     */
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return false;
+        /**
+         * 返回对象必须是 Message 并且使用了 MappingJackson2HttpMessageConverter
+         */
+        return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
+    /**
+     * 在Http消息转换器执转换，之前执行
+     *
+     * @param inputMessage  客户端的请求数据
+     * @param parameter     handler方法的参数对象
+     * @param targetType    handler方法的参数类型
+     * @param converterType 将会使用到的Http消息转换器类类型
+     * @return 返回 一个自定义的HttpInputMessage
+     */
     @Override
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
-        return super.beforeBodyRead(inputMessage, parameter, targetType, converterType);
+        HttpHeaders headers = inputMessage.getHeaders();
+        // 读取请求头，判断请求是否加密
+        List<String> encrypt = headers.get(ENCRYPT);
+        if (CollectionUtils.isEmpty(encrypt) || StringUtils.isBlank(encrypt.get(0))) {
+            return inputMessage;
+        }
+        // 读取加密的请求体
+        byte[] bytes = inputMessage.getBody().readAllBytes();
+        String json = new String(bytes);
+        Map<String, String> map = JsonTool.jsonToBean(json, Map.class);
+        if (MapUtils.isEmpty(map)) {
+            return inputMessage;
+        }
+        byte[] decode = decryptBody(map, encrypt.get(0).toLowerCase());
+        if (ArrayUtils.isEmpty(decode)) {
+            throw BizException.throwException("非法的请求参数，请求体加密参数的key必须与Header中的加密类型一致！");
+        }
+        log.warn("decode: {}", new String(decode));
+
+        // 使用解密后的数据，构造新的读取流
+        return new HttpInputMessage() {
+            @NotNull
+            @Override
+            public HttpHeaders getHeaders() {
+                return headers;
+            }
+
+            @NotNull
+            @Override
+            public InputStream getBody() throws IOException {
+                return new ByteArrayInputStream(decode);
+            }
+        };
     }
+
+    /**
+     * 在Http消息转换器执转换，之后执行
+     *
+     * @param body          转换后的对象
+     * @param inputMessage  客户端的请求数据
+     * @param parameter     handler方法的参数类型
+     * @param targetType    handler方法的参数类型
+     * @param converterType 使用的Http消息转换器类类型
+     * @return 返回一个新的对象
+     */
 
     @Override
     public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return super.afterBodyRead(body, inputMessage, parameter, targetType, converterType);
+        log.info(">>>>>>>>>> afterBodyRead. Parse request: {}", body);
+        return body;
     }
 
+    /**
+     * 同上，不过这个方法处理的是，body为空的情况
+     */
     @Override
     public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
         return super.handleEmptyBody(body, inputMessage, parameter, targetType, converterType);
+    }
+
+    public byte[] decryptBody(Map<String, String> map, String encrypt) {
+        String body = map.get(encrypt);
+        if (StringUtils.isBlank(body)) {
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                if (encrypt.equals(entry.getKey().toLowerCase())) {
+                    body = entry.getValue();
+                }
+            }
+        }
+        if (StringUtils.isBlank(body)) {
+            return null;
+        }
+        // 对称加密 非对称加密 Base64编码 等
+        if (AlgorithmEnum.AES.getCode().toLowerCase().equals(encrypt)) {
+            return AESTool.decrypt(body.getBytes(StandardCharsets.UTF_8), AESTool.DEFAULT_SEED);
+        } else if (AlgorithmEnum.RSA.getCode().toLowerCase().equals(encrypt)) {
+            return RSATool.privateDecrypt(body, RSATool.DEFAULT_PRIVATE_KEY).getBytes(StandardCharsets.UTF_8);
+        } else {
+            return Base64Tool.decode(body);
+        }
     }
 
 }
@@ -562,37 +677,86 @@ public class CustomRequestBodyAdvice extends RequestBodyAdviceAdapter {
 
 ### `ResponseBodyAdvice` 响应体增强
 ```java
+import com.light.cloud.common.core.crypto.AESTool;
+import com.light.cloud.common.core.crypto.Base64Tool;
+import com.light.cloud.common.core.crypto.RSATool;
+import com.light.cloud.common.core.enums.AlgorithmEnum;
+import com.light.cloud.common.core.tool.JsonTool;
+import com.light.cloud.common.core.tool.ReflectionTool;
+import com.light.cloud.common.web.entity.response.Result;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJacksonResponseBodyAdvice;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 请求后处理器
  * <p>
  * 在执行目标方法之后执行，例如：响应加密，方法增强等
- * 
+ *
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyAdviceChain
  * @see org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice
  * @see org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJacksonResponseBodyAdvice
  * @see org.springframework.web.servlet.mvc.method.annotation.JsonViewResponseBodyAdvice
  */
-public class CustomResponseBodyAdvice extends AbstractMappingJacksonResponseBodyAdvice {
+@Slf4j
+@RestControllerAdvice
+public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Result<Object>> {
+
+    public static final String ENCRYPT = "Encrypt";
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return super.supports(returnType, converterType);
+        /**
+         * 返回对象必须是 Message 并且使用了 MappingJackson2HttpMessageConverter
+         */
+        return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override
-    protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer, MediaType contentType, MethodParameter returnType, ServerHttpRequest request, ServerHttpResponse response) {
-
+    public Result<Object> beforeBodyWrite(Result<Object> body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
+        // 读取请求头，判断请求是否加密
+        List<String> encrypt = request.getHeaders().get(ENCRYPT);
+        if (CollectionUtils.isEmpty(encrypt) || StringUtils.isBlank(encrypt.get(0))) {
+            return body;
+        }
+        byte[] bytes = encryptBody(body, encrypt.get(0).toLowerCase());
+        ReflectionTool.invokeSet("data", body, new String(bytes));
+        return body;
     }
+
+    public byte[] encryptBody(Result<Object> result, String encrypt) {
+        Object data = result.getData();
+        if (Objects.isNull(data)) {
+            return null;
+        }
+        String json = JsonTool.beanToJson(data);
+        // 对称加密 非对称加密 Base64编码 等
+        if (AlgorithmEnum.AES.getCode().toLowerCase().equals(encrypt)) {
+            return AESTool.decrypt(json.getBytes(StandardCharsets.UTF_8), AESTool.DEFAULT_SEED);
+        } else if (AlgorithmEnum.RSA.getCode().toLowerCase().equals(encrypt)) {
+            return RSATool.privateEncrypt(json, RSATool.DEFAULT_PRIVATE_KEY).getBytes(StandardCharsets.UTF_8);
+        } else {
+            return Base64Tool.encode(json);
+        }
+    }
+
 }
 ```
+
+如果有自定义注解来处理参数或响应值的，拦截器的方式并不适用，因为在解析注解时参数还没有解析出来或者已经加密过了，使用过滤器的实现更为适合。
 
 ## 总结
 

@@ -11,6 +11,9 @@ docker network create dev
 # 创建数据卷
 docker volume create es_data;
 
+# 创建文件夹
+mkdir -p //d/docker/elasticsearch/{conf,data,logs}
+
 # 获取默认配置文件
 docker run -d --name elasticsearch_temp elasticsearch:7.17.10 \
 && docker cp elasticsearch_temp:/usr/share/elasticsearch/config/elasticsearch.yml D:/docker/elasticsearch/conf/elasticsearch.yml \

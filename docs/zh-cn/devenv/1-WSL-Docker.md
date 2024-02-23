@@ -316,6 +316,9 @@ docker rmi $(docker images -q -f "dangling=true")
 
 # 删除 untaged 镜像
 docker image prune --force --filter "dangling=true"
+
+# 更新容器重启策略
+docker update --restart no container-name
 ```
 
 4. 上传下载文件

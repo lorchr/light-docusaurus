@@ -655,6 +655,18 @@ Spring boot项目中直接引入starter即可
 </dependency>
 ```
 
+```java
+// 方式一: 手动指定序列化方式
+@JsonSerialize(using = LocalDateTimeSerializer.class)
+@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+private LocalDateTime createTime;
+
+// 方式二: 注册JDK8Module，全局解析 LocalDateTime
+ObjectMapper objectMapper = new ObjectMapper();
+objectMapper.registerModule(new Jdk8Module());
+objectMapper.registerModule(new JavaTimeModule());
+```
+
 ### 2. 编写Redis配置文件
 这个是可选的，但是如果不加这些序列化器会使用jdk的序列化器，导致使用redis客户端查看时与元数据有差异
 
@@ -1248,7 +1260,7 @@ public class RedisOperatorTests {
 ## 五、测试
 组装url发起授权请求
 ```shell
-http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
 ```
 
 重定向到登录页面

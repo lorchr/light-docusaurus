@@ -11,6 +11,9 @@ docker network create dev
 # 创建数据卷
 docker volume create emqx_data
 
+# 创建文件夹
+mkdir -p //d/docker/emqx/{conf,data,logs}
+
 # 获取默认配置文件
 docker run -d --env HOCON_ENV_OVERRIDE_PREFIX=DEV_ \
   --env DEV_EMQX_MQTT__SHARED_SUBSCRIPTION=true \
@@ -31,7 +34,7 @@ docker run -d \
   --publish 18083:18083 \
   --volume //d/docker/emqx/data:/opt/emqx/data \
   --volume //d/docker/emqx/conf:/opt/emqx/etc \
-  --volume //d/docker/emqx/log:/opt/emqx/log \
+  --volume //d/docker/emqx/logs:/opt/emqx/log \
   --env HOCON_ENV_OVERRIDE_PREFIX=DEV_ \
   --env DEV_EMQX_MQTT__SHARED_SUBSCRIPTION=true \
   --env DEV_EMQX_ZONE__EXTERNAL__SHARED_SUBSCRIPTION=true \
@@ -47,7 +50,7 @@ docker run -d \
   --publish 1884:1883 \
   --volume //d/docker/emqx/data:/opt/emqx/data \
   --volume //d/docker/emqx/conf:/opt/emqx/etc \
-  --volume //d/docker/emqx/log:/opt/emqx/log \
+  --volume //d/docker/emqx/logs:/opt/emqx/log \
   --env EMQX_MQTT__SHARED_SUBSCRIPTION=true \
   --env EMQX_ZONE__EXTERNAL__SHARED_SUBSCRIPTION=true \
   --env EMQX_BROKER__SHARED_SUBSCRIPTION_STRATEGY=round_robin \

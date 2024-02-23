@@ -7,6 +7,9 @@
 # 创建Network
 docker network create dev
 
+# 创建文件夹
+mkdir -p //d/docker/rabbitmq/{conf,data,logs}
+
 # 获取默认配置文件
 docker run -d --env RABBITMQ_DEFAULT_USER=rabbitmq --env RABBITMQ_DEFAULT_PASS=rabbitmq --env RABBITMQ_DEFAULT_VHOST=vh1 --name rabbitmq_temp rabbitmq:3.12-management \
 && docker cp rabbitmq_temp:/etc/rabbitmq/conf.d/10-defaults.conf  D:/docker/rabbitmq/conf/conf.d/10-defaults.conf \
@@ -23,7 +26,7 @@ docker run -d \
   --volume //d/docker/rabbitmq/data:/var/lib/rabbitmq \
   --volume //d/docker/rabbitmq/conf/conf.d:/etc/rabbitmq/conf.d \
   --volume //d/docker/rabbitmq/conf/enabled_plugins:/etc/rabbitmq/enabled_plugins \
-  --volume //d/docker/rabbitmq/log:/var/log/rabbitmq \
+  --volume //d/docker/rabbitmq/logs:/var/log/rabbitmq \
   --env RABBITMQ_DEFAULT_USER=rabbitmq \
   --env RABBITMQ_DEFAULT_PASS=rabbitmq \
   --env RABBITMQ_DEFAULT_VHOST=vh1 \

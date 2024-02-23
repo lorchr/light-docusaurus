@@ -6,18 +6,14 @@
 
 ## 1. Docker安装
 ```shell
-# 创建文件目录
-mkdir -p //d/docker/sonarqube/data
-mkdir -p //d/docker/sonarqube/conf
-mkdir -p //d/docker/sonarqube/log
-mkdir -p //d/docker/sonarqube/extensions/downloads
-mkdir -p //d/docker/sonarqube/extensions/plugins
-
 # 创建数据卷
 docker vaolume create --name sonarqube_data
 docker vaolume create --name sonarqube_conf
 docker vaolume create --name sonarqube_log
 docker vaolume create --name sonarqube_extensions
+
+# 创建文件夹
+mkdir -p //d/docker/sonarqube/{conf,data,logs,extensions,extensions/downloads,extensions/plugins}
 
 # 获取默认配置文件
 docker run -d --name sonarqube_temp sonarqube:10.2-community \
@@ -31,7 +27,7 @@ docker run -d \
   --publish 9092:9092 \
   --volume //d/docker/sonarqube/data:/opt/sonarqube/data \
   --volume //d/docker/sonarqube/conf:/opt/sonarqube/conf \
-  --volume //d/docker/sonarqube/log:/opt/sonarqube/logs \
+  --volume //d/docker/sonarqube/logs:/opt/sonarqube/logs \
   --volume //d/docker/sonarqube/extensions:/opt/sonarqube/extensions \
   --env SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/sonarqube?currentSchema=public \
   --env SONAR_JDBC_USERNAME=postgres \

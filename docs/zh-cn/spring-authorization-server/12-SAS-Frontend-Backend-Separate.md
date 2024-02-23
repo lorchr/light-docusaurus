@@ -1139,7 +1139,28 @@ public class AuthorizationConfig {
 
 > 2023-07-21修改内容：oauth协议中有`nonce`参数，为防止冲突，`nonce`参数改为`nonceId`
 
-新建一个vue项目，引入axios和naive ui，这里只给出登录页面的代码，稍后我会将前端的代码上传至gitee
+新建一个vue项目，引入`axios`和`naive ui`，这里只给出登录页面的代码，稍后我会将前端的代码上传至gitee
+```shell
+# 安装 vite
+npm install -g create-vite
+
+# 创建项目目录
+mkdir sas-frontend
+cd ./sas-frontend
+
+# 初始化项目
+create-vite ./ --template vue-ts
+
+# 安装依赖 测试运行
+npm install
+npm run dev
+
+# 安装依赖
+npm config set registry http://registry.npm.taobao.com
+npm install axios --registry=http://registry.npm.taobao.com
+npm install --save-dev naive-ui unplugin-auto-import unplugin-vue-components
+```
+
 ```vue
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -1439,7 +1460,7 @@ header {
 ## 四、测试
 ### 1. 组装url发起授权请求
 ```shell
-http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
 ```
 
 ### 2. 检测到未登录，重定向至vue项目的登录页面
@@ -1462,6 +1483,7 @@ http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_t
 ![img](./img/12/12-15.awebp)
 
       ~~登录成功后会重定向回`/oauth2/authorize`接口并携带`nonce`参数，`/oauth2/authorize`根据`nonce`获取到认证信息后会生成一个`code`，然后携带`code`跳转至回调地址。~~
+
       不需要携带任何参数，因为在重定向至登录之前已经获取到`sessionId`，并根据`sessionId`存储登录时的认证信息，所以重定向回`/oauth2/authorize`接口时能够根据`sessionId`获取到认证信息。获取到认证信息后检测到未授权确认，重定向至授权确认页面。
 
 #### 4. 授权确认提交
@@ -1475,7 +1497,9 @@ http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_t
 ## 五、写在最后
    ~~在踩了不知道多少坑以后终于算是实现了这个东西，但是目前只支持不需要授权确认的客户端，如果需要授权确认那么就会在重定向至授权确认页面时因为获取不到登录信息而重定向至登录页面，这里也比较坑，没有能够更改授权确认请求的地方，只能另辟蹊径修改现在的`RedisSecurityContextRepository`从而使授权确认请求也能获取到认证信息，就是在获取认证信息后存入`session`中一份，因为从`/oauth2/authorize`重定向至授权确认页面是同一个`session`，所以存入`session`后就可以获取了，但是我觉得既然都已经前后端分离了，也就没必要在加授权确认了；当然也不排除有需要这东西的人，后期看看有没有需要的，如果有需要的我会写一下扩展篇。~~
 
-        现在改为通过`sessionId`串联认证服务与单独部署的登录页面的请求，也就不会出现只能获取一次认证信息的问题了，只要在同一个浏览器中访问认证服务，那么使用的`session`就只会是同一个，当从其它系统跳转至认证服务时只要登录过就不需要在登录了，可以直接根据浏览器与认证服务之间产生的`session`的id获取到对应的认证信息，认证信息的存活时间就是在redis中设置的key的存活时间。        虽然现在也是靠`session`关联，但现在将原先存储在`session`中的认证信息存储到了redis中，缩小了服务器存储`session`所需的空间，也可以通过`sessionId`将其关联起来，解决了认证服务与登录页面不在同一域从而因为`session`的不同而获取不到认证信息的问题。这也符合sso的特点，其它域名下的服务需要认证时需要跳转到登录页面登录，登录后另外的服务再次请求认证服务认证时就不需要认证了，可以直接获取到认证信息。 
+        现在改为通过`sessionId`串联认证服务与单独部署的登录页面的请求，也就不会出现只能获取一次认证信息的问题了，只要在同一个浏览器中访问认证服务，那么使用的`session`就只会是同一个，当从其它系统跳转至认证服务时只要登录过就不需要在登录了，可以直接根据浏览器与认证服务之间产生的`session`的id获取到对应的认证信息，认证信息的存活时间就是在redis中设置的key的存活时间。
+
+        虽然现在也是靠`session`关联，但现在将原先存储在`session`中的认证信息存储到了redis中，缩小了服务器存储`session`所需的空间，也可以通过`sessionId`将其关联起来，解决了认证服务与登录页面不在同一域从而因为`session`的不同而获取不到认证信息的问题。这也符合sso的特点，其它域名下的服务需要认证时需要跳转到登录页面登录，登录后另外的服务再次请求认证服务认证时就不需要认证了，可以直接获取到认证信息。 
 
         本来想写点基础的东西，但是兄弟们太相信我了，净整些高端操作，唉 (╯°Д°)╯︵ ┻━┻ 
 

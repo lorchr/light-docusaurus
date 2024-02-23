@@ -70,13 +70,14 @@ CREATE TABLE `oauth2_third_account`
     `third_username`         varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '三方用户的账号',
     `credentials`            varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '三方登录获取的认证信息(token)',
     `credentials_expires_at` datetime(0) NULL DEFAULT NULL COMMENT '三方登录获取的认证信息过期时间',
+    `avatar`                 varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '三方账号头像url',
     `type`                   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '三方登录类型',
     `blog`                   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '博客地址',
     `location`               varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '地址',
     `create_time`            datetime(0) NULL DEFAULT NULL COMMENT '绑定时间',
     `update_time`            datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '三方登录账户信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '三方登录账户信息表' ROW_FORMAT = Dynamic;
 ```
 
 ### 4. 开始编码
@@ -1427,7 +1428,7 @@ public Oauth2UserinfoResult user(Principal principal) {
 
 #### 1. 访问申请授权接口
 ```shell
-http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
 ```
 
 #### 2. 重定向至登录页面
@@ -1468,7 +1469,7 @@ http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_t
 
 访问时记得重启认证服务清理一下认证信息，并且记得scope中要包含openid
 ```shell
-http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read%20openid&redirect_uri=http%3A%2F%2F127.0.0.1%3A8000%2Flogin%2Foauth2%2Fcode%2Fmessaging-client-oidc
+http://192.168.1.102:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read%20openid&redirect_uri=http://127.0.0.1:8000/login/oauth2/code/messaging-client-oidc
 ```
 
 #### 2. 重定向至登录页面

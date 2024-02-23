@@ -20,7 +20,7 @@ mkdir /usr/local/java
 tar -zxvf ./jdk-8u221-linux-x64.tar.gz -C /usr/local/java
 
 #设置环境变量
-cat >> /etc/profile << EOF
+cat >> /etc/profile << 'EOF'
 # Java Enviroment
 JAVA_HOME=/usr/local/java/jdk1.8.0_221
 JRE_HOME=/usr/local/java/jdk1.8.0_221/jre

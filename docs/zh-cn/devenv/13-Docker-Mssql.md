@@ -10,11 +10,8 @@
 docker network create --driver bridge dev
 
 # 创建文件夹
-mkdir -p //d/docker/mssql/data
-mkdir -p //d/docker/mssql/conf
-mkdir -p //d/docker/mssql/log
-mkdir -p //d/docker/mssql/secrets
-touch //d/docker/mssql/log/errorlog
+mkdir -p //d/docker/mssql/{conf,data,logs,secrets}
+touch //d/docker/mssql/logs/errorlog
 
 # 拉取镜像
 docker pull mcr.microsoft.com/mssql/server:2019-CU23-ubuntu-20.04
@@ -23,7 +20,7 @@ docker pull mcr.microsoft.com/mssql/server:2019-CU23-ubuntu-20.04
 docker run -d \
   --publish 1433:1433 \
   --volume //d/docker/mssql/data:/var/opt/mssql/data \
-  --volume //d/docker/mssql/log:/var/opt/mssql/log \
+  --volume //d/docker/mssql/logs:/var/opt/mssql/log \
   --volume //d/docker/mssql/secrets:/var/opt/mssql/secrets \
   --env ACCEPT_EULA=Y \
   --env MSSQL_SA_PASSWORD=Admin123 \

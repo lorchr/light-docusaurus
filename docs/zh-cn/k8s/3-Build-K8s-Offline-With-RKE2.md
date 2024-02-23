@@ -414,7 +414,7 @@ sh /data/local/minio/bin/start.sh
 ### 3、设置开机自启
 ```shell
 # 添加服务注册文件
-cat > /etc/systemd/system/minio.service << EOF
+cat > /etc/systemd/system/minio.service << 'EOF'
 [Unit]
 Description=MinIO
 Documentation=https://min.io/docs/minio/linux/index.html
@@ -467,7 +467,7 @@ systemctl disable minio
 ```
 
 **注意：** 
-1. 脚本中有环境变量引用，直接使用`cat`写入会丢失环境变量的名称，需要手动编辑
+1. 脚本中有环境变量引用，直接使用`cat`写入会丢失环境变量的名称，需要手动编辑，需要将`cat >> filename << EOF` 改为 `cat >> filename << 'EOF'`
 2. `EnvironmentFile=-/data/local/minio/conf/minio.conf`加载文件内容为环境变量，`-`表示文件不存在不报错
 3. `cat > filename << EOF` 表示写入，会覆盖原内容； `cat >> filename << EOF`表示追加，不会覆盖原内容
 

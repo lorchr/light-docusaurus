@@ -810,6 +810,6 @@ AccessDeniedHandler跟AuthenticationEntryPoint差不多的，框架都有提供�
 
 可以看到，在认证相关的过滤器链中调用了该方法，重新设置了`this.authenticationEntryPoint`；至此也明白了为什么在postman中请求返回json。
 
-## 七。总结
+## 七、总结
 本篇文章实现自定义的异常响应配置，并通过断点反查了一下配置生效的过程，粗略的说明了一下security对于异常处理的逻辑。
 文章内容比较杂，写的比较乱，如果有发现什么问题请在评论区指出，谢谢。

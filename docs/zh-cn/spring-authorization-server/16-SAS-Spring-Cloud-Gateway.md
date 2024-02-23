@@ -852,6 +852,26 @@ public class TestController {
 
 响应403，并将错误信息放入响应头中
 
+```shell
+http://127.0.0.1:7000/webmvc/test01
+
+http://127.0.0.1:7000/oauth2/authorization/messaging-client-oidc
+
+http://192.168.3.49:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read%20message.write%20openid%20profile&state=5RTz8WD7oMYLFc5WbACqWveYqmVnhf9KQCxZar5qA1g%3D&redirect_uri=http://127.0.0.1:7000/login/oauth2/code/messaging-client-oidc&nonce=EX6FpWaYeSApRo3jlLdXz6xV9iiNFyzFtDW2VUjfr2I
+
+http://192.168.3.49:8080/login
+
+http://192.168.3.49:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read%20message.write%20openid%20profile&state=5RTz8WD7oMYLFc5WbACqWveYqmVnhf9KQCxZar5qA1g%3D&redirect_uri=http://127.0.0.1:7000/login/oauth2/code/messaging-client-oidc&nonce=EX6FpWaYeSApRo3jlLdXz6xV9iiNFyzFtDW2VUjfr2I&continue
+
+http://192.168.3.49:8080/oauth2/consent?scope=openid%20profile%20message.read%20message.write&client_id=messaging-client&state=kCmXmm7B6Yf0e5EHV3bfcb8PxC0uPTVkrbl3gGeII-Q%3D
+
+http://192.168.3.49:8080/oauth2/authorize
+
+http://127.0.0.1:7000/login/oauth2/code/messaging-client-oidc?code=lJ59pJPQsVb5deKNwQiOvIWTxNH0aMGGfdwq6i4X1e0lDioUdR5ZLk4LD87yUpsiE6QCM0cZhnfbC2SWj6JTbtCQ9E-ib4pAY5n5oztvcP2Z0U1aJGLX75fOaNLcL0wx&state=5RTz8WD7oMYLFc5WbACqWveYqmVnhf9KQCxZar5qA1g%3D
+
+http://127.0.0.1:7000/webmvc/test01
+```
+
 ### 5. 使用token访问网关
 #### 1. 过期token
 

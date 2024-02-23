@@ -203,7 +203,7 @@ CREATE TABLE oauth2_registered_client
 );
 ```
 
-### 2. 在config包下创建AuthorizationConfig类，并添加配置
+### 2. 在config包下创建`AuthorizationConfig`类，并添加配置
 #### 1. 配置端点的过滤器链
 ```java
 /**
@@ -346,15 +346,15 @@ public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTe
 1. 客户端设置(`ClientSettings`)说明
 
 - `requireProofKey`：当使用该客户端发起PKCE流程时必须设置为true。
-- `requireAuthorizationConsent`：当设置为true时登录后会先跳转授权确认页面，确认后才会跳转到redirect_uri，为false时不会跳转至授权确认页面。
+- `requireAuthorizationConsent`：当设置为true时登录后会先跳转授权确认页面，确认后才会跳转到`redirect_uri`，为false时不会跳转至授权确认页面。
 - `jwkSetUrl`：设置客户端jwks的url。
-- `tokenEndpointAuthenticationSigningAlgorithm`：设置token端点对验证方法为CLIENT_SECRET_JWT，PRIVATE_KEY_JWT的客户端进行身份验证使用的签名算法。
+- `tokenEndpointAuthenticationSigningAlgorithm`：设置token端点对验证方法为`CLIENT_SECRET_JWT`，`PRIVATE_KEY_JWT`的客户端进行身份验证使用的签名算法。
 
 2. token设置(`TokenSettings`)说明
 
-- `authorizationCodeTimeToLive`：授权码(authorization_code)有效时长。
-- `accessTokenTimeToLive`：access_token有效时长。
-- `accessTokenFormat`：access_token的格式，`SELF_CONTAINED`是自包含token(jwt格式)，`REFERENCE`是不透明token，相相当于是token元数据的一个id，通过id找到对应数据(自省令牌时)，如下
+- `authorizationCodeTimeToLive`：授权码(`authorization_code`)有效时长。
+- `accessTokenTimeToLive`：`access_token`有效时长。
+- `accessTokenFormat`：`access_token`的格式，`SELF_CONTAINED`是自包含token(jwt格式)，`REFERENCE`是不透明token，相相当于是token元数据的一个id，通过id找到对应数据(自省令牌时)，如下
 
 ```java
 public final class OAuth2TokenFormat implements Serializable {
@@ -512,7 +512,7 @@ public UserDetailsService users(PasswordEncoder passwordEncoder) {
 }
 ```
 
-#### 11. 完整的AuthorizationConfig.java如下
+#### 11. 完整的`AuthorizationConfig.java`如下
 ```java
 package com.example.config;
 
@@ -809,7 +809,7 @@ public class AuthorizationConfig {
 ```
 **注意:** 配置类中提到的基于内存存储的类禁止用于生产环境
 
-### 3. 添加AuthorizationController，将请求转发至自定义的登录页面和用户确认授权页面
+### 3. 添加`AuthorizationController`，将请求转发至自定义的登录页面和用户确认授权页面
 以下代码摘抄自[官方示例](https://github.com/spring-projects/spring-authorization-server/tree/main/samples/demo-authorizationserver)
 
 使用thymeleaf框架渲染页面
@@ -949,7 +949,7 @@ public class AuthorizationController {
 }
 ```
 
-### 4. 在application.yml中配置db数据源
+### 4. 在`application.yml`中配置db数据源
 ```yaml
 spring:
   datasource:
@@ -1153,7 +1153,7 @@ body {
 ### 6. 简单测试
 #### 1. 拼接url，访问授权接口
 ```shell
-http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=https%3A%2F%2Fwww.baidu.com
+http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=code&scope=message.read&redirect_uri=https://www.baidu.com
 ```
 
 #### 2. 授权接口检测到未登录，重定向至登录页面
@@ -1172,16 +1172,16 @@ http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=
 
 #### 5. 提交后重定向至第1步的授权接口
 
-> 授权接口生成code并重定向至第1步请求授权接口时携带的redirectUri地址，重定向时携带上参数code和state，我这里省略掉了state参数，重定向之后只会携带code参数；state用来防止CSRF攻击，正式请求需生成并携带state参数。
+> 授权接口生成code并重定向至第1步请求授权接口时携带的`redirectUri`地址，重定向时携带上参数code和state，我这里省略掉了state参数，重定向之后只会携带code参数；state用来防止CSRF攻击，正式请求需生成并携带state参数。
 
-#### 6. 用户确认授权后携带code跳转至redirectUri
-一般来说配置的回调地址都是客户端的接口，接口在接收到回调时根据code去换取accessToken，接下来我会用postman模拟客户端发起一个http请求去换取token
+#### 6. 用户确认授权后携带code跳转至`redirectUri`
+一般来说配置的回调地址都是客户端的接口，接口在接收到回调时根据code去换取`accessToken`，接下来我会用postman模拟客户端发起一个http请求去换取token
 
 不知道为什么在手机浏览器上看回调至百度的图片在平台显示违规，这里放一张另一个回调地址的替代图片
 
 ![img](./img/2/2-3.awebp)
 
-### 7. 根据code换取AccessToken
+### 7. 根据code换取`AccessToken`
 请求/oauth2/token接口
 
 #### 1. 设置Basic Auth
@@ -1190,32 +1190,32 @@ http://127.0.0.1:8080/oauth2/authorize?client_id=messaging-client&response_type=
 ![img](./img/2/2-4.awebp)
 
 #### 2. 添加表单数据，发起POST请求
-下列表单数据可添加至form-data也可添加至url params
+下列表单数据可添加至form-data~~也可添加至url params~~
+
+> 2024-01-23 在 SAS 1.2.1 版本中，使用 url params 认证获取Token的方式已经失效，见[issue](https://github.com/spring-projects/spring-authorization-server/issues/1451) [pr](https://github.com/spring-projects/spring-authorization-server/pull/1468) 及 [commit](https://github.com/spring-projects/spring-authorization-server/commit/4bc0df5ef81a690abb0b7ea3fcbdf3c4b4b6ce23)
 
 ![img](./img/2/2-5.awebp)
 
 参数中的code就是第6步回调时携带的code
 
-**注意：** 添加url params时redirect_uri参数要经过encodeURIComponent函数对回调地址进行编码
+**注意：** 添加`url params`时`redirect_uri`参数要经过`encodeURIComponent`函数对回调地址进行编码
 
 ![img](./img/2/2-6.awebp)
 
 ### 8. 参数解释
-```markdown
-1. client_id: 客户端的id
-2. client_secret: 客户端秘钥
-3. redirect_uri：申请授权成功后的回调地址
-4. response_type：授权码模式固定参数code
-5. code_verifier：一段随机字符串
-6. code_challenge：根据指定的加密方式将code_verifier加密后得到的字符串
-7. code_challenge_method：加密方式
-8. scope：客户端申请的授权范围
-9. state：跟随authCode原样返回，防止CSRF攻击
-10.  grant_type：指定获取token 的方式：
-	1. refresh_token：刷新token
-    2. authorization_code：根据授权码模式的授权码获取
-    3. client_credentials：客户端模式获取
-```
+- `client_id`: 客户端的id
+- `client_secret`: 客户端秘钥
+- `redirect_uri`: 申请授权成功后的回调地址
+- `response_type`: 授权码模式固定参数`code`
+- `code_verifier`: 一段随机字符串
+- `code_challenge`: 根据指定的加密方式将`code_verifier`加密后得到的字符串
+- `code_challenge_method`: 加密方式
+- `scope`: 客户端申请的授权范围
+- `state`: 跟随authCode原样返回，防止CSRF攻击
+- `grant_type`: 指定获取 `token` 的方式
+    - `refresh_token`: 刷新token
+    - `authorization_code`: 根据授权码模式的授权码获取
+    - `client_credentials`: 客户端模式获取
 
 ## 总结
 本篇文章从0到1搭建了一个简单认证服务，解释了认证服务的各项配置用意，如何设置自己的登录页和授权确认页，如何让认证服务解析请求时携带的token，文章过长难免有遗漏的地方，如果文章中有遗漏或错误的地方请各位读者在评论区指出。

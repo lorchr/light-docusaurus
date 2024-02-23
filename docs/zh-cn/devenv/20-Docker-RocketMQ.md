@@ -7,6 +7,10 @@
 # 创建Network
 docker network create dev
 
+# 创建文件夹
+mkdir -p //d/docker/rocketmq/broker/{conf,data,logs,bin}
+mkdir -p //d/docker/rocketmq/nameserver/{conf,data,logs,bin}
+
 # 拉取镜像
 docker pull apache/rocketmq:5.1.3
 docker pull apacherocketmq/rocketmq-dashboard:1.0.0
@@ -199,7 +203,7 @@ services:
     restart: no
     privileged: true
     volumes:
-      - //d/docker/rocketmq/nameserver/log:/home/rocketmq/logs
+      - //d/docker/rocketmq/nameserver/logs:/home/rocketmq/logs
       - //d/docker/rocketmq/nameserver/bin/runserver.cmd:/home/rocketmq/rocketmq-5.1.3/bin/runserver.cmd
     environment:
       - MAX_HEAP_SIZE=256M
@@ -215,7 +219,7 @@ services:
     restart: no
     privileged: true
     volumes:
-      - //d/docker/rocketmq/broker/log:/home/rocketmq/logs
+      - //d/docker/rocketmq/broker/logs:/home/rocketmq/logs
       - //d/docker/rocketmq/broker/data:/home/rocketmq/store
       - //d/docker/rocketmq/broker/conf/broker.conf:/home/rocketmq/broker.conf
       - //d/docker/rocketmq/broker/bin/runbroker.cmd:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.cmd

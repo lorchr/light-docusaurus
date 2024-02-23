@@ -18,8 +18,8 @@
    - Authorization callback URL:   http://localhost:10010/login/oauth2/code/gitee
 
 2. 生成秘钥并保存
-   - Client ID:                    701a063664c42f669d7b
-   - Client secrets:               68cf372920e6ea6ded19d44a36fc4f2afe5aaec6
+   - Client ID:                    2ec8d36a4d6afdadf831513d4d888552bd98fe69e26fc23828dff95ee52dd092
+   - Client secrets:               0d2b08cbff9d5d2f7549420ee343e847838cd885315089db2cbda5044217bf36
 
 ### 3. 登录页面
 ```html

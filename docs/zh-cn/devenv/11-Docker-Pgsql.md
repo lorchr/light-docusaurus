@@ -1,5 +1,7 @@
 - [Postgres Offical](https://www.postgresql.org/)
 - [Postgres Docker](https://hub.docker.com/_/postgres)
+- [Redrock Postgres 文档](https://doc.rockdata.net/zh-cn/psycopg/)
+- [PGTune - calculate configuration for PostgreSQL based on the maximum performance for a given hardware configuration](https://pgtune.leopard.in.ua/)
 
 ## 1. Docker安装
 ```shell
@@ -8,6 +10,9 @@ docker network create dev
 
 # 创建数据卷
 docker volume create pgsql_data;
+
+# 创建文件夹
+mkdir -p //d/docker/pgsql/{conf,data,logs}
 
 # docker run -i --rm postgres cat /usr/share/postgresql/postgresql.conf.sample >  D:/docker/pgsql/conf/postgresql.conf
 
@@ -99,7 +104,22 @@ psql –h 127.0.0.1 -p 5432 -U postgres –f db_bak.sql
 ```
 
 ## 3. 常用命令
-1. 连接管理
+1. 命令行操作
+
+```shell
+# 登录数据库
+psql --help
+psql -h localhost -p 5432 -U postgres -W -d postgres 
+psql --host=localhost --port=5432 --username=postgres --password --dbname=postgres 
+
+# 创建用户并授权
+CREATE USER light WITH PASSWORD 'light';
+GRANT ALL PRIVILEGES ON DATABASE test TO light;
+ALTER TABLE test.test_table OWNER TO light;
+```
+
+2. 连接管理
+
 ```sql
 -- 查询当前连接数
 SELECT * FROM pg_stat_activity;
@@ -117,10 +137,14 @@ SHOW max_connections;
 ALTER system SET max_connections = 1000;
 ```
 
-2. 数据库操作
+3. 数据库操作
+
 ```sql
 -- 查看数据库列表
 SELECT datname FROM pg_database;
+
+-- 查看数据表列表
+SELECT tablename FROM pg_tables WHERE schemaname='public';
 
 -- 切换到某个数据库
 \c db_name;
