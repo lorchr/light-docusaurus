@@ -615,19 +615,19 @@ mysql -u root -p
 CHANGE MASTER TO GET_MASTER_PUBLIC_KEY=1;
 ```
 
+3. `ERROR 1872 (HY000): Replica failed to initialize applier metadata structure from the repository`
+
+因为从数据库可能以前配置过，生成过 中继日志文件，导致 从数据库 slave 中还记录着旧数据，这时可以使用 命令 `reset slave;`
+
 ## 安装Mycat
 - [Mycat-server-1.6.7.5-release-20200422133810-linux.tar.gz](https://github.com/MyCATApache/Mycat-Server/releases/download/Mycat-server-1675-release/Mycat-server-1.6.7.5-release-20200422133810-linux.tar.gz)
 - [Mycat（实践篇 - 基于PostgreSQL的水平切分、主从复制、读写分离）](http://www.manongjc.com/detail/52-btpqcqewaykjbuq.html)
-
-4. `ERROR 1872 (HY000): Replica failed to initialize applier metadata structure from the repository`
-
-因为从数据库可能以前配置过，生成过 中继日志文件，导致 从数据库 slave 中还记录着旧数据，这时可以使用 命令 `reset slave;`
 
 ### 1. 下载安装
 ```shell
 # 下载解压
 wget https://github.com/MyCATApache/Mycat-Server/releases/download/Mycat-server-1675-release/Mycat-server-1.6.7.5-release-20200422133810-linux.tar.gz
-tar -zxvf Mycat-server-1.6.7.5-release-20200422133810-linux.tar.gz
+tar -zxvf Mycat-server-1.6.7.5-release-20200422133810-linux.tar.gz  /usr/local/
 
 # 创建用户
 cd mycat

@@ -365,21 +365,52 @@ drop table t1;
 gsql -r -h 172.18.0.6 -p 3307 -U root -W root
 ```
 
+## 七、Spring Boot连接代理数据源
 
-## 七、总结
+```yaml
+spring:
+  # 代理的是Pgsql时，数据库驱动 连接URL均需要按照Pgsql来填写
+  # Host/port: 填写 shardingsphere-proxy 的IP 端口
+  # database: 填写 shardingsphere-proxy config-*.yaml 中配置的虚拟数据库名称
+  # username/password: 填写 shardingsphere-proxy server.yaml 中配置的用户名密码
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:13307/readwrite_pgsql
+    username: root
+    password: root
+
+---
+
+spring:
+  # 代理的是Mysql时，数据库驱动 连接URL均需要按照Mysql来填写
+  # Host/port: 填写 shardingsphere-proxy 的IP 端口
+  # database: 填写 shardingsphere-proxy config-*.yaml 中配置的虚拟数据库名称
+  # username/password: 填写 shardingsphere-proxy server.yaml 中配置的用户名密码
+  datasource:
+   driver-class-name: com.mysql.jdbc.Driver
+   url: jdbc:mysql://localhost:3307/readwrite_mysql
+   username: root
+   password: root
+
+```
+
+## 八、总结
 因为在5.2.1 之前和之后存在较大的破坏性更新，所以两部分配置存在较大的差异和不兼容情况
 
 ### 共性问题
 1. 多数据库代理问题（针对读写分离）
    - 不兼容同时代理 Mysql 和 Pgsql。需要搭建两个 Shardingsphere proxy，分别来代理 Mysql 和 Pgsql
    - 对于多租户每个租户需要单独一份配置文件，如: `config-tenant1.yaml` `config-tenant2.yaml`
-     - `config-tenant1.yaml` 配置 `tenant1` 的数据源 `tenant1_write` `tenant_read1` `tenant_read1`
-     - `config-tenant2.yaml` 配置 `tenant1` 的数据源 `tenant2_write` `tenant_read2` `tenant_read2`
+     - `config-tenant1.yaml` 配置 `tenant1` 的数据源 `tenant1_write` `tenant1_read1` `tenant1_read2`
+     - `config-tenant2.yaml` 配置 `tenant2` 的数据源 `tenant2_write` `tenant2_read1` `tenant2_read2`
 
 2. 对于 bool 值的处理 Mysql 与 Pgsql 表现不一致
-   - Mysql  1  0
-   - Pgsql  t  f
    - 建议使用字符串或者数字来存储布尔值
+
+    | Type  | True | False |
+    | ----- | ---- | ----- |
+    | Mysql | 1    | 0     |
+    | Pgsql | t    | f     |
 
 ### Shardingsphere proxy 5.2.1
 1. 对 `json` `jsonb` 类型的属性支持不好
@@ -391,7 +422,7 @@ gsql -r -h 172.18.0.6 -p 3307 -U root -W root
    - 目前测试仅可以使用 `psql` 命令行的方式查询代理的数据库表，系统表查询报错 `Table or view 'pg_namespace' does not exists`
    - 基本处于不可用的状态，建议直接使用 5.2.1 版本 [issue#29387](https://github.com/apache/shardingsphere/issues/29387)
 
-## 八、参考文档
+## 九、参考文档
 - [SQL Server 读写分离](https://blog.51cto.com/u_12897/8329842)
 - [oracle的读写分离实现](https://blog.51cto.com/u_15101584/2623066)
 - [SQL Server 配置分发](https://learn.microsoft.com/zh-cn/sql/relational-databases/replication/configure-distribution?view=sql-server-ver16)

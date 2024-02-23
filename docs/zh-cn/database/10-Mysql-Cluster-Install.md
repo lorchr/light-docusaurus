@@ -268,3 +268,7 @@ mysql -u root -p
 
 CHANGE MASTER TO GET_MASTER_PUBLIC_KEY=1;
 ```
+
+3. `ERROR 1872 (HY000): Replica failed to initialize applier metadata structure from the repository`
+
+因为从数据库可能以前配置过，生成过 中继日志文件，导致 从数据库 slave 中还记录着旧数据，这时可以使用 命令 `reset slave;`
