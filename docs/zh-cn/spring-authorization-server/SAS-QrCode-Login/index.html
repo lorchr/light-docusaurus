@@ -1,0 +1,1163 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-zh-cn/spring-authorization-server/SAS-QrCode-Login" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.0.1">
+<title data-rh="true">SAS-QrCode-Login | Light Docusaurus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://lorchr.github.io/light-docusaurus/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="SAS-QrCode-Login | Light Docusaurus"><meta data-rh="true" name="description" content="- Spring Authorization Server入门 (二十) 实现二维码扫码登录"><meta data-rh="true" property="og:description" content="- Spring Authorization Server入门 (二十) 实现二维码扫码登录"><link data-rh="true" rel="icon" href="/light-docusaurus/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://TLGHDZ3Y2I-dsn.algolia.net" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="/light-docusaurus/blog/rss.xml" title="Light Docusaurus RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/light-docusaurus/blog/atom.xml" title="Light Docusaurus Atom Feed">
+
+
+
+<link rel="search" type="application/opensearchdescription+xml" title="Light Docusaurus" href="/light-docusaurus/opensearch.xml"><link rel="stylesheet" href="/light-docusaurus/assets/css/styles.609e5209.css">
+<script src="/light-docusaurus/assets/js/runtime~main.dc675bf0.js" defer="defer"></script>
+<script src="/light-docusaurus/assets/js/main.e6636429.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/light-docusaurus/"><div class="navbar__logo"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/light-docusaurus/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Torch</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/light-docusaurus/docs/category/guide/">Torch</a><a class="navbar__item navbar__link" href="/light-docusaurus/blog/">Blog</a><a class="navbar__item navbar__link" href="/light-docusaurus/middleware/">Middleware</a><a class="navbar__item navbar__link" href="/light-docusaurus/electron/">Electron</a><a class="navbar__item navbar__link" href="/light-docusaurus/postman/">Postman</a><a class="navbar__item navbar__link" href="/light-docusaurus/diy/">DIY</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li></ul></div><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><button type="button" class="DocSearch DocSearch-Button" aria-label="搜索"><span class="DocSearch-Button-Container"><svg width="20" height="20" class="DocSearch-Search-Icon" viewBox="0 0 20 20"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="DocSearch-Button-Placeholder">搜索</span></span><span class="DocSearch-Button-Keys"></span></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/guide/">Guide</a><button aria-label="展开侧边栏分类 &#x27;Guide&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/develop-environment/">Develop Environment</a><button aria-label="展开侧边栏分类 &#x27;Develop Environment&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/java-jvm/">Java (JVM)</a><button aria-label="展开侧边栏分类 &#x27;Java (JVM)&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-boot/">Spring Boot</a><button aria-label="展开侧边栏分类 &#x27;Spring Boot&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-cloud/">Spring Cloud</a><button aria-label="展开侧边栏分类 &#x27;Spring Cloud&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/spring-security/">Spring Security</a><button aria-label="展开侧边栏分类 &#x27;Spring Security&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" aria-expanded="true" href="/light-docusaurus/docs/category/spring-authorization-server/">Spring Authorization Server</a><button aria-label="折叠侧边栏分类 &#x27;Spring Authorization Server&#x27;" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Geting-Start-Index/">SAS-Geting-Start-Index</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2.1-Protocol/">SAS-OAuth2.1-Protocol</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server/">SAS-Spring-Boot-Authorization-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Boot-Authorization-Server-Addition/">SAS-Spring-Boot-Authorization-Server-Addition</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Device-Authorization/">SAS-Device-Authorization</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Customize-Exception-Configurer/">SAS-Customize-Exception-Configurer</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Token-Enhancer-And-Parser/">SAS-Token-Enhancer-And-Parser</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Image-Captcha/">SAS-Image-Captcha</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Client/">SAS-OAuth2-Client</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Resource-Server/">SAS-OAuth2-Resource-Server</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-SMS-Code-Login/">SAS-SMS-Code-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-OAuth2-Extension-Grant-Type/">SAS-OAuth2-Extension-Grant-Type</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Frontend-Backend-Separate/">SAS-Frontend-Backend-Separate</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Github-Gitee-Login/">SAS-Github-Gitee-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Wechat-Login/">SAS-Wechat-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Separate-Consent-And-Device-Authorize-Page/">SAS-Separate-Consent-And-Device-Authorize-Page</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Spring-Cloud-Gateway/">SAS-Spring-Cloud-Gateway</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-Authorization-Code/">SAS-Vue-Authorization-Code</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Vue-PKCE/">SAS-Vue-PKCE</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Redis-Core-Service/">SAS-Redis-Core-Service</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-QrCode-Login/">SAS-QrCode-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/">SAS-Optimize-Customlize-UserDetailService</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Add-Redis-Cache/">SAS-Optimize-Add-Redis-Cache</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Persistance-JWKSource/">SAS-Optimize-Persistance-JWKSource</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin/">SAS-Optimize-Redis-Serializer-Add-Jackson-Mixin</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-FAQ/">SAS-FAQ</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/active-directory/">Active Directory</a><button aria-label="展开侧边栏分类 &#x27;Active Directory&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/database/">Database</a><button aria-label="展开侧边栏分类 &#x27;Database&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/git/">Git</a><button aria-label="展开侧边栏分类 &#x27;Git&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/linux/">Linux</a><button aria-label="展开侧边栏分类 &#x27;Linux&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/docker/">Docker</a><button aria-label="展开侧边栏分类 &#x27;Docker&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/kubernetes/">Kubernetes</a><button aria-label="展开侧边栏分类 &#x27;Kubernetes&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/test/">Test</a><button aria-label="展开侧边栏分类 &#x27;Test&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" aria-expanded="false" href="/light-docusaurus/docs/category/others/">Others</a><button aria-label="展开侧边栏分类 &#x27;Others&#x27;" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/awesome-open-source/">Awesome open source</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/light-docusaurus/docs/zh-cn/windows/">Windows</a></li></ul></nav><button type="button" title="收起侧边栏" aria-label="收起侧边栏" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/light-docusaurus/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/light-docusaurus/docs/category/spring-authorization-server/"><span itemprop="name">Spring Authorization Server</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">SAS-QrCode-Login</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>SAS-QrCode-Login</h1></header><ul>
+<li><a href="https://juejin.cn/post/7326546769981603866">Spring Authorization Server入门 (二十) 实现二维码扫码登录</a></li>
+</ul>
+<h2 id="实现原理">实现原理</h2>
+<ul>
+<li>打开网页，发起授权申请/未登录被重定向到登录页面</li>
+<li>选择二维码登录，页面从后端请求二维码</li>
+<li>页面渲染二维码图片，并轮询请求，获取二维码的状态</li>
+<li>事先登录过APP的手机扫描二维码，然后APP请求服务器端的API接口，把用户认证信息传递到服务器中</li>
+<li>后端收到APP的请求后更改二维码状态，并把用户认证信息写入session</li>
+<li>页面得到扫码确认的响应，并跳 转回之前未登录的地址</li>
+</ul>
+<p><a href="https://mermaid.js.org/syntax/sequenceDiagram.html">Sequence Diagram Syntax</a></p>
+<mermaid value="sequenceDiagram
+    actor       A as USER;
+    participant B as Browser            ;
+    participant C as AuthorizationServer;
+
+    A -&gt;&gt;+ B : 访问受限资源
+    B -&gt;&gt;+ C : 访问受限资源
+    C --&gt;&gt; B : 返回登录页面
+    A -&gt;&gt;+ B : 选择二维码登录
+    B -&gt;&gt;+ C : 请求生成二维码
+    C --&gt;&gt; B : 返回登录页面
+    B --&gt;&gt; B : 渲染图片
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    C --&gt;&gt; B : 未扫描
+    A -&gt;&gt;+ B : 已登录APP扫码二维码
+    A -&gt;&gt;+ C : 获取二维码当前状态
+    C --&gt;&gt; A : 二维码状态
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    C --&gt;&gt; B : 扫码用户头像、待确认
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    A -&gt;&gt;+ C : 确认登录
+    C --&gt;&gt; A : 认证信息写入session，响应成功
+    B -&gt;&gt;+ C : 轮询检测二维码状态
+    C --&gt;&gt; B : 扫码成功，用户确认登录
+    B --&gt;&gt; B : 重定向至受限资源
+    B --&gt;&gt; A : 返回受限资源"></mermaid>
+<p>在这个流程中 <code>用户认证信息写入session</code> 后前端在重定向时能获取到认证信息是因为现在的认证服务引入了<code>spring session data redis</code>依赖，并且在<code>application.yml</code>中配置了<code>server.servlet.session.cookie.domain: cdhttp.cn</code>属性(演示环境域名)，这里是指定spring session的顶级域名，在该域名下的子域名服务共享session，如果你是在开发阶段可以配置为<code>server.servlet.session.cookie.domain: 127.0.0.1</code>，这时候前端访问使用<code>127.0.0.1:5173</code>，认证服务使用<code>127.0.0.1:8080</code>，端口可以不一样，但是认证服务和前端必须使用同一域名。</p>
+<h2 id="二代码实现">二、代码实现</h2>
+<h3 id="1-后端实现">1. 后端实现</h3>
+<h4 id="1-引入二维码依赖">1. 引入二维码依赖</h4>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.google.zxing&lt;/groupId&gt;
+    &lt;artifactId&gt;core&lt;/artifactId&gt;
+    &lt;version&gt;3.3.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.google.zxing&lt;/groupId&gt;
+    &lt;artifactId&gt;javase&lt;/artifactId&gt;
+    &lt;version&gt;3.3.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><code>hutool-captcha</code>改为<code>hutool-all</code></p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;cn.hutool&lt;/groupId&gt;
+    &lt;artifactId&gt;hutool-all&lt;/artifactId&gt;
+    &lt;version&gt;${hutool.version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h4 id="2-添加二维码登录接口">2. 添加二维码登录接口</h4>
+<p>提供四个接口，分别处理生成二维码、轮询、app扫码和app确认登录的逻辑。</p>
+<pre><code class="language-java">package com.example.controller;
+
+import com.example.model.Result;
+import com.example.model.request.qrcode.QrCodeLoginConsentRequest;
+import com.example.model.request.qrcode.QrCodeLoginScanRequest;
+import com.example.model.response.qrcode.QrCodeGenerateResponse;
+import com.example.model.response.qrcode.QrCodeLoginFetchResponse;
+import com.example.model.response.qrcode.QrCodeLoginScanResponse;
+import com.example.service.IQrCodeLoginService;
+import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * 二维码登录接口
+ *
+ * @author vains
+ */
+@RestController
+@AllArgsConstructor
+@RequestMapping(&quot;/qrCode&quot;)
+public class QrCodeLoginController {
+
+    private final IQrCodeLoginService iQrCodeLoginService;
+
+    @GetMapping(&quot;/login/generateQrCode&quot;)
+    public Result&lt;QrCodeGenerateResponse&gt; generateQrCode() {
+        // 生成二维码
+        return Result.success(iQrCodeLoginService.generateQrCode());
+    }
+
+    @GetMapping(&quot;/login/fetch/{qrCodeId}&quot;)
+    public Result&lt;QrCodeLoginFetchResponse&gt; fetch(@PathVariable String qrCodeId) {
+        // 轮询二维码状态
+        return Result.success(iQrCodeLoginService.fetch(qrCodeId));
+    }
+
+
+    @PostMapping(&quot;/scan&quot;)
+    public Result&lt;QrCodeLoginScanResponse&gt; scan(@RequestBody QrCodeLoginScanRequest loginScan) {
+        // app 扫码二维码
+        return Result.success(iQrCodeLoginService.scan(loginScan));
+    }
+
+    @PostMapping(&quot;/consent&quot;)
+    public Result&lt;String&gt; consent(@RequestBody QrCodeLoginConsentRequest loginConsent) {
+
+        // app 确认登录
+        iQrCodeLoginService.consent(loginConsent);
+
+        return Result.success();
+    }
+
+}
+</code></pre>
+<h4 id="3-yml中放行前端访问的接口">3. yml中放行前端访问的接口</h4>
+<p>添加匹配规则<code>/qrCode/login/**</code></p>
+<pre><code class="language-yml">custom:
+  # 自定义认证配置
+  security:
+    # 登录页面路径
+    login-url: http://k7fsqkhtbx.cdhttp.cn/login
+    # 授权确认页面路径
+    consent-page-uri: http://k7fsqkhtbx.cdhttp.cn/consent
+    # 设备码验证页面
+    device-activate-uri: http://k7fsqkhtbx.cdhttp.cn/activate
+    # 设备码验证成功页面
+    device-activated-uri: http://k7fsqkhtbx.cdhttp.cn/activated
+    # 不需要认证的地址
+    ignore-uri-list: assets/**, /webjars/**, /login, /getCaptcha, /getSmsCaptcha, /error, /oauth2/consent/parameters, /test03, /favicon.ico, /qrCode/login/**
+</code></pre>
+<h4 id="4-编写二维码登录服务接口">4. 编写二维码登录服务接口</h4>
+<p>编写登录service接口</p>
+<pre><code class="language-java">package com.example.service;
+
+import com.example.model.request.qrcode.QrCodeLoginConsentRequest;
+import com.example.model.request.qrcode.QrCodeLoginScanRequest;
+import com.example.model.response.qrcode.QrCodeGenerateResponse;
+import com.example.model.response.qrcode.QrCodeLoginFetchResponse;
+import com.example.model.response.qrcode.QrCodeLoginScanResponse;
+
+/**
+ * 二维码登录服务接口
+ *
+ * @author vains
+ */
+public interface IQrCodeLoginService {
+
+    /**
+     * 生成二维码
+     *
+     * @return 二维码
+     */
+    QrCodeGenerateResponse generateQrCode();
+
+    /**
+     * 扫描二维码响应
+     *
+     * @param loginScan 二维码id
+     * @return 二维码信息
+     */
+    QrCodeLoginScanResponse scan(QrCodeLoginScanRequest loginScan);
+
+    /**
+     * 二维码登录确认入参
+     *
+     * @param loginConsent 二维码id
+     */
+    void consent(QrCodeLoginConsentRequest loginConsent);
+
+    /**
+     * web端轮询二维码状态处理
+     *
+     * @param qrCodeId 二维码id
+     * @return 二维码信息
+     */
+    QrCodeLoginFetchResponse fetch(String qrCodeId);
+
+}
+</code></pre>
+<h4 id="5-编写生成二维码响应类">5. 编写生成二维码响应类</h4>
+<p>生成二维码图片时返回二维码id和图片</p>
+<pre><code class="language-java">package com.example.model.response.qrcode;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+/**
+ * 生成二维码响应
+ *
+ * @author vains
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class QrCodeGenerateResponse {
+
+    /**
+     * 二维码id
+     */
+    private String qrCodeId;
+
+    /**
+     * 二维码base64值(这里响应一个链接好一些)
+     */
+    private String imageData;
+
+}
+</code></pre>
+<h4 id="6-编写web前端轮询二维码状态出参">6. 编写web前端轮询二维码状态出参</h4>
+<p>前端根据二维码id轮询二维码状态时返回二维码状态，如果已扫描也会返回扫描者的头像、昵称。</p>
+<pre><code class="language-java">package com.example.model.response.qrcode;
+
+import lombok.Data;
+
+import java.util.Set;
+
+/**
+ * web前端轮询二维码状态出参
+ *
+ * @author vains
+ */
+@Data
+public class QrCodeLoginFetchResponse {
+
+    /**
+     * 二维码状态
+     * 0:待扫描，1:已扫描，2:已确认
+     */
+    private Integer qrCodeStatus;
+
+    /**
+     * 是否已过期
+     */
+    private Boolean expired;
+
+    /**
+     * 扫描人头像
+     */
+    private String avatarUrl;
+
+    /**
+     * 扫描人昵称
+     */
+    private String name;
+
+    /**
+     * 待确认scope
+     */
+    private Set&lt;String&gt; scopes;
+
+    /**
+     * 跳转登录之前请求的接口
+     */
+    private String beforeLoginRequestUri;
+
+    /**
+     * 跳转登录之前请求参数
+     */
+    private String beforeLoginQueryString;
+
+}
+</code></pre>
+<h4 id="7-编写扫描二维码入参">7. 编写扫描二维码入参</h4>
+<p>app扫描二维码时传入二维码id</p>
+<pre><code class="language-java">package com.example.model.request.qrcode;
+
+import lombok.Data;
+
+/**
+ * 扫描二维码入参
+ *
+ * @author vains
+ */
+@Data
+public class QrCodeLoginScanRequest {
+
+    /**
+     * 二维码id
+     */
+    private String qrCodeId;
+
+}
+</code></pre>
+<h4 id="8-编写二维码响应bean">8. 编写二维码响应bean</h4>
+<p>扫描二维码时生成一个临时票据返回，同时返回scope和二维码状态。</p>
+<pre><code class="language-java">package com.example.model.response.qrcode;
+
+import lombok.Data;
+
+import java.util.Set;
+
+/**
+ * 扫描二维码响应bean
+ *
+ * @author vains
+ */
+@Data
+public class QrCodeLoginScanResponse {
+
+    /**
+     * 扫描临时票据
+     */
+    private String qrCodeTicket;
+
+    /**
+     * 二维码状态
+     */
+    private Integer qrCodeStatus;
+
+    /**
+     * 是否已过期
+     */
+    private Boolean expired;
+
+    /**
+     * 待确认scope
+     */
+    private Set&lt;String&gt; scopes;
+
+}
+</code></pre>
+<h4 id="9-编写二维码登录确认登录入参类">9. 编写二维码登录确认登录入参类</h4>
+<p>确认登录时传入二维码id和上一步生成的临时票据防篡改。</p>
+<pre><code class="language-java">package com.example.model.request.qrcode;
+
+import lombok.Data;
+
+/**
+ * 二维码登录确认入参
+ *
+ * @author vains
+ */
+@Data
+public class QrCodeLoginConsentRequest {
+
+    /**
+     * 二维码id
+     */
+    private String qrCodeId;
+
+    /**
+     * 扫码二维码后产生的临时票据(仅一次有效)
+     */
+    private String qrCodeTicket;
+
+}
+</code></pre>
+<h4 id="10-编写二维码信息类">10. 编写二维码信息类</h4>
+<p>生成二维码时生成的数据bean，存入redis中，等到前端轮询或app端操作时使用。</p>
+<pre><code class="language-java">package com.example.model.qrcode;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+
+/**
+ * 二维码信息
+ *
+ * @author vains
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class QrCodeInfo {
+
+    /**
+     * 二维码id
+     */
+    private String qrCodeId;
+
+    /**
+     * 二维码状态
+     * 0:待扫描，1:已扫描，2:已确认
+     */
+    private Integer qrCodeStatus;
+
+    /**
+     * 二维码过期时间
+     */
+    private LocalDateTime expiresTime;
+
+    /**
+     * 扫描人头像
+     */
+    private String avatarUrl;
+
+    /**
+     * 扫描人昵称
+     */
+    private String name;
+
+    /**
+     * 待确认的scope
+     */
+    private Set&lt;String&gt; scopes;
+
+    /**
+     * 跳转登录之前请求的接口
+     */
+    private String beforeLoginRequestUri;
+
+    /**
+     * 跳转登录之前请求参数
+     */
+    private String beforeLoginQueryString;
+
+}
+</code></pre>
+<h4 id="11-编写二维码登录接口实现">11. 编写二维码登录接口实现</h4>
+<p>扫码登录实现，具体逻辑请看代码中的注释。</p>
+<pre><code class="language-java">package com.example.service.impl;
+
+import cn.hutool.extra.qrcode.QrCodeUtil;
+import cn.hutool.extra.qrcode.QrConfig;
+import com.baomidou.mybatisplus.core.toolkit.IdWorker;
+import com.example.entity.Oauth2BasicUser;
+import com.example.model.qrcode.QrCodeInfo;
+import com.example.model.request.qrcode.QrCodeLoginConsentRequest;
+import com.example.model.request.qrcode.QrCodeLoginScanRequest;
+import com.example.model.response.qrcode.QrCodeGenerateResponse;
+import com.example.model.response.qrcode.QrCodeLoginFetchResponse;
+import com.example.model.response.qrcode.QrCodeLoginScanResponse;
+import com.example.property.CustomSecurityProperties;
+import com.example.service.IQrCodeLoginService;
+import com.example.support.RedisOperator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.web.savedrequest.DefaultSavedRequest;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.util.UrlUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Set;
+
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+
+/**
+ * 二维码登录接口实现
+ *
+ * @author vains
+ */
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class QrCodeLoginServiceImpl implements IQrCodeLoginService {
+
+	private final RedisOperator&lt;QrCodeInfo&gt; redisOperator;
+
+	private final RedisOperator&lt;String&gt; stringRedisOperator;
+
+	private final CustomSecurityProperties customSecurityProperties;
+
+	private final RedisOAuth2AuthorizationService authorizationService;
+
+	private final RedisOperator&lt;UsernamePasswordAuthenticationToken&gt; authenticationRedisOperator;
+
+	/**
+     * 过期时间
+     */
+    private final long QR_CODE_INFO_TIMEOUT = 60 * 10;
+
+	/**
+     * 二维码信息前缀
+     */
+    private final String QR_CODE_PREV = &quot;login:qrcode:&quot;;
+
+	private final RequestCache requestCache = new HttpSessionRequestCache();
+
+	@Override
+    public QrCodeGenerateResponse generateQrCode() {
+		// 生成二维码唯一id
+		String qrCodeId = IdWorker.getIdStr();
+		// 生成二维码并转为base64
+		String pngQrCode = QrCodeUtil.generateAsBase64(qrCodeId, new QrConfig(), &quot;png&quot;);
+		QrCodeInfo info = QrCodeInfo.builder()
+                .qrCodeId(qrCodeId)
+                // 待扫描状态
+                .qrCodeStatus(0)
+                // 1分钟后过期
+                .expiresTime(LocalDateTime.now().plusMinutes(2L))
+                .build();
+
+		// 获取当前request
+		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+		if (requestAttributes != null) {
+			// 获取当前session
+			HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+			HttpServletResponse response = ((ServletRequestAttributes) requestAttributes).getResponse();
+			DefaultSavedRequest savedRequest = (DefaultSavedRequest) this.requestCache.getRequest(request, response);
+			if (savedRequest != null) {
+				if (!UrlUtils.isAbsoluteUrl(customSecurityProperties.getLoginUrl())) {
+					// 获取查询参数与请求路径
+					String queryString = savedRequest.getQueryString();
+					String requestUri = savedRequest.getRequestURI();
+					// 前后端不分离根据请求路径和请求参数跳转
+					info.setBeforeLoginRequestUri(requestUri);
+					info.setBeforeLoginQueryString(queryString);
+				}
+
+				// 获取跳转登录之前访问url的query parameter
+				String[] scopes = savedRequest.getParameterValues(&quot;scope&quot;);
+				if (!ObjectUtils.isEmpty(scopes)) {
+					// 不为空获取第一个并设置进二维码信息中
+					info.setScopes(Set.of(scopes[0].split(&quot; &quot;)));
+				}
+				// 前端可以根据scope显示要获取的信息，或固定显示要获取的信息
+			}
+		}
+
+		// 因为上边设置的过期时间是2分钟，这里设置10分钟过期，可根据业务自行调整过期时间
+		redisOperator.set(QR_CODE_PREV + qrCodeId, info, QR_CODE_INFO_TIMEOUT);
+		return new QrCodeGenerateResponse(qrCodeId, pngQrCode);
+	}
+
+	@Override
+    public QrCodeLoginScanResponse scan(QrCodeLoginScanRequest loginScan) {
+		// 应该用validation的
+		Assert.hasLength(loginScan.getQrCodeId(), &quot;二维码Id不能为空.&quot;);
+
+		// 校验二维码状态
+		QrCodeInfo info = redisOperator.get(QR_CODE_PREV + loginScan.getQrCodeId());
+		if (info == null) {
+
+			throw new RuntimeException(&quot;无效二维码.&quot;);
+		}
+
+		// 验证状态
+		if (!Objects.equals(info.getQrCodeStatus(), 0)) {
+
+			throw new RuntimeException(&quot;二维码已被其他人扫描，无法重复扫描.&quot;);
+		}
+
+		// 二维码是否过期
+		boolean qrCodeExpire = info.getExpiresTime().isBefore(LocalDateTime.now());
+		if (qrCodeExpire) {
+			throw new RuntimeException(&quot;二维码已过期.&quot;);
+		}
+
+		QrCodeLoginScanResponse loginScanResponse = new QrCodeLoginScanResponse();
+
+		// 获取登录用户信息
+		OAuth2Authorization oAuth2Authorization = this.getOAuth2Authorization();
+		if (oAuth2Authorization == null) {
+			throw new OAuth2AuthenticationException(
+					new OAuth2Error(OAuth2ErrorCodes.INVALID_TOKEN, &quot;登录已过期.&quot;, null));
+		}
+		// app端使用密码模式、手机认证登录，不使用三方登录的情况
+		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                oAuth2Authorization.getAttribute(Principal.class.getName());
+		if (usernamePasswordAuthenticationToken.getPrincipal() instanceof Oauth2BasicUser basicUser) {
+			// 生成临时票据
+			String qrCodeTicket = IdWorker.getIdStr();
+			// 根据二维码id和临时票据存储，确认时根据临时票据认证
+			String redisQrCodeTicketKey = String.format(&quot;%s%s:%s&quot;, QR_CODE_PREV, loginScan.getQrCodeId(), qrCodeTicket);
+			stringRedisOperator.set(redisQrCodeTicketKey, qrCodeTicket, QR_CODE_INFO_TIMEOUT);
+
+			// 更新二维码信息的状态
+			info.setQrCodeStatus(1);
+			info.setName(basicUser.getName());
+			info.setAvatarUrl(basicUser.getAvatarUrl());
+			redisOperator.set(QR_CODE_PREV + loginScan.getQrCodeId(), info, QR_CODE_INFO_TIMEOUT);
+
+			// 封装响应
+			loginScanResponse.setQrCodeTicket(qrCodeTicket);
+			loginScanResponse.setQrCodeStatus(0);
+			loginScanResponse.setExpired(Boolean.FALSE);
+			loginScanResponse.setScopes(info.getScopes());
+		}
+
+		// 其它登录方式暂不处理
+		return loginScanResponse;
+	}
+
+	@Override
+    public void consent(QrCodeLoginConsentRequest loginConsent) {
+		// 应该用validation的
+		Assert.hasLength(loginConsent.getQrCodeId(), &quot;二维码Id不能为空.&quot;);
+
+		// 校验二维码状态
+		QrCodeInfo info = redisOperator.get(QR_CODE_PREV + loginConsent.getQrCodeId());
+		if (info == null) {
+			throw new RuntimeException(&quot;无效二维码或二维码已过期.&quot;);
+		}
+
+		// 验证临时票据
+		String qrCodeTicketKey =
+                String.format(&quot;%s%s:%s&quot;, QR_CODE_PREV, loginConsent.getQrCodeId(), loginConsent.getQrCodeTicket());
+		String redisQrCodeTicket = stringRedisOperator.get(qrCodeTicketKey);
+		if (!Objects.equals(redisQrCodeTicket, loginConsent.getQrCodeTicket())) {
+			// 临时票据有误、临时票据失效(超过redis存活时间后确认)、redis数据有误
+			if (log.isDebugEnabled()) {
+				log.debug(&quot;临时票据有误、临时票据失效(超过redis存活时间后确认)、redis数据有误.&quot;);
+			}
+			throw new RuntimeException(&quot;登录确认失败，请重新扫描.&quot;);
+		}
+		// 使用后删除
+		stringRedisOperator.delete(qrCodeTicketKey);
+
+		// 获取登录用户信息
+		OAuth2Authorization authorization = this.getOAuth2Authorization();
+		if (authorization == null) {
+			throw new OAuth2AuthenticationException(
+					new OAuth2Error(OAuth2ErrorCodes.INVALID_TOKEN, &quot;登录已过期.&quot;, null));
+		}
+
+		// app端使用密码模式、手机认证登录，不使用三方登录的情况
+		UsernamePasswordAuthenticationToken authenticationToken = authorization.getAttribute(Principal.class.getName());
+
+		// 根据二维码id存储用户信息
+		String redisUserinfoKey = String.format(&quot;%s%s:%s&quot;, QR_CODE_PREV, &quot;userinfo&quot;, loginConsent.getQrCodeId());
+		// 存储用户信息
+		authenticationRedisOperator.set(redisUserinfoKey, authenticationToken, QR_CODE_INFO_TIMEOUT);
+
+		// 更新二维码信息的状态
+		info.setQrCodeStatus(2);
+		redisOperator.set(QR_CODE_PREV + loginConsent.getQrCodeId(), info, QR_CODE_INFO_TIMEOUT);
+	}
+
+	@Override
+    public QrCodeLoginFetchResponse fetch(String qrCodeId) {
+		// 校验二维码状态
+		QrCodeInfo info = redisOperator.get(QR_CODE_PREV + qrCodeId);
+		if (info == null) {
+			throw new RuntimeException(&quot;无效二维码或二维码已过期.&quot;);
+		}
+
+		QrCodeLoginFetchResponse loginFetchResponse = new QrCodeLoginFetchResponse();
+		// 设置二维码是否过期、状态
+		loginFetchResponse.setQrCodeStatus(info.getQrCodeStatus());
+		loginFetchResponse.setExpired(info.getExpiresTime().isBefore(LocalDateTime.now()));
+
+		if (!Objects.equals(info.getQrCodeStatus(), 0)) {
+			// 如果是已扫描/已确认
+			loginFetchResponse.setName(info.getName());
+			loginFetchResponse.setAvatarUrl(info.getAvatarUrl());
+		}
+
+		// 如果是已确认，将之前扫码确认的用户信息放入当前session中
+		if (Objects.equals(info.getQrCodeStatus(), 2)) {
+
+			// 根据二维码id从redis获取用户信息
+			String redisUserinfoKey = String.format(&quot;%s%s:%s&quot;, QR_CODE_PREV, &quot;userinfo&quot;, qrCodeId);
+			UsernamePasswordAuthenticationToken authenticationToken = authenticationRedisOperator.get(redisUserinfoKey);
+			if (authenticationToken != null) {
+				// 获取当前request
+				RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+				if (requestAttributes == null) {
+					throw new RuntimeException(&quot;获取当前Request失败.&quot;);
+				}
+				// 获取当前session
+				HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
+				HttpSession session = request.getSession(Boolean.FALSE);
+				if (session != null) {
+					// 获取到认证信息后将之前扫码确认的用户信息放入当前session中。
+					session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, new SecurityContextImpl(authenticationToken));
+
+					// 操作成功后移除缓存
+					redisOperator.delete(QR_CODE_PREV + qrCodeId);
+					// 删除用户信息，防止其它人重放请求
+					authenticationRedisOperator.delete(redisUserinfoKey);
+
+					// 填充二维码数据，设置跳转到登录之前的请求路径、查询参数和是否授权申请请求
+					loginFetchResponse.setBeforeLoginRequestUri(info.getBeforeLoginRequestUri());
+					loginFetchResponse.setBeforeLoginQueryString(info.getBeforeLoginQueryString());
+				}
+			} else {
+				throw new RuntimeException(&quot;获取登录确认用户信息失败.&quot;);
+			}
+		}
+
+		return loginFetchResponse;
+	}
+
+	/**
+     * 获取当前使用token对应的认证信息
+     *
+     * @return oauth2认证信息
+     */
+    private OAuth2Authorization getOAuth2Authorization() {
+		// 校验登录状态
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null) {
+			throw new InsufficientAuthenticationException(&quot;未登录.&quot;);
+		}
+		if (authentication instanceof JwtAuthenticationToken jwtToken) {
+			// jwt处理
+			String tokenValue = jwtToken.getToken().getTokenValue();
+			// 根据token获取授权登录时的认证信息(登录用户)
+			return authorizationService.findByToken(tokenValue, OAuth2TokenType.ACCESS_TOKEN);
+		}
+		return null;
+	}
+
+}
+</code></pre>
+<p>到此后端部分就完成了，全局根据二维码id将整个流程串联起来，前端轮询、app端扫码和登录确认都是通过二维码id来的，中间借助redis来缓存二维码的信息，以确保每个端都可以获取到二维码信息，这样就算集群部署也不影响。</p>
+<p>现在默认是将app端当做oauth2登录的，扫码和确认登录都是通过<code>access_token</code>来获取认证信息的，根据请求的token获取oauth2流程中&#x27;登录&#x27;生成的认证信息。</p>
+<h3 id="2-前端实现">2. 前端实现</h3>
+<h4 id="1-编写二维码登录请求api">1. 编写二维码登录请求api</h4>
+<p>编写<code>src/api/QrCodeLogin.ts</code>文件</p>
+<pre><code class="language-ts">import loginRequest from &#x27;../util/http/LoginRequest&#x27;
+
+/**
+ * 生成二维码
+ */
+export function generateQrCode() {
+    return loginRequest.get&lt;any&gt;({
+        url: &#x27;/qrCode/login/generateQrCode&#x27;
+    })
+}
+
+/**
+ * 获取二维码信息
+ * @param qrCodeId 二维码id
+ */
+export function fetch(qrCodeId: string) {
+    return loginRequest.get&lt;any&gt;({
+        url: `/qrCode/login/fetch/${qrCodeId}`
+    })
+}
+</code></pre>
+<h4 id="2-在登录页面添加二维码登录入口">2. 在登录页面添加二维码登录入口</h4>
+<p>前端页轮询时如果发现二维码状态变为确认登录则会重定向到之前被拦截后跳转到登录的地址，例如：访问<code>/a</code>发现未登录然后跳转到登录<code>/login</code>，之后扫码登录流程走完以后会重定向至<code>/a</code>。</p>
+<pre><code class="language-vue">&lt;script setup lang=&quot;ts&quot;&gt;
+import { ref } from &#x27;vue&#x27;
+import router from &#x27;../../router&#x27;
+import { getQueryString } from &#x27;@/util/GlobalUtils&#x27;
+import { generateQrCode, fetch } from &#x27;@/api/QrCodeLogin&#x27;
+import { type CountdownProps, createDiscreteApi } from &#x27;naive-ui&#x27;
+import {
+  getImageCaptcha,
+  getSmsCaptchaByPhone,
+  loginSubmit
+} from &#x27;@/api/Login&#x27;
+
+const { message } = createDiscreteApi([&#x27;message&#x27;])
+
+// 登录按钮加载状态
+const loading = ref(false)
+
+// 定义登录提交的对象
+const loginModel = ref({
+  code: &#x27;&#x27;,
+  username: &#x27;&#x27;,
+  password: &#x27;&#x27;,
+  loginType: &#x27;&#x27;,
+  captchaId: &#x27;&#x27;
+})
+
+// 图形验证码的base64数据
+let captchaImage = ref(&#x27;&#x27;)
+// 图形验证码的值
+let captchaCode = &#x27;&#x27;
+// 是否开始倒计时
+const counterActive = ref(false)
+// 是否显示三方登录
+const showThirdLogin = ref(true)
+
+// 定义二维码信息的对象
+const qrCodeInfo = ref({
+  qrCodeStatus: 0,
+  expired: false,
+  avatarUrl: &#x27;&#x27;,
+  name: &#x27;&#x27;,
+  scopes: []
+})
+
+// 生成二维码响应数据
+const getQrCodeInfo = ref({
+  qrCodeId: &#x27;&#x27;,
+  imageData: &#x27;&#x27;
+})
+
+// 是否自动提交授权确认(二维码登录自动提交)
+const autoConsentKey: string = &#x27;autoConsent&#x27;
+
+/**
+ * 获取图形验证码
+ */
+const getCaptcha = () =&gt; {
+  getImageCaptcha()
+    .then((result: any) =&gt; {
+      if (result.success) {
+        captchaCode = result.data.code
+        captchaImage.value = result.data.imageData
+        loginModel.value.captchaId = result.data.captchaId
+      } else {
+        message.warning(result.message)
+      }
+    })
+    .catch((e: any) =&gt; {
+      message.warning(`获取图形验证码失败：${e.message}`)
+    })
+}
+
+/**
+ * 提交登录表单
+ * @param type 登录类型，passwordLogin是密码模式，smsCaptcha短信登录
+ */
+const submitLogin = (type: string) =&gt; {
+  loading.value = true
+  loginModel.value.loginType = type
+  loginSubmit(loginModel.value)
+    .then((result: any) =&gt; {
+      if (result.success) {
+        // 移除自动提交缓存
+        localStorage.removeItem(autoConsentKey)
+        // message.info(`登录成功`)
+        let target = getQueryString(&#x27;target&#x27;)
+        if (target) {
+          window.location.href = target
+        } else {
+          // 跳转到首页
+          router.push({ path: &#x27;/&#x27; })
+        }
+      } else {
+        message.warning(result.message)
+      }
+    })
+    .catch((e: any) =&gt; {
+      message.warning(`登录失败：${e.message}`)
+    })
+    .finally(() =&gt; {
+      loading.value = false
+    })
+}
+
+/**
+ * 获取短信验证码
+ */
+const getSmsCaptcha = () =&gt; {
+  if (!loginModel.value.username) {
+    message.warning(&#x27;请先输入手机号.&#x27;)
+    return
+  }
+  if (!loginModel.value.code) {
+    message.warning(&#x27;请先输入验证码.&#x27;)
+    return
+  }
+  if (loginModel.value.code !== captchaCode) {
+    message.warning(&#x27;验证码错误.&#x27;)
+    return
+  }
+  getSmsCaptchaByPhone({ phone: loginModel.value.username })
+    .then((result: any) =&gt; {
+      if (result.success) {
+        message.info(`获取短信验证码成功，固定为：${result.data}`)
+        counterActive.value = true
+      } else {
+        message.warning(result.message)
+      }
+    })
+    .catch((e: any) =&gt; {
+      message.warning(`获取短信验证码失败：${e.message}`)
+    })
+}
+
+/**
+ * 切换时更新验证码
+ * @param name tab的名字
+ */
+const handleUpdateValue = (name: string) =&gt; {
+  // 二维码登录时隐藏三方登录
+  showThirdLogin.value = name !== &#x27;qrcode&#x27;
+  if (!showThirdLogin.value) {
+    refreshQrCode()
+  } else {
+    getCaptcha()
+  }
+}
+
+/**
+ * 生成二维码
+ */
+const refreshQrCode = () =&gt; {
+  generateQrCode()
+    .then((r) =&gt; {
+      getQrCodeInfo.value.qrCodeId = r.data.qrCodeId
+      getQrCodeInfo.value.imageData = r.data.imageData
+      // 开始轮询获取二维码信息
+      fetchQrCodeInfo(r.data.qrCodeId);
+    })
+    .catch((e: any) =&gt; {
+      message.warning(`生成二维码失败：${e.message}`)
+    })
+}
+
+/**
+ * 根据二维码id轮询二维码信息
+ * @param qrCodeId 二维码id
+ */
+const fetchQrCodeInfo = (qrCodeId: string) =&gt; {
+  fetch(qrCodeId)
+    .then((r: any) =&gt; {
+      if (r.success) {
+        qrCodeInfo.value = r.data
+        if (qrCodeInfo.value.qrCodeStatus !== 0 &amp;&amp; qrCodeInfo.value.avatarUrl) {
+          // 只要不是待扫描并且头像不为空
+          getQrCodeInfo.value.imageData = qrCodeInfo.value.avatarUrl
+        }
+
+        if (r.data.qrCodeStatus !== 2 &amp;&amp; !qrCodeInfo.value.expired) {
+          if (!showThirdLogin.value) {
+            // 显示三方登录代表不是二维码登录，不轮询；否则继续轮询
+            // 1秒后重复调用
+            setTimeout(() =&gt; {
+              fetchQrCodeInfo(qrCodeId)
+            }, 1000);
+          }
+          return
+        }
+        if (qrCodeInfo.value.expired) {
+          // 二维码过期
+          return
+        }
+        if (qrCodeInfo.value.qrCodeStatus === 2) {
+          // 已确认
+          let href = getQueryString(&#x27;target&#x27;)
+          if (href) {
+            // 确认后将地址重定向
+            window.location.href = href
+          } else {
+            // 跳转到首页
+            router.push({ path: &#x27;/&#x27; })
+          }
+        }
+      } else {
+        message.warning(r.message)
+      }
+    })
+    .catch((e: any) =&gt; {
+      message.warning(`获取二维码信息失败：${e.message || e.statusText}`)
+    })
+}
+
+/**
+ * 倒计时结束
+ */
+const onFinish = () =&gt; {
+  counterActive.value = false
+}
+
+/**
+ * 倒计时显示内容
+ */
+const renderCountdown: CountdownProps[&#x27;render&#x27;] = ({ hours, minutes, seconds }) =&gt; {
+  return `${seconds}`
+}
+
+/**
+ * 根据类型发起OAuth2授权申请
+ * @param type 三方OAuth2登录提供商类型
+ */
+const thirdLogin = (type: string) =&gt; {
+  window.location.href = `${import.meta.env.VITE_OAUTH_ISSUER}/oauth2/authorization/${type}`
+}
+
+getCaptcha()
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;header&gt;
+    &lt;img alt=&quot;Vue logo&quot; class=&quot;logo&quot; src=&quot;../../assets/logo.svg&quot; width=&quot;125&quot; height=&quot;125&quot; /&gt;
+
+    &lt;div class=&quot;wrapper&quot;&gt;
+      &lt;HelloWorld msg=&quot;统一认证平台&quot; /&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt;
+    &lt;n-card title=&quot;&quot;&gt;
+      &lt;n-tabs default-value=&quot;signin&quot; size=&quot;large&quot; justify-content=&quot;space-evenly&quot; @update:value=&quot;handleUpdateValue&quot;&gt;
+        &lt;n-tab-pane name=&quot;signin&quot; tab=&quot;账号登录&quot;&gt;
+          &lt;n-form&gt;
+            &lt;n-form-item-row label=&quot;用户名&quot;&gt;
+              &lt;n-input v-model:value=&quot;loginModel.username&quot; placeholder=&quot;手机号 / 邮箱&quot; /&gt;
+            &lt;/n-form-item-row&gt;
+            &lt;n-form-item-row label=&quot;密码&quot;&gt;
+              &lt;n-input v-model:value=&quot;loginModel.password&quot; type=&quot;password&quot; show-password-on=&quot;mousedown&quot;
+                placeholder=&quot;密码&quot; /&gt;
+            &lt;/n-form-item-row&gt;
+            &lt;n-form-item-row label=&quot;验证码&quot;&gt;
+              &lt;n-input-group&gt;
+                &lt;n-input v-model:value=&quot;loginModel.code&quot; placeholder=&quot;请输入验证码&quot; /&gt;
+                &lt;n-image @click=&quot;getCaptcha&quot; width=&quot;130&quot; height=&quot;34&quot; :src=&quot;captchaImage&quot; preview-disabled /&gt;
+              &lt;/n-input-group&gt;
+            &lt;/n-form-item-row&gt;
+          &lt;/n-form&gt;
+          &lt;n-button type=&quot;info&quot; :loading=&quot;loading&quot; @click=&quot;submitLogin(&#x27;passwordLogin&#x27;)&quot; block strong&gt;
+            登录
+          &lt;/n-button&gt;
+        &lt;/n-tab-pane&gt;
+        &lt;n-tab-pane name=&quot;signup&quot; tab=&quot;短信登录&quot;&gt;
+          &lt;n-form&gt;
+            &lt;n-form-item-row label=&quot;手机号&quot;&gt;
+              &lt;n-input v-model:value=&quot;loginModel.username&quot; placeholder=&quot;手机号 / 邮箱&quot; /&gt;
+            &lt;/n-form-item-row&gt;
+            &lt;n-form-item-row label=&quot;验证码&quot;&gt;
+              &lt;n-input-group&gt;
+                &lt;n-input v-model:value=&quot;loginModel.code&quot; placeholder=&quot;请输入验证码&quot; /&gt;
+                &lt;n-image @click=&quot;getCaptcha&quot; width=&quot;130&quot; height=&quot;34&quot; :src=&quot;captchaImage&quot; preview-disabled /&gt;
+              &lt;/n-input-group&gt;
+            &lt;/n-form-item-row&gt;
+            &lt;n-form-item-row label=&quot;验证码&quot;&gt;
+              &lt;n-input-group&gt;
+                &lt;n-input v-model:value=&quot;loginModel.password&quot; placeholder=&quot;请输入验证码&quot; /&gt;
+                &lt;n-button type=&quot;info&quot; @click=&quot;getSmsCaptcha&quot; style=&quot;width: 130px&quot; :disabled=&quot;counterActive&quot;&gt;
+                  获取验证码
+                  &lt;span v-if=&quot;counterActive&quot;&gt;
+                    (
+                    &lt;n-countdown :render=&quot;renderCountdown&quot; :on-finish=&quot;onFinish&quot; :duration=&quot;59 * 1000&quot;
+                      :active=&quot;counterActive&quot; /&gt;
+                    )&lt;/span&gt;
+                &lt;/n-button&gt;
+              &lt;/n-input-group&gt;
+            &lt;/n-form-item-row&gt;
+          &lt;/n-form&gt;
+          &lt;n-button type=&quot;info&quot; :loading=&quot;loading&quot; @click=&quot;submitLogin(&#x27;smsCaptcha&#x27;)&quot; block strong&gt;
+            登录
+          &lt;/n-button&gt;
+        &lt;/n-tab-pane&gt;
+        &lt;n-tab-pane name=&quot;qrcode&quot; tab=&quot;扫码登录&quot; style=&quot;text-align: center&quot;&gt;
+          &lt;div style=&quot;margin: 5.305px&quot;&gt;
+            &lt;n-image width=&quot;300&quot; :src=&quot;getQrCodeInfo.imageData&quot; preview-disabled /&gt;
+          &lt;/div&gt;
+        &lt;/n-tab-pane&gt;
+      &lt;/n-tabs&gt;
+      &lt;n-divider style=&quot;font-size: 80%; color: #909399&quot;&gt;
+        {{ showThirdLogin ? &#x27;其它登录方式&#x27; : &#x27;使用app扫描二维码登录&#x27; }}
+      &lt;/n-divider&gt;
+      &lt;div class=&quot;other_login_icon&quot; v-if=&quot;showThirdLogin&quot;&gt;
+        &lt;IconGitee :size=&quot;32&quot; @click=&quot;thirdLogin(&#x27;gitee&#x27;)&quot; class=&quot;icon_item&quot; /&gt;
+        &lt;img width=&quot;36&quot; height=&quot;36&quot; @click=&quot;thirdLogin(&#x27;github&#x27;)&quot; src=&quot;../../assets/GitHub-Mark.png&quot; class=&quot;icon_item&quot; /&gt;
+        &lt;img width=&quot;28&quot; height=&quot;28&quot; @click=&quot;thirdLogin(&#x27;wechat&#x27;)&quot; src=&quot;../../assets/wechat_login.png&quot; class=&quot;icon_item&quot; /&gt;
+      &lt;/div&gt;
+    &lt;/n-card&gt;
+  &lt;/main&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.other_login_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 10px;
+  position: relative;
+  margin-top: -5px;
+}
+
+.icon_item {
+  cursor: pointer;
+}
+
+header {
+  line-height: 1.5;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+&lt;/style&gt;
+</code></pre>
+<p>具体修改内容请看代码仓库<a href="https://gitee.com/vains-Sofia/authorization-example/tree/qrcode_login/">qrcode_login</a>分支的<a href="https://gitee.com/vains-Sofia/authorization-example/commit/8552c2c19d0040d8081b5da9fb0dfd31169c274b">二维码登录前端登录页面实现</a>。</p>
+<h2 id="三效果">三、效果</h2>
+<p><img alt="img" src="/light-docusaurus/assets/images/20-1-b75def94f65e061f7f0861192b67e9bc.awebp" width="1905" height="981"></p>
+<pre><code class="language-shell"># 1. 先获取一个Token备用
+
+# 2. 浏览器访问登录页，切换到扫码登录页签
+http://127.0.0.1:5173/login
+
+# 3. F12 打开控制台复制二维码的ID 1760855300433031170
+
+# 4. 携带二维码ID调用扫描二维码接口 (需携带Bearer Token)
+# POST http://127.0.0.1:8080/qrCode/scan
+
+# 5. 携带二维码ID和扫描返回的ticket调用确认登录接口 (需携带Bearer Token)
+# POST http://127.0.0.1:8080/qrCode/consent
+
+</code></pre>
+<p>扫码登录是使用【一台已经登录系统账号的设备】来扫描一个新的登录页面，所以需要提前准备一个Token，进行后面的操作</p>
+<h2 id="四附录">四、附录</h2>
+<p>代码仓库：<a href="https://gitee.com/vains-Sofia/authorization-example">Gitee</a>、<a href="https://github.com/vains-Sofia/authorization-example">Github</a></p>
+<h2 id="五参考资料">五、参考资料</h2>
+<ul>
+<li><a href="https://www.cnblogs.com/GoodHelper/p/8643071.html">SpringBoot二维码登录(中)</a></li>
+<li><a href="https://blog.51cto.com/solarboy/2154188">反向工程解析QQ扫码登录的OAuth2流程</a></li>
+<li><a href="https://juejin.cn/post/6844904111398191117">聊一聊二维码扫描登录原理</a></li>
+</ul></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="theme-doc-footer-edit-meta-row row"><div class="col"><a href="https://github.com/lorchr/light-docusaurus/tree/main/docs/zh-cn/spring-authorization-server/20-SAS-QrCode-Login.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_vwxv"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Redis-Core-Service/"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">SAS-Redis-Core-Service</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/light-docusaurus/docs/zh-cn/spring-authorization-server/SAS-Optimize-Customlize-UserDetailService/"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">SAS-Optimize-Customlize-UserDetailService</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#实现原理" class="table-of-contents__link toc-highlight">实现原理</a></li><li><a href="#二代码实现" class="table-of-contents__link toc-highlight">二、代码实现</a><ul><li><a href="#1-后端实现" class="table-of-contents__link toc-highlight">1. 后端实现</a></li><li><a href="#2-前端实现" class="table-of-contents__link toc-highlight">2. 前端实现</a></li></ul></li><li><a href="#三效果" class="table-of-contents__link toc-highlight">三、效果</a></li><li><a href="#四附录" class="table-of-contents__link toc-highlight">四、附录</a></li><li><a href="#五参考资料" class="table-of-contents__link toc-highlight">五、参考资料</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/docs/category/guide/">Torch</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/middleware/">Middleware</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/electron/">Electron</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/blog/">Blog</a></li><li class="footer__item"><a class="footer__link-item" href="/light-docusaurus/diy/">DIY</a></li><li class="footer__item"><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Offical</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer" class="footer__link-item">Home<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://docusaurus.io/docs/playground" target="_blank" rel="noopener noreferrer" class="footer__link-item">Playground<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2024 Light-Docusaurus, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>
