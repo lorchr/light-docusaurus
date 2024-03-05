@@ -33,6 +33,31 @@
 - 
 - [Spring Authorization Server常见问题解答(FAQ)](https://juejin.cn/post/7279242389000208438)
 
+## 集成第三方登录
+- [微信开放平台](https://open.weixin.qq.com/)
+- [微信官方文档](https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html)
+- 
+- [企业微信开放平台](https://developer.work.weixin.qq.com/)
+- [企业微信官方文档](https://developer.work.weixin.qq.com/document/path/98151)
+- 
+- [钉钉开放平台](https://open.dingtalk.com/)
+- [钉钉官方文档](https://open.dingtalk.com/document/orgapp/tutorial-obtaining-user-personal-information)
+- 
+- [Gitee 开发者平台](https://gitee.com/oauth/applications)
+- [Gitee 官方文档](https://gitee.com/api/v5/oauth_doc#/list-item-2)
+- 
+- [微博开放平台](https://open.weibo.com/authentication)
+- [微博官方文档](https://open.weibo.com/wiki/%E6%8E%88%E6%9D%83%E6%9C%BA%E5%88%B6)
+- 
+- [Google APIs](https://console.developers.google.com/apis/dashboard)
+- [Google 官方文档](https://developers.google.com/identity/sign-in/web/)
+- 
+- [Facebook 开发者平台](https://developers.facebook.com/)
+- [Facebook 官方文档](https://developers.facebook.com/docs/facebook-login/)
+- 
+- [Github 开发者平台](https://github.com/settings/developers)
+- [Github 官方文档](https://docs.github.com/zh/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+
 ## 项目开发环境说明
 ### 认证服务
 #### 开发软件

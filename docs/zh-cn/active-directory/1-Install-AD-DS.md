@@ -44,47 +44,47 @@ slmgr /xpr
 ### 1. 安装AD域服务
 点击【开始】-【服务器管理】
 
-![](./img/1/1.png)
+![](./img/1/1-1.png)
 
 选择【添加角色和功能】
 
-![](./img/1/2.png)
+![](./img/1/1-2.png)
 
 下一步
 
-![](./img/1/3.png)
+![](./img/1/1-3.png)
 
 下一步
 
-![](./img/1/4.png)
+![](./img/1/1-4.png)
 
 下一步
 
-![](./img/1/5.png)
+![](./img/1/1-5.png)
 
 勾选【Active Directory 域服务】，点击下一步
 
-![](./img/1/6.png)
+![](./img/1/1-6.png)
 
 下一步
 
-![](./img/1/7.png)
+![](./img/1/1-7.png)
 
 下一步
 
-![](./img/1/8.png)
+![](./img/1/1-8.png)
 
 点击【安装】
 
-![](./img/1/9.png)
+![](./img/1/1-9.png)
 
 安装进行中
 
-![](./img/1/10.png)
+![](./img/1/1-10.png)
 
 安装完成，点击【将此服务器提升为域控制器】
 
-![](./img/1/11.png)
+![](./img/1/1-11.png)
 
 ### 2. 将服务器提升为域控制器
 在这里需要明白几个概念：
@@ -95,39 +95,39 @@ slmgr /xpr
 
 勾选【添加林】，输入域名称 `dev.local`
 
-![](./img/1/12.png)
+![](./img/1/1-12.png)
 
 设置AD域服务还原密码 Admin123
 
-![](./img/1/13.png)
+![](./img/1/1-13.png)
 
 下一步
 
-![](./img/1/14.png)
+![](./img/1/1-14.png)
 
 NetBIOS域名默认即可，有需要可以修改
 
-![](./img/1/15.png)
+![](./img/1/1-15.png)
 
 下一步
 
-![](./img/1/16.png)
+![](./img/1/1-16.png)
 
 下一步
 
-![](./img/1/17.png)
+![](./img/1/1-17.png)
 
 先决条件检查完毕后，点击【安装】
 
-![](./img/1/18.png)
+![](./img/1/1-18.png)
 
 安装完成后计算机将会自动重启
 
-![](./img/1/19.png)
+![](./img/1/1-19.png)
 
 可以看到，【服务器管理】上多了 【AD DS】及【DNS】两个服务
 
-![](./img/1/20.png)
+![](./img/1/1-20.png)
 
 后续所有加入到此AD域的计算机，都需要AD域来分配IP，测试时可以手动修改计算机的DNS为AD域的IP
 
@@ -136,11 +136,11 @@ NetBIOS域名默认即可，有需要可以修改
 
 依次点击【本地服务器】-【主机名】-【更改】，修改计算机名称，点击【确定】
 
-![](./img/1/21.png)
+![](./img/1/1-21.png)
 
 最后重启 
 
-![](./img/1/22.png)
+![](./img/1/1-22.png)
 
 **注意** 此操作是在域控制器安装完，进行的操作，所以，此时无法选择隶属那个域，而是系统默认，不过默认的一般情况，是所创域控制器所属域，所以，无大碍
 
@@ -148,44 +148,44 @@ NetBIOS域名默认即可，有需要可以修改
 
 验证，重启之后在【控制面板】-【系统和安全】-【系统】中即可查看新的AD域名称
 
-![](./img/1/23.png)
+![](./img/1/1-23.png)
 
 ### 4. 添加域用户
 在【AD DS】页面右键点击服务器，选择 【Active Directy 用户和计算机】
 
-![](./img/1/24.png)
+![](./img/1/1-24.png)
 
 这个页面有两项重要的信息，
 - 【Computers】代表添加到域中的计算机
 - 【Users】代表域中的用户
 
-![](./img/1/25.png)
+![](./img/1/1-25.png)
 
 新建用户，右键点击【Users-新建-用户】
 
-![](./img/1/26.png)
+![](./img/1/1-26.png)
 
 输入姓名、用户名、登录名等信息
 
-![](./img/1/27.png)
+![](./img/1/1-27.png)
 
 设置密码，勾选【密码永不过期】 Admin123
 
-![](./img/1/28.png)
+![](./img/1/1-28.png)
 
 可以看到完整的登录名
 
-![](./img/1/29.png)
+![](./img/1/1-29.png)
 
 右键点击【属性】
 
-![](./img/1/30.png)
+![](./img/1/1-30.png)
 
 在【账户】中，有两项关键的配置信息
 - 【登录到】    可以设置当前用户可以在哪些电脑上登录
 - 【账户选项】  可以设置账户的加密方式，客户端需要对应的加密方式，否则会报错
 
-![](./img/1/31.png)
+![](./img/1/1-31.png)
 
 ## 三、计算机加入AD域
 ### 1. Windows服务器加入AD域
@@ -193,27 +193,27 @@ NetBIOS域名默认即可，有需要可以修改
 
 修改计算机的DNS为AD域服务器的IP
 
-![](./img/1/32.png)
+![](./img/1/1-32.png)
 
 右键点击【此电脑】-【属性】-【重命名这台电脑】-【更改】
 
 将【隶属于】改为AD域的地址，此处为 `dev.local`
 
-![](./img/1/33.png)
+![](./img/1/1-33.png)
 
 点击确定，输入域管理员账号密码（Administrator / Admin123）登录，登录完成后需要重启计算机
 
-![](./img/1/34.png)
+![](./img/1/1-34.png)
 
 **注意** 计算机加入域，会自动的在活动目录中【Computers】目录下创建计算机账号。您也可以在活动目录中先创建计算机账号，再将计算机加入到域中。
 
 检查加入到域之后的计算机名称，发现计算机名称后自动添加了域后缀
 
-![](./img/1/35.png)
+![](./img/1/1-35.png)
 
 计算机脱离域，将计算机加入到工作组即可从域中退出。
 
-![](./img/1/36.png)
+![](./img/1/1-36.png)
 
 ### 2. Linux服务器加入AD域
 - [如何让 Linux 机器加入 Windows 的 AD 域](https://linux.cn/article-7695-1.html)
@@ -306,7 +306,7 @@ authconfig --enablewinbind  --enablewins --enablewinbindauth \
 
 注意命令中的大小写，此步骤也可以使用 `authconfig-tui` 完成。下面为界面UI
 
-![](./img/1/37.png)
+![](./img/1/1-37.png)
 
 #### 7、增加 sudo 权限（可选）：
 ```shell
@@ -365,7 +365,7 @@ sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
 
 #### 10. 效果
 添加完成后可以在【Computers】中看到Windows计算机和Linux计算机
-![](./img/1/38.png)
+![](./img/1/1-38.png)
 
 ## 四、服务端配置
 - [Windows Authentication How-To](https://tomcat.apache.org/tomcat-9.0-doc/windows-auth-howto.html)
@@ -533,7 +533,7 @@ setspn -D HTTP/lin-pc01                 pc01
 # 查询SPN信息
 setspn -Q HTTP/lin-pc01.dev.local
 ```
-![](./img/1/39.png)
+![](./img/1/1-39.png)
 
 生成`tomcat.keytab`
 ```shell
@@ -547,7 +547,7 @@ ktpass /out c:\tomcat.keytab /mapuser pc01@DEV.LOCAL /princ HTTP/lin-pc01.dev.lo
 ktpass /princ HTTP/YOUR_COMPUTER_NAME_HERE@YOUR_DOMAIN_HERE.COM /mapuser YOUR_USER_HERE /pass YOUR_PASSWORD_HERE /Target YOUR_DOMAIN_HERE.COM /out YOUR_KEYTAB_FILENAME_HERE.keytab /kvno 0 /crypto RC4-HMAC-NT /ptype KRB5_NT_PRINCIPAL
 ```
 
-![](./img/1/40.png)
+![](./img/1/1-40.png)
 
 #### 5. 测试配置文件
 ```java

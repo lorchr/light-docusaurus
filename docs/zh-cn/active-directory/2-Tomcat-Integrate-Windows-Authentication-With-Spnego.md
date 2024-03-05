@@ -178,7 +178,7 @@ setspn -D HTTP/lin-pc01                 pc01
 # 查询SPN信息
 setspn -Q HTTP/lin-pc01.dev.local
 ```
-![](./img/1/39.png)
+![](./img/2/2-1.png)
 
 生成`tomcat.keytab`
 ```shell
@@ -192,7 +192,7 @@ ktpass /out c:\tomcat.keytab /mapuser pc01@DEV.LOCAL /princ HTTP/lin-pc01.dev.lo
 ktpass /princ HTTP/YOUR_COMPUTER_NAME_HERE@YOUR_DOMAIN_HERE.COM /mapuser YOUR_USER_HERE /pass YOUR_PASSWORD_HERE /Target YOUR_DOMAIN_HERE.COM /out YOUR_KEYTAB_FILENAME_HERE.keytab /kvno 0 /crypto RC4-HMAC-NT /ptype KRB5_NT_PRINCIPAL
 ```
 
-![](./img/1/40.png)
+![](./img/2/2-2.png)
 
 ### 5. 测试配置文件
 ```java

@@ -4,25 +4,192 @@
 - [OpenLDAP](https://www.openldap.org/) [Github](https://github.com/openldap/openldap)
 - bitnami OpenLDAP [Docker](https://hub.docker.com/r/bitnami/openldap) [Github](https://github.com/bitnami/containers) 
 - osixia OpenLDAP [Docker](https://hub.docker.com/r/osixia/openldap) [Github](https://github.com/osixia/docker-openldap)
+- osixia Php LDAP Admin [Docker](https://hub.docker.com/r/osixia/phpldapadmin) [Github](https://github.com/osixia/docker-phpLDAPadmin)
 
+#### bitnami OpenLDAP
 ```shell
+# docker stop openldap && docker remove openldap
 docker run --detach \
-  --publish 1389:1389 \
-  --publish 1636:1636 \
+  --publish 1389:389 \
+  --publish 1636:636 \
+  --env LDAP_PORT_NUMBER=389 \
+  --env LDAP_LDAPS_PORT_NUMBER=636 \
   --env LDAP_ADMIN_USERNAME=admin \
-  --env LDAP_ADMIN_PASSWORD=admin \
-  --env LDAP_USERS=light \
-  --env LDAP_PASSWORDS=light \
-  --env LDAP_ROOT=dc=light,dc=org \
-  --env LDAP_ADMIN_DN=cn=admin,dc=light,dc=org \
+  --env LDAP_ADMIN_PASSWORD=123456 \
+  --env LDAP_USERS=light,lorch \
+  --env LDAP_PASSWORDS=light,lorch \
+  --env LDAP_ROOT=dc=light,dc=com \
+  --env LDAP_ADMIN_DN=cn=admin,dc=light,dc=com \
   --network dev \
   --restart=no \
   --name openldap \
-  bitnami/openldap:latest
+  --hostname openldap \
+  bitnami/openldap:2.6
+
+# docker stop openldap-admin && docker remove openldap-admin
+docker run --detach \
+  --publish 1390:80 \
+  --publish 1393:443 \
+  --env PHPLDAPADMIN_HTTPS=false \
+  --env PHPLDAPADMIN_LDAP_HOSTS=openldap \
+  --privileged \
+  --link openldap \
+  --network dev \
+  --restart=on-failure:3 \
+  --name openldap-admin \
+  --hostname openldap-admin \
+  osixia/phpldapadmin:stable
+
 ```
 
+命令行测试
+```shell
+docker exec -it -u root openldap /bin/bash
+ldapsearch -x -H ldap://localhost:389 -b dc=light,dc=com -D "cn=admin,dc=light,dc=com" -w 123456
+
+docker exec openldap ldapsearch -x -H ldap://localhost:389 -b dc=light,dc=com -D "cn=admin,dc=light,dc=com" -w 123456
+
+# extended LDIF
+#
+# LDAPv3
+# base <dc=light,dc=com> with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# light.com
+dn: dc=light,dc=com
+objectClass: dcObject
+objectClass: organization
+dc: light
+o: example
+
+# users, light.com
+dn: ou=users,dc=light,dc=com
+objectClass: organizationalUnit
+ou: users
+
+# light, users, light.com
+dn: cn=light,ou=users,dc=light,dc=com
+cn: User1
+cn: light
+sn: Bar1
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword:: bGlnaHQ=
+uid: light
+uidNumber: 1000
+gidNumber: 1000
+homeDirectory: /home/light
+
+# lorch, users, light.com
+dn: cn=lorch,ou=users,dc=light,dc=com
+cn: User2
+cn: lorch
+sn: Bar2
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+userPassword:: bG9yY2g=
+uid: lorch
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/lorch
+
+# readers, users, light.com
+dn: cn=readers,ou=users,dc=light,dc=com
+cn: readers
+objectClass: groupOfNames
+member: cn=light,ou=users,dc=light,dc=com
+member: cn=lorch,ou=users,dc=light,dc=com
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 6
+# numEntries: 5
+```
+
+- [Dashboard](http://localhost:1390/)
 - Account
-  - user: cn=light,ou=users,dc=light,dc=org  password: light
+  - user: cn=admin,dc=light,dc=com   password: 123456
+  - user: cn=light,ou=users,dc=light,dc=com   password: light
+  - user: cn=lorch,ou=users,dc=light,dc=com   password: lorch
+
+#### osixia OpenLDAP
+```shell
+# docker stop ldap-service && docker remove ldap-service
+docker run --detach \
+  --publish 2389:389 \
+  --publish 2636:636 \
+  --env LDAP_ORGANISATION="light" \
+  --env LDAP_DOMAIN="light.com" \
+  --env LDAP_ADMIN_PASSWORD="123456" \
+  --network dev \
+  --restart=on-failure:3 \
+  --name ldap-service \
+  --hostname ldap-service \
+  osixia/openldap:stable
+
+# docker stop ldap-admin && docker remove ldap-admin
+docker run --detach \
+  --publish 2390:80 \
+  --publish 2393:443 \
+  --env PHPLDAPADMIN_HTTPS=false \
+  --env PHPLDAPADMIN_LDAP_HOSTS=ldap-host \
+  --privileged \
+  --link ldap-service:ldap-host \
+  --network dev \
+  --restart=on-failure:3 \
+  --name ldap-admin \
+  --hostname ldap-admin \
+  osixia/phpldapadmin:stable
+
+```
+
+命令行测试
+```shell
+# 连接LDAP容器
+docker exec -it -u root ldap-service /bin/bash
+
+# 添加用户
+ldapadd -x -D "cn=admin,dc=light,dc=com" -W -f users.ldif
+
+# 查询LDAP信息
+ldapsearch -x -H ldap://localhost:389 -b dc=light,dc=com -D "cn=admin,dc=light,dc=com" -w 123456
+
+# 查询LDAP信息
+docker exec ldap-service ldapsearch -x -H ldap://localhost:389 -b dc=light,dc=com -D "cn=admin,dc=light,dc=com" -w 123456
+
+# extended LDIF
+#
+# LDAPv3
+# base <dc=light,dc=com> with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# light.com
+dn: dc=light,dc=com
+objectClass: top
+objectClass: dcObject
+objectClass: organization
+o: light
+dc: light
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 2
+# numEntries: 1
+```
+
+- [Dashboard](http://localhost:2390/)
+- Account
+  - user: cn=admin,dc=light,dc=com          password: 123456
 
 ### 1.2 Apache Directory Server
 - [ApacheDS](https://directory.apache.org/) [Download](https://directory.apache.org/apacheds/) [Studio Client](https://directory.apache.org/studio)
@@ -30,12 +197,133 @@ docker run --detach \
 - itzg ApacheDS [ Docker](https://hub.docker.com/r/itzg/apacheds)
 
 ```shell
+# docker stop apache-ds && docker remove apache-ds
 docker run --detach \
   --publish 10389:10389 \
   --network dev \
   --restart=no \
   --name apache-ds \
   itzg/apacheds:latest
+
+```
+
+命令行测试
+```shell
+# apache-ds镜像中没有 ldapsearch 可以使用openldap来测试
+docker exec -it -u root openldap /bin/bash
+ldapsearch -x -H ldap://apache-ds:10389 -b ou=system -D "uid=admin,ou=system" -w secret
+
+docker exec openldap ldapsearch -x -H ldap://apache-ds:10389 -b ou=system -D "uid=admin,ou=system" -w secret
+
+# extended LDIF
+#
+# LDAPv3
+# base <ou=system> with scope subtree
+# filter: (objectclass=*)
+# requesting: ALL
+#
+
+# system
+dn: ou=system
+ou: system
+objectClass: top
+objectClass: organizationalUnit
+objectClass: extensibleObject
+
+# partitions, configuration, system
+dn: ou=partitions,ou=configuration,ou=system
+ou: partitions
+objectClass: top
+objectClass: organizationalUnit
+
+# services, configuration, system
+dn: ou=services,ou=configuration,ou=system
+ou: services
+objectClass: top
+objectClass: organizationalUnit
+
+# consumers, system
+dn: ou=consumers,ou=system
+ou: consumers
+objectclass: top
+objectclass: organizationalUnit
+
+# interceptors, configuration, system
+dn: ou=interceptors,ou=configuration,ou=system
+ou: interceptors
+objectClass: top
+objectClass: organizationalUnit
+
+# groups, system
+dn: ou=groups,ou=system
+ou: groups
+objectClass: top
+objectClass: organizationalUnit
+
+# admin, system
+dn: uid=admin,ou=system
+keyAlgorithm: RSA
+privateKeyFormat: PKCS#8
+displayName: Directory Superuser
+sn: administrator
+cn: system administrator
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: tlsKeyInfo
+userCertificate:: MIIBdzCCASECBgGOCFajizANBgkqhkiG9w0BAQUFADBCMQswCQYDVQQGEwJV
+ UzEMMAoGA1UEChMDQVNGMRIwEAYDVQQLEwlEaXJlY3RvcnkxETAPBgNVBAMTCEFwYWNoZURTMB4XD
+ TI0MDMwNDA3MjExOVoXDTI1MDMwNDA3MjExOVowRjELMAkGA1UEBhMCVVMxDDAKBgNVBAoTA0FTRj
+ ESMBAGA1UECxMJRGlyZWN0b3J5MRUwEwYDVQQDEww1YmIyMWE4N2VmMGEwXDANBgkqhkiG9w0BAQE
+ FAANLADBIAkEAl+N1WqoGyc+T/IJeLzpnj886ljvcEZitS+hO5FF6RIWoDcuy9qCI5aqbQpOlgGty
+ skOoxSdMNiFkKyKgEhFHEQIDAQABMA0GCSqGSIb3DQEBBQUAA0EASM2e5vNZ9ByhgUbyBIV6oQgpD
+ AL4vlCOGoTUYUPIkz1sTGzRzLTvRAHneURdy9GXXkwk3PZgraoPsJfOAdf9Jw==
+userPassword:: c2VjcmV0
+publicKey:: MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJfjdVqqBsnPk/yCXi86Z4/POpY73BGYrU
+ voTuRRekSFqA3LsvagiOWqm0KTpYBrcrJDqMUnTDYhZCsioBIRRxECAwEAAQ==
+publicKeyFormat: X.509
+uid: admin
+privateKey:: MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEAl+N1WqoGyc+T/IJeL
+ zpnj886ljvcEZitS+hO5FF6RIWoDcuy9qCI5aqbQpOlgGtyskOoxSdMNiFkKyKgEhFHEQIDAQABAj
+ 8jAUkKnCT0XeK9T05llBBKFHhsJ1+Qrp9B30hPVnfXUprtfqRU4LERq6gd/JcHYO5bGzsry6bmE8b
+ JpAfll1ECIQDc88/f7H0livaDPXVCmChU1uCOgyotUaLvWzZCzxPbFQIhAK/7LWuobQzOSM8tt4WN
+ R6EtqlF18N8iaiuiuRWBYEsNAiA89IZEoFlmIhAf5LSUyqVVwnHw3v6jwgHRRriRdc9kgQIhAKh1C
+ bqnxJPgl+PzAF2Qq0PH4eUOwF/oordYklHaweG1AiB74pWqLejWwzwz54bw7SC1wKGSPNIrO5z/ng
+ P6EfpoYw==
+
+# configuration, system
+dn: ou=configuration,ou=system
+ou: configuration
+objectClass: top
+objectClass: organizationalUnit
+
+# sysPrefRoot, system
+dn: prefNodeName=sysPrefRoot,ou=system
+objectClass: top
+objectClass: organizationalUnit
+objectClass: extensibleObject
+prefNodeName: sysPrefRoot
+
+# users, system
+dn: ou=users,ou=system
+ou: users
+objectClass: top
+objectClass: organizationalUnit
+
+# Administrators, groups, system
+dn: cn=Administrators,ou=groups,ou=system
+uniqueMember: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+cn: Administrators
+objectClass: top
+objectClass: groupOfUniqueNames
+
+# search result
+search: 2
+result: 0 Success
+
+# numResponses: 12
+# numEntries: 11
 ```
 
 - Account
@@ -281,6 +569,94 @@ roleId: 703667259852726272
 
 导入结果如图
 ![img](./img/3/3-21.PNG)
+
+### 1.4 Embedded ApacheDS Server
+- [内嵌ApacheDS服务端搭建](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/ldap.html#servlet-authentication-ldap-apacheds)
+- [准备用户信息](https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/ldap.html#servlet-authentication-ldap-embedded)
+
+#### 添加ApacheDS Server依赖 pom.xml
+```xml
+<dependency>
+	<groupId>org.apache.directory.server</groupId>
+	<artifactId>apacheds-core</artifactId>
+	<version>1.5.5</version>
+	<scope>runtime</scope>
+</dependency>
+<dependency>
+	<groupId>org.apache.directory.server</groupId>
+	<artifactId>apacheds-server-jndi</artifactId>
+	<version>1.5.5</version>
+	<scope>runtime</scope>
+</dependency>
+```
+
+#### 注入内嵌Bean  ApacheDSConfig.java
+```java
+@Bean
+public ApacheDSContainer ldapContainer() {
+	return new ApacheDSContainer("dc=springframework,dc=org",
+				"classpath:users.ldif");
+}
+```
+
+#### 准备用户 users.ldif
+
+```ldif
+dn: ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: uid=admin,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Rod Johnson
+sn: Johnson
+uid: admin
+userPassword: password
+
+dn: uid=user,ou=people,dc=springframework,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Dianne Emu
+sn: Emu
+uid: user
+userPassword: password
+
+dn: cn=user,ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: user
+uniqueMember: uid=admin,ou=people,dc=springframework,dc=org
+uniqueMember: uid=user,ou=people,dc=springframework,dc=org
+
+dn: cn=admin,ou=groups,dc=springframework,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: admin
+uniqueMember: uid=admin,ou=people,dc=springframework,dc=org
+```
+
+### 1.5 LdapAdmin使用 (以上面 osixia OpenLDAP 部署为例)
+1. 登录[Dashboard](http://localhost:2390)
+2. 输入用户信息登录 `cn=admin,dc=light,dc=com` `123456`
+3. 菜单功能介绍，重点关注 `Schema` 和 `Import`
+   1. `Schema`:     查看 类 属性 语法 匹配规则等详细信息
+   2. `Search`:     搜索LDAP信息
+   3. `Refresh`:    刷新LDAP重新加载信息
+   4. `Info`:       查看LDAP服务端信息
+   5. `Import`:     导入准备好的 LDIF 文件
+   6. `Export`:     导出LDAP的Entry信息为LDIF文件
+   7. `Logout`:     退出登录
 
 ## 二、搭建服务
 ### 2.1 配置

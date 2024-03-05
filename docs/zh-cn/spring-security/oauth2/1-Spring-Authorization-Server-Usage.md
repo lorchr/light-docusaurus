@@ -7,9 +7,10 @@
 - [Spring Authorization Server1.0 介绍与使用](https://blog.csdn.net/baidu_28068985/article/details/128431612)
 - [gc-oauth2](https://github.com/krycai/gc-framework/tree/master/gc-oauth2)
 
-# 一、Quick Start
+## 一、Quick Start
 此配置中，Spring Security 及 Spring Authorization Server配置都在同一个配置类中
-## 1.1 配置类
+
+### 1.1 配置类
 ```java
 package com.light.cloud.service.auth.server.config;
 
@@ -208,7 +209,7 @@ public class OAuth2AuthorizationServerConfig {
 }
 ```
 
-## 1.2 测试流程
+### 1.2 测试流程
 
 具体见[OAuth2开放端点](./0-OAuth2.1-Endpoints.md)
 
@@ -218,7 +219,7 @@ public class OAuth2AuthorizationServerConfig {
 4. 获取token
 5. 访问接口
 
-# 二、默认配置
+## 二、默认配置
 在`Quick Start`中已经通过最小配置，完成了一个`Spring Authorization Server`项目
 
 `Spring Authorization Server`还提供了一种实现最小配置的默认配置形式。就是通过`OAuth2AuthorizationServerConfiguration`这个类。
@@ -323,7 +324,7 @@ public class OAuth2AuthorizationServerConfiguration {
 }
 ```
 
-这里注入一个叫做authorizationServerSecurityFilterChain的bean，这跟之前`Quick Start`项目时实现的基本是相同的。
+这里注入一个叫做`authorizationServerSecurityFilterChain`的bean，这跟之前`Quick Start`项目时实现的基本是相同的。
 
 有了这个bean，就会支持如下协议端点：
 
@@ -336,13 +337,13 @@ public class OAuth2AuthorizationServerConfiguration {
 - [OpenID Connect 1.0 Provider Configuration endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oidc-provider-configuration-endpoint)
 - [OpenID Connect 1.0 UserInfo endpoint](https://docs.spring.io/spring-authorization-server/docs/current/reference/html/protocol-endpoints.html#oidc-user-info-endpoint)
 
-# 三、标准配置
+## 三、标准配置
 基于`OAuth2AuthorizationServerConfiguration`这个类来实现一个`Authorization Server`。
 
 将 `Spring Security`和`OAuth2 Authorization Server`的配置分开
 `Spring Security` 使用 `WebSecurityConfig` 类，创建一个新的`Authorization Server`配置类 `AuthorizationServerConfig`。
 
-## 3.1 WebSecurityConfig
+### 3.1 WebSecurityConfig
 ```java
 package com.light.cloud.service.auth.server.config;
 
@@ -408,7 +409,7 @@ public class WebSecurityConfig {
 }
 ```
 
-## 3.2 AuthorizationServerConfig
+### 3.2 AuthorizationServerConfig
 ```java
 package com.light.cloud.service.auth.server.config;
 
@@ -513,18 +514,18 @@ public class AuthorizationServerConfig {
 }
 ```
 
-# 四、存储配置
+## 四、存储配置
 `Spring Authorization Server`默认是支持`InMemory`和`JDBC`两种存储模式的，内存模式只适合开发和简单的测试。接下来我们来实现JDBC存储方式。
 
 修改步骤如下：
 
 1. 引入JDBC相关依赖。
-2. 创建数据库并初始化表，以及在application.yaml文件中配置数据库连接。
+2. 创建数据库并初始化表，以及在`application.yaml`文件中配置数据库连接。
 3. 修改Spring Security和Spring authorization Server的配置。
 4. 初始化表数据
 5. 测试服务
 
-## 4.1 引入JDBC依赖
+### 4.1 引入JDBC依赖
 ```xml
 <dependency>
   <groupId>org.springframework.boot</groupId>
@@ -537,13 +538,14 @@ public class AuthorizationServerConfig {
 </dependency>
 ```
 
-## 4.2 初始化数据库表并配置数据库连接信息
+### 4.2 初始化数据库表并配置数据库连接信息
 Spring Security的建表语句在
-```
+```shell
 org/springframework/security/core/userdetails/jdbc/users.ddl
 ```
+
 Spring authorization Server的建表文件在：
-```
+```shell
 org/springframework/security/oauth2/server/authorization/oauth2-authorization-consent-schema.sql
 org/springframework/security/oauth2/server/authorization/oauth2-authorization-schema.sql
 org/springframework/security/oauth2/server/authorization/client/oauth2-registered-client-schema.sql
@@ -646,9 +648,9 @@ spring:
     password: admin
 ```
 
-## 4.3 修改Spring Security和Spring authorization Server的配置
+### 4.3 修改Spring Security和Spring authorization Server的配置
 
-### Spring Security
+#### Spring Security
 ```java
 @Bean
 public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
@@ -658,7 +660,7 @@ public UserDetailsService userDetailsService(JdbcTemplate jdbcTemplate) {
 }
 ```
 
-### Spring authorization Server
+#### Spring authorization Server
 ```java
 @Bean
 public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
@@ -676,10 +678,10 @@ public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplat
 }
 ```
 
-## 4.4 初始化表数据
-需要初始化三张表数据，分别是users,authorities, oauth2_registered_client
+### 4.4 初始化表数据
+需要初始化三张表数据，分别是`users`, `authorities`, `oauth2_registered_client`
 
-users,authorities需要通过UserDetailsManager类来实现，我暂时使用junit Test来实现。
+`users`, `authorities`需要通过`UserDetailsManager`类来实现，我暂时使用junit Test来实现。
 
 ```java
 package com.light.cloud.service.auth.server;
@@ -775,16 +777,19 @@ public class CloudServiceAuthServerApplicationTests {
 }
 ```
 
-# 五、自定义JWT字段
+## 五、自定义JWT字段
 jwt解析可以使用 [JWT在线解析](https://jwt.io)
-## 5.1 获取token
+
+### 5.1 获取token
 1. 获取授权码 
    > http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=message.read&redirect_uri=http://127.0.0.1:8080/authorized
+
 2. 获取Token
   > curl -X POST "http://127.0.0.1:8080/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:8080/authorized&code=rXd5b" -H "Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ="
 
 3. JWT Set 
   > http://127.0.0.1:8080/oauth2/jwks
+
 ```json
 {
     "keys": [
@@ -798,14 +803,14 @@ jwt解析可以使用 [JWT在线解析](https://jwt.io)
 }
 ```
 
-## 5.2 默认Token解析
+### 5.2 默认Token解析
 默认token
-```
-eyJraWQiOiI5MzBhOTgxNC0yYWUyLTRiODYtOTRkZS1jZjBhYzAxYzRlZmYiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsIm5iZiI6MTY4NDMwOTYxMCwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsImNsaWVudC5jcmVhdGUiLCJjbGllbnQucmVhZCJdLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJleHAiOjE2ODQzMDk5MTAsImlhdCI6MTY4NDMwOTYxMH0.hN07xVk8VbQTlHWCT3rgv8dHddPNWcO8Dvc4WKGcNE6XmdOHnW_9QDuQCSOX-SZjTHQStRlKCSti8Qwg7lHy-JJ8pl3AQzqio7AFS5j-EGayGtjqIOAxUAhF7WlH5bj08nUE-2g0X0h5OmZvNpbt69ApeWc0wGCLL58pDgt0DZlk9sjqMGh7u5BUmX8d-DGvb4OI24ClGmIDdkpma6PLDXPQ3TsNF12XYevCEB1XMwXmX524uGyuuODZhz-3-CcE9bIEm3l7-IYBs-6IUGbCJ288lUzQ1p59Zdw2u4wXmzPrqYFFOYRWSm5zrrhICk1lzj8nXGX9yQykdIZIhIgkiQ```
+```shell
+eyJraWQiOiI5MzBhOTgxNC0yYWUyLTRiODYtOTRkZS1jZjBhYzAxYzRlZmYiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsIm5iZiI6MTY4NDMwOTYxMCwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsImNsaWVudC5jcmVhdGUiLCJjbGllbnQucmVhZCJdLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJleHAiOjE2ODQzMDk5MTAsImlhdCI6MTY4NDMwOTYxMH0.hN07xVk8VbQTlHWCT3rgv8dHddPNWcO8Dvc4WKGcNE6XmdOHnW_9QDuQCSOX-SZjTHQStRlKCSti8Qwg7lHy-JJ8pl3AQzqio7AFS5j-EGayGtjqIOAxUAhF7WlH5bj08nUE-2g0X0h5OmZvNpbt69ApeWc0wGCLL58pDgt0DZlk9sjqMGh7u5BUmX8d-DGvb4OI24ClGmIDdkpma6PLDXPQ3TsNF12XYevCEB1XMwXmX524uGyuuODZhz-3-CcE9bIEm3l7-IYBs-6IUGbCJ288lUzQ1p59Zdw2u4wXmzPrqYFFOYRWSm5zrrhICk1lzj8nXGX9yQykdIZIhIgkiQ
 ```
 
 解析结果
-```
+```json
 HEADER:ALGORITHM & TOKEN TYPE
 {
   "kid": "930a9814-2ae2-4b86-94de-cf0ac01c4eff",
@@ -829,8 +834,7 @@ PAYLOAD:DATA
 VERIFY SIGNATURE
 ```
 
-
-## 5.3 自定义Header及Claim内容
+### 5.3 自定义Header及Claim内容
 接下来我们增加一个自定义header和claim.
 
 需要使用OAuth2TokenCustomizer来实现。
@@ -896,13 +900,14 @@ public class JwtEnhanceConfig {
 
 }
 ```
-## 5.4 新的Token解析
-```
+
+### 5.4 新的Token解析
+```shell
 eyJjdXN0b21lckhlYWRlciI6IkhlYWRlciIsImFsZyI6IlJTMjU2Iiwia2lkIjoiMzdkMTViNWUtNGFmMC00ZjY1LTg4Y2EtNTk0NzgwZmMzMDgwIn0.eyJzdWIiOiJ1c2VyIiwiYXVkIjoibWVzc2FnaW5nLWNsaWVudCIsImN1c3RvbWVyQ2xhaW0iOiJDbGFpbSIsIm5iZiI6MTY4NDMwOTY5MSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsImNsaWVudC5jcmVhdGUiLCJjbGllbnQucmVhZCJdLCJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwODAiLCJleHAiOjE2ODQzMDk5OTEsImlhdCI6MTY4NDMwOTY5MX0.sVBX5oWgttKNj_O6VbafPyX60Ldr2HHYWoFdNINPPatGSUr5QdsIsUIxRiE0VBu_-MycQrUB_Ad4cJzRoTxyTmMpRVv-uJlYLOoViStReY-I-VgK8b4nLLW8alore3BaF4aX6a2I4T2M3f4jsttzJ9jJTeiVTaurz0zbYpH5cPMpI3zccXPhOQFpqQEILXeU_JpoD_Wx-13FK9VOGlid7LU1nJdUpYR_rsXkS_6WMPjPdi0wMfNRJCYetBqnRQHQjlKVbrp9r62TXGjVj9qiNFAK9nV40BC-t-fvqTG2W4DduGbfXZZf8mEn-UTtuL2bTFv5_dOz-xhTKu228A3xWA
 ```
 
 解析结果
-```
+```json
 HEADER:ALGORITHM & TOKEN TYPE
 {
   "customerHeader": "Header",
@@ -928,10 +933,10 @@ PAYLOAD:DATA
 VERIFY SIGNATURE
 ```
 
-# 六、OpenID Connect 1.0协议
+## 六、OpenID Connect 1.0协议
 Spring Authorization Server支持OAuth2.1协议，同时也支持OpenID Connect 1.0协议，该协议是OAuth2协议的上层协议，这里我就不解释了，可自行百度。
 
-## 6.1 开启OIDC 
+### 6.1 开启OIDC 
 默认是不开启OIDC的，需要进行额外的配置
 ```java
 @Bean
@@ -966,11 +971,13 @@ public AuthorizationServerSettings authorizationServerSettings() {
 
 注意： 客户端client(messaging-client)设置的时候scope设置了openid的支持
 
-## 6.2 用户端点
+### 6.2 用户端点
 1. 获取授权码 授权scope openid
     > http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=openid&redirect_uri=http://127.0.0.1:8080/authorized
+
 2. 获取Token
     > curl -X POST "http://127.0.0.1:8080/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:8080/authorized&code=mLhDhO6" -H "Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ="
+
 3. 获取用户信息
     > curl -X GET "http://127.0.0.1:8080/userinfo" -H "Authorization: Bearer eyJjd"
 
@@ -1047,7 +1054,8 @@ public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity h
     "url": "https://github.com/lorchr"
 }
 ```
-## 6.3 查看OpenID的配置
+
+### 6.3 查看OpenID的配置
 > curl -X GET "http://127.0.0.1:8080/.well-known/openid-configuration"
 
 ```json
@@ -1097,7 +1105,7 @@ public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity h
 }
 ```
 
-## 6.4 客户端注册端点
+### 6.4 客户端注册端点
 OpenID Connect 1.0客户端注册端点默认禁用，因为许多部署不需要动态客户端注册。
 ```java
     @Bean
@@ -1155,10 +1163,13 @@ OpenID Connect 1.0客户端注册端点默认禁用，因为许多部署不需�
 ### 6.5 注册客户端
 1. 获取授权码 授权scope client.create
     > http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=client.create&redirect_uri=http://127.0.0.1:8080/authorized
+
 2. 获取Token
     > curl -X  POST "http://127.0.0.1:8080/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:8080/authorized&code=VeNYf" -H "Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ="
+
 3. 注册客户端
-   ```
+   
+   ```shell
    curl -X POST "http://127.0.0.1:8080/connect/register" -H "Authorization: Bearer " \
    -d '{
       "application_type": "web",
@@ -1184,6 +1195,7 @@ OpenID Connect 1.0客户端注册端点默认禁用，因为许多部署不需�
       ]
    }'
    ```
+
    响应
    ```json
    {
@@ -1208,10 +1220,13 @@ OpenID Connect 1.0客户端注册端点默认禁用，因为许多部署不需�
     "client_secret_expires_at": 0
    }
    ```
+
 4. 获取授权码 授权scope client.read
    > http://127.0.0.1:8080/oauth2/authorize?response_type=code&client_id=messaging-client&scope=client.create&redirect_uri=http://127.0.0.1:8080/authorized
+
 5. 获取Token
    > curl -X POST "http://127.0.0.1:8080/oauth2/token?grant_type=authorization_code&redirect_uri=http://127.0.0.1:8080/authorized&code=VeNYf" -H "Authorization: Basic bWVzc2FnaW5nLWNsaWVudDpzZWNyZXQ="
+
 6. 查询客户端
    > curl -X GET "http://127.0.0.1:8080/connect/register?client_id=messaging-client" -H "Authorization: Bearer "
 
@@ -1219,7 +1234,7 @@ OpenID Connect 1.0客户端注册端点默认禁用，因为许多部署不需�
 1. 注册客户端时，scope 必须仅为 client.create
 2. 查询客户端时，scope 必须仅为 client.read 且只能查询当前access_token所属客户端的信息
 
-# 七、资源服务器（resource-server）与客户端（oauth2-client）
+## 七、资源服务器（resource-server）与客户端（oauth2-client）
 
 ```xml
 <dependency>
