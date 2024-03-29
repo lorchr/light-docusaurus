@@ -1,4 +1,5 @@
 - [Kafka Offical](https://kafka.apache.org/)
+- [Kafka Offical Docker](https://hub.docker.com/r/apache/kafka)
 - [Kafka Docker](https://hub.docker.com/r/bitnami/kafka)
 - [Kafka Tool](https://www.kafkatool.com/download.html) 必须有Zookeeper
 - [Kafdrop](https://github.com/obsidiandynamics/kafdrop) 可以不需要Zookeeper
@@ -10,6 +11,23 @@ docker network create dev
 
 # 创建文件夹
 mkdir -p //d/docker/kafka/{conf,data,logs}
+
+docker run \
+    --publish 9092:9092 \
+    --hostname kafka \
+    --network dev \
+    --restart no \
+    --name kafka \
+    apache/kafka:3.7.0
+
+docker run \
+    --publish 9092:9092 \
+    --volume //d/docker/kafka/conf:/mnt/shared/config \
+    --hostname kafka \
+    --network dev \
+    --restart no \
+    --name kafka \
+    apache/kafka:3.7.0
 
 # 运行容器
 docker run -d \

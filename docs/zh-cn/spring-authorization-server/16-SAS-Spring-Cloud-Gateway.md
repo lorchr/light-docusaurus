@@ -49,6 +49,17 @@
 - 搭建好标准OAuth2认证服务
 - 搭建nacos服务
 
+```shell
+docker run --detach \
+    --publish 8848:8848 \
+    --env MODE=standalone \
+    --network dev \
+    --restart=on-failure:3 \
+    --name nacos \
+    nacos/nacos-server:v2.3.1
+
+```
+
 ### 2. 项目结构
 
 ```bash

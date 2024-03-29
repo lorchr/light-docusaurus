@@ -33,6 +33,19 @@
 - 
 - [Spring Authorization Server常见问题解答(FAQ)](https://juejin.cn/post/7279242389000208438)
 
+## OAuth2、OpenID、SMAL 对比
+
+| 对比点   | OAuth2.0                                                                 | OpenID                                                                                    | SMAL2                                      |
+| -------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------ |
+| 票据格式 | JSON or SAML2                                                            | JSON                                                                                      | XML                                        |
+| 支持授权 | Yes                                                                      | Yes                                                                                       | Yes                                        |
+| 支持认证 | “伪认证”                                                                 | Yes                                                                                       | Yes                                        |
+| 创建年份 | 2005                                                                     | 2006                                                                                      | 2001                                       |
+| 最新版本 | OAuth2                                                                   | OpenID Connect                                                                            | SAML 2.0                                   |
+| 传输方式 | HTTP                                                                     | HTTP GET and HTTP POST                                                                    | HTTP重定向，SAML SOAP绑定，HTTP POST绑定等 |
+| 安全弱点 | 不能抵抗网络钓鱼，OAuth没有使用数据签名和加密等措施，数据安全完全依赖TLS | 不能抵抗网络钓鱼，一个钓鱼的IDP如果恶意记录下来用户的OpenID，将会造成很严重的隐私安全问题 | XML签名存在漏洞，可能被伪造                |
+| 使用场景 | API 授权                                                                 | 商用应用的单点登录                                                                        | 企业级单点登录，但是对于移动端支持不是很好 |
+
 ## 集成第三方登录
 - [微信开放平台](https://open.weixin.qq.com/)
 - [微信官方文档](https://developers.weixin.qq.com/doc/oplatform/Website_App/WeChat_Login/Wechat_Login.html)

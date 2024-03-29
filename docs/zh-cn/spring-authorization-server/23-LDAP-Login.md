@@ -729,6 +729,37 @@ public class DynamicProviderController {
 
 ## 五、测试
 
+### 1. 命令行测试
+```shell
+curl --include --location --request POST 'http://127.0.0.1:8080/login' \
+    --header 'loginType: ldap' \
+    --header 'Content-Type: multipart/form-data; boundary=--------------------------472090631701765594263399' \
+    --form 'username="admin"' \
+    --form 'password="123456"'
+
+```
+
+响应结果
+```http request
+HTTP/1.1 200
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Set-Cookie: SESSION=MzE2ODhlYzYtMzNlOC00NmFmLThmOGMtZGQ5NTMwMDg5NDQ4; Domain=127.0.0.1; Path=/; HttpOnly; SameSite=Lax
+Content-Type: application/json;charset=UTF-8
+Transfer-Encoding: chunked
+Date: Tue, 12 Mar 2024 11:21:40 GMT
+
+{"code":200,"message":"操作成功.","success":true,"data":null}
+```
+
+### 2. 浏览器测试
 ```shell
 # 浏览器访问登录页，登录时添加请求头或者参数 loginType: Ldap 即可
 http://127.0.0.1:5173
