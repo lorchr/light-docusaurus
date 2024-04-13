@@ -454,13 +454,16 @@ wsl --list -v
   
 # 关闭wsl
 wsl --shutdown
+
+# 关闭 Ubuntu
+wsl -t Ubuntu-22.04
 ```
 
 2. 导出应用
 
 ```shell
 # wsl --export <app-name> <target-file>
-wsl --export Ubuntu-20.04         D:\\wsl\\ubuntu\\Ubuntu-20.04.tar
+wsl --export Ubuntu-22.04         D:\\wsl\\ubuntu\\Ubuntu-22.04.tar
 wsl --export docker-desktop-data  D:\\wsl\\docker\\data\\docker-desktop-data.tar
 wsl --export docker-desktop       D:\\wsl\\docker\\desktop\\docker-desktop.tar
 ```
@@ -469,7 +472,7 @@ wsl --export docker-desktop       D:\\wsl\\docker\\desktop\\docker-desktop.tar
 
 ```shell
 # wsl --unregister <app-name>
-wsl --unregister Ubuntu-20.04
+wsl --unregister Ubuntu-22.04
 wsl --unregister docker-desktop-data
 wsl --unregister docker-desktop
 ```
@@ -478,7 +481,7 @@ wsl --unregister docker-desktop
 
 ```shell
 # wsl --import <app-name> <install-dir> <source-file> --version <wsl-version>
-wsl --import Ubuntu-20.04        D:\\ubuntu\\wsl           D:\\wsl\\ubuntu\\Ubuntu-20.04.tar --version 2
+wsl --import Ubuntu-22.04        D:\\ubuntu\\wsl           D:\\wsl\\ubuntu\\Ubuntu-22.04.tar --version 2
 wsl --import docker-desktop-data D:\\wsl\\docker\\data     D:\\wsl\\docker\\data\\docker-desktop-data.tar --version 2
 wsl --import docker-desktop      D:\\wsl\\docker\\desktop  D:\\wsl\\docker\\desktop\\docker-desktop.tar --version 2
 
@@ -488,7 +491,7 @@ wsl --import docker-desktop      D:\\wsl\\docker\\desktop  D:\\wsl\\docker\\desk
 
 ```shell
 # 切换默认用户，安装时设置的默认用户名是 light
-Ubuntu-20.04 config --default-user light
+Ubuntu-22.04 config --default-user light
 ```
 
 

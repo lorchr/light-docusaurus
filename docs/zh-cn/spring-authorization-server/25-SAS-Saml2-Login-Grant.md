@@ -1,4 +1,6 @@
 - [Saml Tool](https://www.samltool.com/)
+- [JWT Tool By Okta](https://jwt.io/)
+- [Saml Tool By Okta](https://samltool.io/)
 
 **SpringBoot集成文档**
 - [Spring Security Github](https://github.com/spring-projects/spring-security)
@@ -7,6 +9,11 @@
 - [Spring Security Document](https://docs.spring.io/spring-security)
 - [Spring Security Document SAML2](https://docs.spring.io/spring-security/reference/servlet/saml2/login/overview.html)
 - [SAML-2.0-Migration-Guide](https://github.com/spring-projects/spring-security/wiki/SAML-2.0-Migration-Guide)
+
+**文章**
+- [How to configure Keeper SSO Connect Cloud with Microsoft AD FS for seamless and secure SAML 2.0 authentication](https://docs.keeper.io/sso-connect-cloud/identity-provider-setup/ad-fs-keeper)
+- [Active Directory 联合身份验证服务概述](https://learn.microsoft.com/zh-cn/windows-server/identity/ad-fs/ad-fs-overview)
+- [如何将Spring Security 集成 SAML2 ADFS 实现SSO单点登录?](https://cloud.tencent.com/developer/article/2367225)
 
 **SAML认证 Demo**
 - [Spring Security SAML Login Logout](https://github.com/spring-projects/spring-security-samples/tree/main/servlet/spring-boot/java/saml2/login)
@@ -41,7 +48,7 @@
 | 模块 | 域名            | IP地址        | 备注       |
 | ---- | --------------- | ------------- | ---------- |
 | IDP  | idp.light.local | 172.18.0.99   | Docker容器 |
-| SP   | sp.light.local  | 10.106.136.62 | 物理机     |
+| SP   | sp.light.local  | 192.168.137.1 | 物理机     |
 
 需要将此Hosts配置到IDP和SP服务上
 
@@ -49,7 +56,7 @@
 cat >> /etc/hosts << EOF
 
 172.18.0.99     idp.light.local
-10.106.136.62   sp.light.local
+192.168.137.1   sp.light.local
 EOF
 ```
 
@@ -58,7 +65,7 @@ EOF
 ```shell
 
 172.18.0.99     idp.light.local
-10.106.136.62   sp.light.local
+192.168.137.1   sp.light.local
 ```
 
 ### 2. 部署一个SAML2 Identity Provider (IdP)
@@ -74,7 +81,7 @@ docker run --detach \
   --env KC_HOSTNAME_PORT=8880 \
   --ip 172.18.0.99 \
   --hostname idp.light.local \
-  --add-host sp.light.local:10.106.136.62 \
+  --add-host sp.light.local:192.168.137.1 \
   --network dev \
   --restart=no \
   --name keycloak \
@@ -87,7 +94,7 @@ cat /etc/hosts
 # idp的ip为容器虚拟ip，用于自身识别
 # sp的ip为物理机的ip，用于访问sp
 172.18.0.99     idp.light.local
-10.106.136.62   sp.light.local
+192.168.137.1   sp.light.local
 ```
 
 - [Dashboard](http://idp.light.local:8880)
