@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[26157],{67047:s=>{s.exports=JSON.parse('{"label":"upload","permalink":"/light-docusaurus/blog/tags/upload","allTagsPath":"/light-docusaurus/blog/tags","count":1,"unlisted":false}')}}]);
