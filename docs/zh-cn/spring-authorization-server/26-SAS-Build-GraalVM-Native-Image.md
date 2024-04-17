@@ -2739,7 +2739,7 @@ public class SamlReflectionClassTests {
 
 ### 5. Dockerfile及Github Action
 - https://cr.console.aliyun.com/cn-hangzhou/instance/repositories
-- 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
+
 1. `Dockerfile`
 
 ```dockerfile
