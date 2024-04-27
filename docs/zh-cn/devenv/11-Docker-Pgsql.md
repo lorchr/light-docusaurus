@@ -12,7 +12,7 @@ docker network create dev
 docker volume create pgsql_data;
 
 # 创建文件夹
-mkdir -p //d/docker/pgsql/{conf,data,logs}
+mkdir -p D:/docker/pgsql/{conf,data,logs}
 
 # docker run -i --rm postgres cat /usr/share/postgresql/postgresql.conf.sample >  D:/docker/pgsql/conf/postgresql.conf
 

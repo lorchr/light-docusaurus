@@ -12,7 +12,7 @@ docker network create dev
 docker volume create es_data;
 
 # 创建文件夹
-mkdir -p //d/docker/elasticsearch/{conf,data,logs}
+mkdir -p D:/docker/elasticsearch/{conf,data,logs}
 
 # 获取默认配置文件
 docker run -d --name elasticsearch_temp elasticsearch:7.17.10 \

@@ -13,7 +13,7 @@ docker vaolume create --name sonarqube_log
 docker vaolume create --name sonarqube_extensions
 
 # 创建文件夹
-mkdir -p //d/docker/sonarqube/{conf,data,logs,extensions,extensions/downloads,extensions/plugins}
+mkdir -p D:/docker/sonarqube/{conf,data,logs,extensions,extensions/downloads,extensions/plugins}
 
 # 获取默认配置文件
 docker run -d --name sonarqube_temp sonarqube:10.2-community \

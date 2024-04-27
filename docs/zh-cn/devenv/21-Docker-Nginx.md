@@ -9,7 +9,7 @@
 ## 1. Docker安装 Nginx
 ```shell
 # 创建文件夹
-mkdir -p //d/docker/nginx/{conf,data,logs,files}
+mkdir -p D:/docker/nginx/{conf,data,logs,files}
 
 # 获取默认配置文件
 docker run -d --name nginx_temp nginx:1.25 \
@@ -20,19 +20,16 @@ docker run -d --name nginx_temp nginx:1.25 \
 # 运行容器
 docker run -d \
   --publish 30080:80 \
-  --publish 30081:81 \
-  --publish 30082:82 \
-  --publish 30090:90 \
-  --publish 30091:91 \
-  --publish 30092:92 \
   --publish 30443:443 \
+  --publish 30081-30089:81-89 \
+  --publish 30090-30099:90-99 \
   --volume //d/docker/nginx/data:/usr/share/nginx/html:ro \
   --volume //d/docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro \
   --volume //d/docker/nginx/conf/conf.d:/etc/nginx/conf.d \
   --volume //d/docker/nginx/logs:/var/log/nginx \
   --volume //d/docker/nginx/files:/usr/share/nginx/files \
-  --add-host 'nginx.light.com:192.168.0.21' \
-  --add-host 'plmtest.sdlg.cn:192.168.0.21' \
+  --add-host 'nginx.light.com:192.168.137.1' \
+  --add-host 'plmtest.sdlg.cn:192.168.137.1' \
   --net dev \
   --restart=no \
   --name nginx \

@@ -23,7 +23,7 @@ docker network create dev
 docker volume create minio_data;
 
 # 创建文件夹
-mkdir -p //d/docker/minio/{conf,data,logs}
+mkdir -p D:/docker/minio/{conf,data,logs}
 
 # 获取默认配置文件
 # 见 https://min.io/docs/minio/container/operations/install-deploy-manage/deploy-minio-single-node-single-drive.html#id4

@@ -29,7 +29,7 @@ docker pull container-registry.oracle.com/database/enterprise:12.2.0.1
 docker pull container-registry.oracle.com/database/enterprise:12.1.0.2
 
 # 创建文件夹
-mkdir -p //d/docker/oracle/{conf,data,logs}
+mkdir -p D:/docker/oracle/{conf,data,logs}
 
 # 运行容器
 docker run -d \

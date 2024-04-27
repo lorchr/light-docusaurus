@@ -11,7 +11,7 @@ docker network create dev
 docker volume create influx_data;
 
 # 创建文件夹
-mkdir -p //d/docker/influxdb/{conf,data,logs}
+mkdir -p D:/docker/influxdb/{conf,data,logs}
 
 # docker run -i --rm influxdb:1.8 influxd config > D:/docker/influxdb/conf/influxdb.conf
 

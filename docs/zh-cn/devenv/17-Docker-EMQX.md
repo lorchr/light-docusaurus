@@ -12,7 +12,7 @@ docker network create dev
 docker volume create emqx_data
 
 # 创建文件夹
-mkdir -p //d/docker/emqx/{conf,data,logs}
+mkdir -p D:/docker/emqx/{conf,data,logs}
 
 # 获取默认配置文件
 docker run -d --env HOCON_ENV_OVERRIDE_PREFIX=DEV_ \

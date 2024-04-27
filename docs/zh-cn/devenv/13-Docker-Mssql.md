@@ -10,8 +10,8 @@
 docker network create --driver bridge dev
 
 # 创建文件夹
-mkdir -p //d/docker/mssql/{conf,data,logs,secrets}
-touch //d/docker/mssql/logs/errorlog
+mkdir -p D:/docker/mssql/{conf,data,logs,secrets}
+touch D:/docker/mssql/logs/errorlog
 
 # 拉取镜像
 docker pull mcr.microsoft.com/mssql/server:2019-CU23-ubuntu-20.04

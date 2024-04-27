@@ -12,7 +12,7 @@ docker network create dev
 docker volume create mysql_data;
 
 # 创建文件夹
-mkdir -p //d/docker/gitea/{data,conf,logs,runner,runner/data}
+mkdir -p D:/docker/gitea/{data,conf,logs,runner,runner/data}
 
 # 运行容器
 docker run -d \

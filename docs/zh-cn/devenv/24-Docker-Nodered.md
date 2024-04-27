@@ -11,7 +11,7 @@ docker network create dev
 docker volume create nodered_data;
 
 # 创建文件夹
-mkdir -p //d/docker/nodered/{conf,data,logs}
+mkdir -p D:/docker/nodered/{conf,data,logs}
 
 # 获取默认配置文件
 

@@ -1,6 +1,8 @@
 - [RocketMQ Offical](https://rocketmq.apache.org/)
 - [RocketMQ Docker](https://hub.docker.com/r/apache/rocketmq)
-- [RocketMQ Docker Repo](https://github.com/apache/rocketmq-docker)
+- [RocketMQ Github Repo](https://github.com/apache/rocketmq-docker)
+- [RocketMQ Dashbaord Docker](https://hub.docker.com/r/apacherocketmq/rocketmq-dashboard)
+- [RocketMQ Dashbaord Github Repo](https://github.com/apache/rocketmq-dashboard)
 
 ## 1. Docker安装
 ```shell
@@ -8,19 +10,50 @@
 docker network create dev
 
 # 创建文件夹
-mkdir -p //d/docker/rocketmq/broker/{conf,data,logs,bin}
-mkdir -p //d/docker/rocketmq/nameserver/{conf,data,logs,bin}
+mkdir -p D:/docker/rocketmq/broker/{conf,data,logs,bin}
+mkdir -p D:/docker/rocketmq/nameserver/{conf,data,logs,bin}
 
 # 拉取镜像
-docker pull apache/rocketmq:5.1.3
+docker pull apache/rocketmq:5.2.0
 docker pull apacherocketmq/rocketmq-dashboard:1.0.0
+
+# https://github.com/apache/rocketmq-docker/issues/95
+
+# 获取默认配置文件
+docker run -d --name rocketmq_temp apache/rocketmq:5.2.0 sh mqbroker -n rmqnamesrv:9876 --enable-proxy \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/conf D:/docker/rocketmq/broker \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.cmd D:/docker/rocketmq/broker/bin/runbroker.cmd \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/bin/runserver.cmd D:/docker/rocketmq/nameserver/bin/runserver.cmd \
+&& docker stop rocketmq_temp && docker rm rocketmq_temp
+
+# 运行容器
+docker run -d \
+  --publish 8080:8080 \
+  --publish 8081:8081 \
+  --publish 9876:9876 \
+  --publish 10909:10909 \
+  --publish 10911:10911 \
+  --publish 10912:10912 \
+  --volume //d/docker/rocketmq/broker/logs:/home/rocketmq/logs \
+  --volume //d/docker/rocketmq/broker/data:/home/rocketmq/store \
+  --volume //d/docker/rocketmq/broker/conf:/home/rocketmq/rocketmq-5.2.0/conf \
+  --env MAX_HEAP_SIZE=1024M \
+  --net dev \
+  --restart=on-failure:3 \
+  --name rocketmq \
+  --privileged=true \
+  apache/rocketmq:5.2.0 sh mqbroker -n rmqnamesrv:9876 --enable-proxy -c /home/rocketmq/rocketmq-5.2.0/conf/broker.conf
+
+docker exec -it -u root rocketmq /bin/bash
+
 ```
 
+## 2. 分离部署
 ### 部署nameserver
 1. 创建挂载目录
 ```shell
 # 日志目录 脚本目录
-mkdir -p /usr/local/rabbitmq/{log,bin}
+mkdir -p /usr/local/rocketmq/nameserver/{log,bin}
 ```
 
 2. 设置权限：如果不设置会导致NameServer容器内部无法写日志文件
@@ -39,15 +72,15 @@ NameServer启动脚本中有一个自动计算最大堆内存和新生代内存�
 docker run -d \
   --privileged=true \
   --name rmqnamesrv \
-  apache/rocketmq:5.1.3 sh mqnamesrv
+  apache/rocketmq:5.2.0 sh mqnamesrv
 ```
 
-3.2. 复制容器内启动脚本到挂载目录 /usr/local/rocketmq/nameserver/bin
+3.2. 复制容器内启动脚本到挂载目录 `/usr/local/rocketmq/nameserver/bin`
 ```shell
-docker cp rmqnamesrv:/home/rocketmq/rocketmq-5.1.3/bin/runserver.sh /usr/local/rocketmq/nameserver/bin/runserver.sh
+docker cp rmqnamesrv:/home/rocketmq/rocketmq-5.2.0/bin/runserver.sh /usr/local/rocketmq/nameserver/bin/runserver.sh
 
 # Windows
-docker cp rmqnamesrv:/home/rocketmq/rocketmq-5.1.3/bin/runserver.cmd D:/docker/rocketmq/nameserver/bin/runserver.cmd
+docker cp rmqnamesrv:/home/rocketmq/rocketmq-5.2.0/bin/runserver.cmd D:/docker/rocketmq/nameserver/bin/runserver.cmd
 ```
 
 3.3. 修改runserver.sh
@@ -55,6 +88,7 @@ docker cp rmqnamesrv:/home/rocketmq/rocketmq-5.1.3/bin/runserver.cmd D:/docker/r
 # 打开脚本文件
 vi /usr/local/rocketmq/nameserver/bin/runserver.sh
 ```
+
 找到调用`calculate_heap_sizes`函数的位置注释掉保存即可，拉到脚本最底部就能找到
 
 3.4. 停止并删除容器
@@ -66,7 +100,7 @@ docker stop rmqnamesrv && docker rm rmqnamesrv
 1. 创建挂在目录
 ```shell
 # 数据目录 配置目录 日志目录 脚本目录
-mkdir -p /usr/local/rabbitmq/{data,conf,log,bin}
+mkdir -p /usr/local/rocketmq/broker/{data,conf,log,bin}
 ```
 
 2. 设置权限
@@ -77,7 +111,8 @@ chmod 777 -R /usr/local/rocketmq/broker/*
 
 3. 创建broker.conf文件
 
-在/usr/local/rocketmq/broker/conf文件夹下创建broker.conf文件
+在`/usr/local/rocketmq/broker/conf`文件夹下创建`broker.conf`文件
+
 ```conf
 # 集群名称
 brokerClusterName = DefaultCluster
@@ -86,7 +121,7 @@ brokerName = broker-a
 # broker id节点ID， 0 表示 master, 其他的正整数表示 slave，不能小于0
 brokerId = 0
 # Broker服务地址 String 内部使用填内网ip，如果是需要给外部使用填公网ip
-brokerIP1 = 192.168.8.220
+brokerIP1 = 192.168.137.1
 # Broker角色
 brokerRole = ASYNC_MASTER
 # 刷盘方式
@@ -99,8 +134,11 @@ fileReservedTime = 72
 autoCreateTopicEnable=true
 # 是否允许Broker自动创建订阅组，建议线下开启，线上关闭
 autoCreateSubscriptionGroup=true
+# 开启属性过滤功能，支持用户自定义属性过滤
+enablePropertyFilter=true
 ```
-说明：建立broker.conf文件，通过这个文件把RocketMQ的broker管理起来
+
+说明：建立`broker.conf`文件，通过这个文件把RocketMQ的broker管理起来
 
 4. 拷贝容器内Broker启动脚本到宿主机（如果不需要自定义堆内存可以跳过）
 Broker启动脚本中有一个自动计算最大堆内存和新生代内存的函数会导致在不同硬件环境下设置最大
@@ -112,15 +150,15 @@ Broker启动脚本中有一个自动计算最大堆内存和新生代内存的�
 docker run -d \
   --name rmqbroker \
   --privileged=true \
-  apache/rocketmq:5.1.3 sh mqbroker
+  apache/rocketmq:5.2.0 sh mqbroker
 ```
 
-4.2. 复制容器内启动脚本到挂载目录/usr/local/rocketmq/nameserver/bin
+4.2. 复制容器内启动脚本到挂载目录`/usr/local/rocketmq/nameserver/bin`
 ```shell
-docker cp rmqbroker:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.sh /usr/local/rocketmq/broker/bin/runbroker.sh
+docker cp rmqbroker:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.sh /usr/local/rocketmq/broker/bin/runbroker.sh
 
 # Windows
-docker cp rmqbroker:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.cmd D:/docker/rocketmq/broker/bin/runbroker.cmd
+docker cp rmqbroker:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.cmd D:/docker/rocketmq/broker/bin/runbroker.cmd
 ```
 
 4.3. 修改runbroker.sh
@@ -128,6 +166,7 @@ docker cp rmqbroker:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.cmd D:/docker/ro
 # 打开脚本文件
 vi /usr/local/rocketmq/broker/bin/runbroker.sh
 ```
+
 找到调用`calculate_heap_sizes`函数的位置注释掉保存即可，拉到脚本最底部就能找到
 
 4.4. 停止&删除容器
@@ -135,7 +174,7 @@ vi /usr/local/rocketmq/broker/bin/runbroker.sh
 docker stop rmqbroker && docker rm rmqbroker
 ```
 
-### Docker-Compose安装
+## 3. Docker-Compose安装
 - [docker-compose脚本的version](https://docs.docker.com/compose/compose-file/compose-versioning/)
 
 1. 编写docker-compose.yml
@@ -143,24 +182,26 @@ docker stop rmqbroker && docker rm rmqbroker
 version: '3.8'
 services:
   rmqnamesrv:
-    image: apache/rocketmq:5.1.3
-    container_name: rmqnamesrv
+    image: apache/rocketmq:5.2.0
+    container_name: rocketmq-nameserver
     ports:
       - 9876:9876
     restart: no
     privileged: true
     volumes:
       - /usr/local/rocketmq/nameserver/log:/home/rocketmq/logs
-      - /usr/local/rocketmq/nameserver/bin/runserver.sh:/home/rocketmq/rocketmq-5.1.3/bin/runserver.sh
+      - /usr/local/rocketmq/nameserver/bin/runserver.sh:/home/rocketmq/rocketmq-5.2.0/bin/runserver.sh
     environment:
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=128M
     command: ["sh","mqnamesrv"]
   
-  broker:
-    image: apache/rocketmq:5.1.3
-    container_name: rmqbroker
+  rmqbroker:
+    image: apache/rocketmq:5.2.0
+    container_name: rocketmq-broker
     ports:
+      - 8080:8080
+      - 8081:8081
       - 10909:10909
       - 10911:10911
     restart: no
@@ -169,7 +210,7 @@ services:
       - /usr/local/rocketmq/broker/log:/home/rocketmq/logs
       - /usr/local/rocketmq/broker/data:/home/rocketmq/store
       - /usr/local/rocketmq/broker/conf/broker.conf:/home/rocketmq/broker.conf
-      - /usr/local/rocketmq/broker/bin/runbroker.sh:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.sh
+      - /usr/local/rocketmq/broker/bin/runbroker.sh:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.sh
     depends_on:
       - 'rmqnamesrv'
     environment:
@@ -182,13 +223,14 @@ services:
     image: apacherocketmq/rocketmq-dashboard:1.0.0
     container_name: rocketmq-dashboard
     ports:
-      - 8080:8080
+      - 18080:8080
     restart: no
     privileged: true
     depends_on:
       - 'rmqnamesrv'
     environment:
       - JAVA_OPTS= -Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+
 ```
 
 windows
@@ -196,24 +238,26 @@ windows
 version: '3.8'
 services:
   rmqnamesrv:
-    image: apache/rocketmq:5.1.3
-    container_name: rmqnamesrv
+    image: apache/rocketmq:5.2.0
+    container_name: rocketmq-nameserver
     ports:
       - 9876:9876
     restart: no
     privileged: true
     volumes:
       - //d/docker/rocketmq/nameserver/logs:/home/rocketmq/logs
-      - //d/docker/rocketmq/nameserver/bin/runserver.cmd:/home/rocketmq/rocketmq-5.1.3/bin/runserver.cmd
+      - //d/docker/rocketmq/nameserver/bin/runserver.cmd:/home/rocketmq/rocketmq-5.2.0/bin/runserver.cmd
     environment:
       - MAX_HEAP_SIZE=256M
       - HEAP_NEWSIZE=128M
     command: ["sh","mqnamesrv"]
   
-  broker:
-    image: apache/rocketmq:5.1.3
-    container_name: rmqbroker
+  rmqbroker:
+    image: apache/rocketmq:5.2.0
+    container_name: rocketmq-broker
     ports:
+      - 8080:8080
+      - 8081:8081
       - 10909:10909
       - 10911:10911
     restart: no
@@ -222,7 +266,7 @@ services:
       - //d/docker/rocketmq/broker/logs:/home/rocketmq/logs
       - //d/docker/rocketmq/broker/data:/home/rocketmq/store
       - //d/docker/rocketmq/broker/conf/broker.conf:/home/rocketmq/broker.conf
-      - //d/docker/rocketmq/broker/bin/runbroker.cmd:/home/rocketmq/rocketmq-5.1.3/bin/runbroker.cmd
+      - //d/docker/rocketmq/broker/bin/runbroker.cmd:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.cmd
     depends_on:
       - 'rmqnamesrv'
     environment:
@@ -235,29 +279,38 @@ services:
     image: apacherocketmq/rocketmq-dashboard:1.0.0
     container_name: rocketmq-dashboard
     ports:
-      - 8080:8080
+      - 18080:8080
     restart: no
     privileged: true
     depends_on:
       - 'rmqnamesrv'
     environment:
       - JAVA_OPTS= -Xmx256M -Xms256M -Xmn128M -Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+
 ```
 
 2. 启动服务
 ```shell
+# 将配置文件复制到本地
+docker run -d --name rocketmq_temp apache/rocketmq:5.2.0 sh mqbroker -n rmqnamesrv:9876 --enable-proxy \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/conf D:/docker/rocketmq/broker \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/bin/runbroker.cmd D:/docker/rocketmq/broker/bin/runbroker.cmd \
+&& docker cp rocketmq_temp:/home/rocketmq/rocketmq-5.2.0/bin/runserver.cmd D:/docker/rocketmq/nameserver/bin/runserver.cmd \
+&& docker stop rocketmq_temp && docker rm rocketmq_temp
+
 # docker Compose v2版本命令
-docker compose up -d # -d 指后台运行
+docker compose -f rocketmq.yaml up -d # -d 指后台运行
 
 # docker Compose v1版本命令
-docker-compose up -d # -d 指后台运行
+docker-compose -f rocketmq.yaml up -d # -d 指后台运行
+
+docker-compose -f rocketmq.yaml down  # 停止服务
 ```
 
 3. 访问控制台
-http://192.168.10.220:8080
+-[Dashbaord](http://localhost:18080)
 
-
-## Broker配置详解
+## 4. Broker配置详解
 ```conf
 # nameServer 地址多个用;隔开 默认值null
 # 例：127.0.0.1:6666;127.0.0.1:8888

@@ -10,7 +10,7 @@
 docker network create dev
 
 # 创建文件夹
-mkdir -p //d/docker/kafka/{conf,data,logs}
+mkdir -p D:/docker/kafka/{conf,data,logs}
 
 docker run \
     --publish 9092:9092 \

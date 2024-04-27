@@ -11,7 +11,7 @@ docker network create dev
 docker volume create mysql_data;
 
 # 创建文件夹
-mkdir -p //d/docker/mysql/{conf,data,logs}
+mkdir -p D:/docker/mysql/{conf,data,logs}
 
 # 获取默认配置文件
 docker run -d --env MYSQL_ROOT_PASSWORD=admin --name mysql_temp mysql:5.7 \
