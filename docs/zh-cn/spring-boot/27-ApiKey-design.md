@@ -1,4 +1,6 @@
-- [三方接口就要这样设计，非常优雅！](https://mp.weixin.qq.com/s/aY7xi1uS9qWr0EuR7HNzsQ)\
+- [三方接口调用设计方案](https://juejin.cn/post/7268667384440504360)
+- [三方接口就要这样设计，非常优雅！](https://mp.weixin.qq.com/s/aY7xi1uS9qWr0EuR7HNzsQ)
+- [公司来了个大神，三方接口调用方案设计的真优雅~~](https://mp.weixin.qq.com/s/-6btpBrgOz-3iqP-g_l_0A)
 
 在为第三方系统提供接口的时候，肯定要考虑接口数据的安全问题，比如数据是否被篡改，数据是否已经过时，数据是否可以重复提交等问题。
 
@@ -12,6 +14,8 @@
 > 通过使用 `Access Key Id` / `Secret Access Key` 加密的方法来验证某个请求的发送者身份。
 
 ### 2. 接口鉴权： 在进行接口调用时，客户端需要使用AK和请求参数生成签名，并将其放入请求头或参数中以进行身份验证。
+
+> 淘宝签名和验签： [淘宝SDK签名算法 (yuque.com)](https://www.yuque.com/u12226311/ttgrez/mxy16ld5h2tw7xhx)
 
 ### 3. 回调地址设置： 三方应用提供回调地址，用于接收异步通知和回调结果。
 
@@ -324,7 +328,7 @@ public class SignAuthInterceptor implements HandlerInterceptor {
 
 注册拦截器指定拦截接口
 
-### 对敏感数据进行加密传输
+### [对敏感数据进行加密传输](https://blog.51cto.com/u_16175496/6920098)
 使用TLS（传输层安全）协议可以保证通信过程中的数据加密和完整性。以下是一些基本步骤：
 
 1. 在服务器上配置TLS证书（包括公钥和私钥）。
@@ -662,3 +666,7 @@ Token的值一般是UUID，服务端生成Token后需要将token做为key，将�
 客户端: 与上面接口签名规则一样类似，把`appId`改为token即可。
 
 ![img](./img/27/27-4.bmp)
+
+- [【JavaWeb】如何优雅的实现第三方开放api接口签名(有状态/无状态)](https://www.dandelioncloud.cn/article/details/1585274840783507457)
+- [java/springboot服务第三方接口安全签名(Signature)实现方案 ](https://www.cnblogs.com/shamo89/p/17497921.html)
+- [AK、SK实现（双方API交互：签名及验证）](https://www.cnblogs.com/cgy1995/p/17473791.html)

@@ -1,6 +1,14 @@
 # OpenWrt
 
-## 安装官方原版OpenWrt
+## 一、系统安装
+- [OpenWrt 官方版](https://downloads.openwrt.org/releases)
+- [Lede 社区版](https://github.com/coolsnowwolf/lede/releases)
+- [iStoreOS 国内版](https://fw.koolcenter.com/iStoreOS)
+
+- [官方在线构建](https://firmware-selector.openwrt.org/)
+- [自定义编译](https://openwrt.ai)
+
+### 1. 安装系统（官方版）
 1. 安装系统，[下载地址](https://downloads.openwrt.org/releases)
 2. 配置Lan地址与路由器同网段
 
@@ -29,13 +37,13 @@ reboot now
 ping -c 4 jd.com
 
 # 切换清华源
-sed -i 's$ownloads.openwrt.org$mirrors.tuna.tsinghua.edu.cn/openwrt$' /etc/opkg/distfeeds.conf
+sed -i 's$downloads.openwrt.org$mirrors.tuna.tsinghua.edu.cn/openwrt$' /etc/opkg/distfeeds.conf
 
 # 更新软件列表
 opkg update
 
 # 安装中文
-opkg install luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-opkg-zh-cn
+opkg install luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-opkg-zh-cn luci-i18n-attendedsysupgrade-zh-cn
 ```
 
 5. 安装主题 `luci-theme-argon`
@@ -50,6 +58,152 @@ opkg install luci-compat luci-lib-ipkg
 # 从页面下载官方安装包
 # https://github.com/jerrykuku/luci-theme-argon/releases
 ```
+
+### 2. 自己编译OpenWrt
+
+以下以[官方在线构建](https://firmware-selector.openwrt.org/)为例
+
+1. 添加自定义包
+
+```shell
+# 首先是自定义包，目前官方包没有提供网页UI，所以我们需要将网页UI加上，在已安装的软件包末尾加上如下包：
+luci luci-i18n-base-zh-cn luci-i18n-firewall-zh-cn luci-i18n-opkg-zh-cn luci-i18n-attendedsysupgrade-zh-cn
+```
+
+2. 可选包
+   - `wpad-basic-mbedtls`替换为`wpad-mbedtls`   无线漫游KVR
+   - `dnsmasq`替换为`dnsmasq-full`              部分学习强国工具需要
+
+3. 自定义脚本
+
+自定义脚本分为路由器版和AP版，注意替换脚本中中文内容
+```shell
+# 路由
+uci del network.wan6
+uci set network.wan.proto='pppoe'
+uci set network.wan.username='拨号账号'
+uci set network.wan.password='拨号密码'
+uci set network.wan.ipv6='auto'
+uci set network.lan.ipaddr='路由器IP'
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci set system.@system[0].hostname=Router
+
+uci set wireless.@wifi-device[0].channel='auto'
+uci set wireless.@wifi-device[0].disabled=0
+uci set wireless.@wifi-device[0].country='CN'
+uci set wireless.@wifi-iface[0].ssid='2.4GWIFI名称'
+uci set wireless.@wifi-iface[0].encryption='sae-mixed'
+uci set wireless.@wifi-iface[0].key='2.4G无线密码'
+
+uci set wireless.@wifi-iface[0].ieee80211k=1
+uci set wireless.@wifi-iface[0].wnm_sleep_mode=1
+uci set wireless.@wifi-iface[0].bss_transition=1
+uci set wireless.@wifi-iface[0].ieee80211r=1
+uci set wireless.@wifi-iface[0].mobility_domain=8888
+uci set wireless.@wifi-iface[0].ft_over_ds=0
+uci set wireless.@wifi-iface[0].ft_psk_generate_local=0
+
+
+uci set wireless.@wifi-device[1].channel='auto'
+uci set wireless.@wifi-device[1].disabled=0
+uci set wireless.@wifi-device[1].country='CN'
+uci set wireless.@wifi-iface[1].ssid='5GWIFI名称'
+uci set wireless.@wifi-iface[1].encryption='sae'
+uci set wireless.@wifi-iface[1].key='5G无线密码'
+
+uci set wireless.@wifi-iface[1].ieee80211k=1
+uci set wireless.@wifi-iface[1].wnm_sleep_mode=1
+uci set wireless.@wifi-iface[1].bss_transition=1
+uci set wireless.@wifi-iface[1].ieee80211r=1
+uci set wireless.@wifi-iface[1].mobility_domain=8888
+uci set wireless.@wifi-iface[1].ft_over_ds=0
+uci set wireless.@wifi-iface[1].ft_psk_generate_local=0
+
+uci set firewall.@defaults[0].flow_offloading='1'
+uci set firewall.@defaults[0].flow_offloading_hw='1'
+
+uci commit
+
+/etc/init.d/firewall restart
+/etc/init.d/system restart
+/etc/init.d/network restart
+
+sed -i 's/downloads.openwrt.org/mirrors.ustc.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
+```
+
+```shell
+# AP
+uci del network.wan6
+uci del network.wan
+uci set network.lan.ipaddr='路由器IP'
+
+uci set system.@system[0].zonename='Asia/Shanghai'
+uci set system.@system[0].timezone='CST-8'
+uci set system.@system[0].hostname=AP0
+
+uci set wireless.@wifi-device[0].channel='auto'
+uci set wireless.@wifi-device[0].disabled=0
+uci set wireless.@wifi-device[0].country='CN'
+uci set wireless.@wifi-iface[0].ssid='2.4GWIFI名称'
+uci set wireless.@wifi-iface[0].encryption='sae-mixed'
+uci set wireless.@wifi-iface[0].key='2.4G无线密码'
+
+uci set wireless.@wifi-iface[0].ieee80211k=1
+uci set wireless.@wifi-iface[0].wnm_sleep_mode=1
+uci set wireless.@wifi-iface[0].bss_transition=1
+uci set wireless.@wifi-iface[0].ieee80211r=1
+uci set wireless.@wifi-iface[0].mobility_domain=8888
+uci set wireless.@wifi-iface[0].ft_over_ds=0
+uci set wireless.@wifi-iface[0].ft_psk_generate_local=0
+
+
+uci set wireless.@wifi-device[1].channel='auto'
+uci set wireless.@wifi-device[1].disabled=0
+uci set wireless.@wifi-device[1].country='CN'
+uci set wireless.@wifi-iface[1].ssid='5GWIFI名称'
+uci set wireless.@wifi-iface[1].encryption='sae'
+uci set wireless.@wifi-iface[1].key='5G无线密码'
+
+uci set wireless.@wifi-iface[1].ieee80211k=1
+uci set wireless.@wifi-iface[1].wnm_sleep_mode=1
+uci set wireless.@wifi-iface[1].bss_transition=1
+uci set wireless.@wifi-iface[1].ieee80211r=1
+uci set wireless.@wifi-iface[1].mobility_domain=8888
+uci set wireless.@wifi-iface[1].ft_over_ds=0
+uci set wireless.@wifi-iface[1].ft_psk_generate_local=0
+
+uci set firewall.@defaults[0].flow_offloading='1'
+uci set firewall.@defaults[0].flow_offloading_hw='1'
+
+uci commit
+
+/etc/init.d/firewall restart
+/etc/init.d/system restart
+/etc/init.d/network restart
+
+for i in firewall dnsmasq odhcpd; do
+  if /etc/init.d/"$i" enabled; then
+    /etc/init.d/"$i" disable
+    /etc/init.d/"$i" stop
+  fi
+done
+
+sed -i 's/downloads.openwrt.org/mirrors.ustc.edu.cn\/openwrt/g' /etc/opkg/distfeeds.conf
+```
+
+4. 安装第三方包
+
+如果不出意外的话，刷入镜像后直接启动就可以联网，我们进入路由器后台，密码默认为空。
+
+访问 `系统` → `软件包` → `配置OPKG`。
+
+接下来首先修改`/etc/opkg.conf`，删去`option check_signature`。
+
+接下来向`/etc/opkg/customfeeds.conf`添加自定义软件源，具体软件源可以从 `https://github.com/kiddin9/openwrt-packages` 中获取。
+
+一切编辑完成后点击保存并点击更新列表即可。
 
 ## 二、插件列表
 - [插件合集 NueXini/NueXini_Packages](https://github.com/NueXini/NueXini_Packages)

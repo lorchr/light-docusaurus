@@ -2,18 +2,29 @@
 - [Docsify Github](https://github.com/docsifyjs/docsify/)
 
 ## 1. 环境
-- node 12
-- npm  6.14.16
+
+:::tip 运行要求
+node版本需要 `> 12.x`
+:::
+
+```shell
+node -v
+
+npm -v
+
+```
 
 ## 2. 安装
 
 ```shell
+# 全局安装 docsify-cli
 npm install -g docsify-cli
 ```
 
 ## 3. 初始化
 
 ```shell
+# 创建项目文件夹，初始化为docsify项目
 mkdir light-docsify && cd light-docsify
 docsify init ./docs
 ```
@@ -27,10 +38,12 @@ docsify serve ./docs
 ## 5. 推送仓库
 
 ```shell
-echo "# light-docsify" >> README.md
 git init
-git add README.md
-git commit -m "first commit"
+git config user.name "Hui Liu"
+git config user.email "whitetulips@163.com"
+
+git add .
+git commit -m "Init commit"
 git branch -M main
 git remote add origin git@github.com:lorchr/light-docsify.git
 git push -u origin main

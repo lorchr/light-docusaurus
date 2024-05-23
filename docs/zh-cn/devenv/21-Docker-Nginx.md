@@ -96,6 +96,16 @@ server {
 
   #access_log  /var/log/nginx/host.access.log  main;
 
+  # 开启gzip压缩
+  gzip                on;
+  gzip_disable        "msie6";
+  gzip_vary           on;
+  gzip_proxied        any;
+  gzip_comp_level     6;
+  gzip_buffers 16     8k;
+  gzip_http_version   1.1;
+  gzip_types          text/plain application/css text/css application/xml text/javascript application/javascript application/x-javascript;
+
   location / {
       root   /usr/share/nginx/html/default;
       index  index.html index.htm;

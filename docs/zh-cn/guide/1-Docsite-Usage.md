@@ -1,13 +1,15 @@
+- [Docsite 官网](https://docsite.js.org)
+- [Docsite Github](https://github.com/txd-team/docsite)
+
 ## 1. 安装
 
-- [Docsite官网](https://docsite.js.org)
-- [Docsite Github](https://github.com/txd-team/docsite)
-- [Docsify官网](https://docsify.js.org)
-- [Valine官网](https://valine.js.org)
+:::tip 运行要求
+node版本需要 `> 6.x`  `<= 10.x`
+:::
 
 ```shell
-# node版本需要 > 6.x  <= 10.x
 node -v
+
 npm -v
 
 # 全局安装Docsite
@@ -20,9 +22,9 @@ npm install -g docsite
 docsite init <project_name>
 
 # 示例
-cd /home/lorchr/ && docsite init light-docs
+cd /home/lorchr/ && docsite init light-docsite
 # 或
-mkdir ./light-docs && cd ./light-docs && docsite init
+mkdir ./light-docsite && cd ./light-docsite && docsite init
 
 # 预览
 docsite start
@@ -36,7 +38,7 @@ docsite build
 
 ```shell
 {
-  rootPath: '/light-docs', // 发布到服务器的根目录，需以/开头但不能有尾/，如果只有/，请填写空字符串
+  rootPath: '/light-docsite', // 发布到服务器的根目录，需以/开头但不能有尾/，如果只有/，请填写空字符串
   port: 8080, // 本地开发服务器的启动端口
   domain: 'site.lorchr.top', // 站点部署域名，无需协议和path等
   defaultSearch: 'baidu', // 默认搜索引擎，baidu或者google
@@ -157,7 +159,7 @@ ssh-keygen -t rsa -C "whitetulips@163.com"
 cat ~/.ssh/id_rsa.pub
 
 # 添加Github地址
-git remote set-url --add origin https://github.com/lorchr/light-docs.git
+git remote set-url --add origin https://github.com/lorchr/light-docsite.git
 
 # 推送到Github
 git push
@@ -183,12 +185,12 @@ git push
 4. 将文档上传到Nginx并配置访问路径
 
 ```conf
-location /light-docs/ {
-  root /home/lorchr/light-docs;
+location /light-docsite/ {
+  root /home/lorchr/light-docsite;
   index index.html;
 }
 
-error_page  404  /home/lorchr/light-docs/404.html;
+error_page  404  /home/lorchr/light-docsite/404.html;
 ```
 
 ### 2. 部署到Github Pages
@@ -256,7 +258,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          # repository-name: lorchr/light-docs
+          # repository-name: lorchr/light-docsite
           branch: site
           # npm run build 生成静态资源的路径，比如有的人是 `docs/.vuepress/dist`
           folder: dist
