@@ -17,6 +17,8 @@
 - [开源监控工具](https://github.com/louislam/uptime-kuma)
 - [网站统计分析工具 umami](https://github.com/umami-software/umami)
 - [网站统计分析工具 matomo](https://github.com/matomo-org/matomo)
+- [VS Code in the browser](https://github.com/coder/code-server)
+- [免费、开源、易集成的人脸识别系统](https://github.com/exadel-inc/CompreFace)
 
 ## 实用类
 - [潘多拉，一个让你呼吸顺畅的ChatGPT](https://github.com/pengzhile/pandora) [体验地址](https://chat.zhile.io)
@@ -30,7 +32,10 @@
 - [多种开发环境的管理利器](https://github.com/jetpack-io/devbox)
 - [网站导航页](https://reorx.github.io/sui2/)
 - [CasaOS AppStore导航](https://awesome.casaos.io/)
- 
+- [一款高颜值、开源、跨平台的电子书阅读器](https://github.com/koodo-reader/koodo-reader)
+- [一款高颜值、开源、跨平台的云端双链笔记软件](https://github.com/blossom-editor/blossom)
+- [一款整洁、开源、专属程序员的 Web 笔记应用](https://github.com/batnoter/batnoter)
+
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
 - [Javascript Markdown 编辑器](https://github.com/Tencent/cherry-markdown)
@@ -48,6 +53,7 @@
 - [截图转网页](https://github.com/abi/screenshot-to-code)
 - [开源去马赛克工具](https://github.com/beurtschipper)
 - [开源 API 调试工具](https://github.com/Kong/insomnia)
+- [Web 版的 Excel 组件](https://github.com/handsontable/handsontable)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)
