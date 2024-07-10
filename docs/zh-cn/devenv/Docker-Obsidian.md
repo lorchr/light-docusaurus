@@ -1,0 +1,5 @@
+- [Obsidian](https://obsidian.md/)
+- [Obsidian Forum](https://forum.obsidian.md/)
+- [Obsidian 中文论坛](https://forum-zh.obsidian.md/)
+- [Obsidian 中文教程](https://publish.obsidian.md/chinesehelp)
+- [Obsidian Docker](https://github.com/WHG555/obsidian-docker)

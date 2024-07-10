@@ -1,4 +1,5 @@
 - [使用cloudflare tunnel免费内网穿透，实现网站的外网访问和远程桌面](https://zhuanlan.zhihu.com/p/621870045)
+- [CloudFlare Zero turst:无需vps,一个域名实现内网穿透!](https://post.smzdm.com/p/a6p7zgxz/)
 
 ## 前言
 [Cloudflare Tunnel](https://one.dash.cloudflare.com/cd6e8b10038eef80310dac6ae9bf526c/access/tunnels)是Cloudflare Zero Trust中的一个产品，它能够帮助用户将位于内网中的服务暴露到公网上，从而使得外部用户可以通过互联网访问这些服务。相比较于frp、ngrok等内网穿透工具，使用Cloudflare Tunnel可以获得更好的安全性和性能。
@@ -134,3 +135,21 @@ cloudflared.exe service install
 
 ### MacOS
 macOS上注册服务请参考[Run as a service on macOS · Cloudflare Zero Trust docs](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/configure-tunnels/local-management/as-a-service/macos/)
+
+## 页面操作流程
+
+1. 登录CF[控制面板](https://dash.cloudflare.com)
+2. 选择左侧 `Zero Trust` - `Networks` - `Tunnels` 进入 `Tunnel` 页面
+3. 点击 `Create a tunnel`
+4. 选择 `Cloudflared`，点击 `Next`
+5. 输入任意的 `Tunnel` 名称，点击 `Next`
+6. 下载对应系统的Connector客户端并安装
+7. 以管理员权限打开终端，执行命令注册客户端 `cloudflared.exe service install eyJhIjoi...`
+8. 注册完后点击 `Next` 配置穿透域名
+   - `Subdomain`: `test`
+   - `Domain`: `example.com`
+   - `Path`: (optional)
+   - `Type`: `HTTP`
+   - `URL`: `localhost:8080`
+9. 配置成功后 `Tunnel` 页面的 `Status` 会变成绿色的 `Healthy`
+10. 浏览器访问 `https://test.example.com/`，请求会路由到本地的 `http://localhost:8080`

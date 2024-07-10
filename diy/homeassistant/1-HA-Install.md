@@ -66,7 +66,7 @@ print ipv4
 save
 
 # 退出编辑
-quit 作者
+quit
 
 # 重新载入
 nmcli con reload

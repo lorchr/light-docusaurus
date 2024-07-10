@@ -344,9 +344,10 @@ docker cp elasticsearch:/usr/share/elasticsearch/plugins/elasticsearch-analysis-
 docker save -o image_version.tar docker.io/image:version
 docker load -i image_version.tar
 
-# 镜像备份 加载 export import
-docker export image_version.tar container_name
-docker import image_version.tar docker.io/image:version
+# 容器备份 加载 export import
+docker export -o image_version.tar container_name
+docker import -i image_version.tar docker.io/image:version
+
 ```
 
 传输文件

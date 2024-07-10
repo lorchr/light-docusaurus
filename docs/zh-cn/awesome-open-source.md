@@ -35,6 +35,7 @@
 - [一款高颜值、开源、跨平台的电子书阅读器](https://github.com/koodo-reader/koodo-reader)
 - [一款高颜值、开源、跨平台的云端双链笔记软件](https://github.com/blossom-editor/blossom)
 - [一款整洁、开源、专属程序员的 Web 笔记应用](https://github.com/batnoter/batnoter)
+- [一款开源、简单、轻量级的视频播放插件](https://github.com/sampotts/plyr)
 
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
@@ -54,6 +55,9 @@
 - [开源去马赛克工具](https://github.com/beurtschipper)
 - [开源 API 调试工具](https://github.com/Kong/insomnia)
 - [Web 版的 Excel 组件](https://github.com/handsontable/handsontable)
+- [手绘风格数字白板](https://github.com/excalidraw/excalidraw)
+- [一站式自动化运维平台](https://github.com/opendevops-cn/opendevops)
+- [一款强大的密码分析工具](https://github.com/Ciphey/Ciphey)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)

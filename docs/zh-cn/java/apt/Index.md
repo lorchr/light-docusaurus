@@ -1,0 +1,6 @@
+- [聊聊如何运用JAVA注解处理器（APT）](https://zhuanlan.zhihu.com/p/621105298)
+- [如何用 APT(Annotation Processing Tool)自动生成代码](https://developer.aliyun.com/article/1376761)
+- [基于APT(注解处理器)实现Lombok的@getter @setter @toString功能](https://nicky-chen.github.io/2019/05/03/apt_lombok_implement/)
+- [Maven中调试Annotation Processor](https://www.jianshu.com/p/e18d648012c2)
+- [Java注解编译期处理AbstractProcessor详解](https://cloud.tencent.com/developer/article/2266812)
+- [项目终于用上了插入式注解，真香！](https://mp.weixin.qq.com/s/_t7M962bM0QIsFY0yX_7DA)
