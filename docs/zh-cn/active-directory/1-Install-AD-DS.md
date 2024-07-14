@@ -4,6 +4,9 @@
 - [配置新联合服务器场中的第一台联合服务器](https://learn.microsoft.com/zh-cn/windows-server/identity/ad-fs/deployment/configure-a-federation-server#configure-the-first-federation-server-in-a-new-federation-server-farm)
 - [如何在windows server 2016上设置域控制器并验证](https://blog.csdn.net/qq_74285286/article/details/130180775)
 - [部署：AD FS联合身份验证](https://blog.51cto.com/u_16230257/7136375)
+- [windows server 2016 域环境搭建的方法步骤(图文)](https://www.jb51.net/article/252392.htm)
+- [Spring Security Kerberos Integration With MiniKdc](https://www.baeldung.com/spring-security-kerberos-integration)
+- [Spring Security Kerberos Integration With MiniKdc Github](https://github.com/eugenp/tutorials/tree/master/spring-security-modules/spring-security-oauth2-sso/spring-security-sso-kerberos)
 
 ## 一、安装系统
 系统配置如下，具体安装过程略过。
