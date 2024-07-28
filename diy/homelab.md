@@ -1,6 +1,50 @@
 
 ## 服务列表
 
+### Github加速
+1. 获取域名IP的工具网站 https://www.ipaddress.com/website/
+
+   - Github主站 https://github.com
+   - 全球加速CDN https://github.global.ssl.fastly.net
+   - 静态资源CDN https://assets-cdn.github.com
+   - 静态资源CDN https://github.githubassets.com
+   - 用户文件CDN https://row.githubusercontent.com
+   - 项目文件CDN https://objects.githubusercontent.com
+
+2. 修改hosts文件
+
+    ```bash
+    140.82.114.3        github.com
+    151.101.1.194       github.global.ssl.fastly.net
+    151.101.65.194      github.global.ssl.fastly.net
+    151.101.129.194     github.global.ssl.fastly.net
+    151.101.193.194     github.global.ssl.fastly.net
+    185.199.108.153     assets-cdn.github.com
+    185.199.109.153     assets-cdn.github.com
+    185.199.110.153     assets-cdn.github.com
+    185.199.111.153     assets-cdn.github.com
+    185.199.108.154     github.githubassets.com
+    185.199.109.154     github.githubassets.com
+    185.199.110.154     github.githubassets.com
+    185.199.111.154     github.githubassets.com
+    185.199.108.133     row.githubusercontent.com
+    185.199.109.133     row.githubusercontent.com
+    185.199.110.133     row.githubusercontent.com
+    185.199.111.133     row.githubusercontent.com
+    185.199.108.133     objects.githubusercontent.com
+    185.199.109.133     objects.githubusercontent.com
+    185.199.110.133     objects.githubusercontent.com
+    185.199.111.133     objects.githubusercontent.com
+                        
+    ```
+
+3. 刷新DNS 
+
+    ```bash
+    ipconfig /flushdns
+    ```
+
+
 ### 整体解决方案
 1. [Awesome-Selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted) 自建家庭服务
 2. [Aquar-Home](https://github.com/firemakergk/aquar-home) 
