@@ -167,7 +167,20 @@ mkdir -p D:/docker/web/keycloak/{conf,data,logs}
 # ==================== Keycloak ==================== 
 
 ```
+#### 配置Outline认证
 
+1. Root URL: 
+   - https://outline.light.local/
+2. Home URL: 
+   - https://outline.light.local
+3. Valid redirect URIs: 
+   - https://outline.light.local/*
+   - https://outline.light.local/auth/oidc
+   - https://outline.light.local/auth/oidc.callback
+4. Web origins 
+   - https://outline.light.local
+5. Admin URL: 
+   - https://outline.light.local
 
 ### 4. Gitlab配置
 
