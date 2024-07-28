@@ -69,6 +69,7 @@ public synchronized void init(ProcessingEnvironment processingEnv)
 
 init方法可以让我们处理器的初始化阶段，通过ProcessingEnvironment来获取一些帮助我们来处理注解的工具类
 
+```java
 // Element操作类，用来处理Element的工具
 Elements elementUtils = processingEnv.getElementUtils();
 
@@ -80,13 +81,21 @@ Messager messager = processingEnv.getMessager();
 
 // 文件工具类，常用来读取或者写资源文件
 Filer filer = environment.getFiler();
+```
+
+```java
 public Set<String> getSupportedAnnotationTypes()
+```
 getSupportedAnnotationTypes方法用来指定需要处理的注解集合，返回的集合元素需要是注解全路径（包名+类名）
 
+```java
 public SourceVersion getSupportedSourceVersion()
+```
 getSupportedSourceVersion方法用来指定当前正在使用的Java版本，一般返回SourceVersion.latestSupported()表示最新的java版本即可
-
+```java
 public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv)
+```
+
 process是注解处理器核心方法，注解的处理和生成代码或者配置资源都是在这个方法中完成。
 
 Java官方文档给出的注解处理过程的定义：注解处理过程是一个有序的循环过程。在每次循环中，一个处理器可能被要求去处理那些在上一次循环中产生的源文件和类文件中的注解。
@@ -132,9 +141,9 @@ public class AutoComponentProcessor extends AbstractComponentProcessor {
 ```
 
 3、注册处理器
-因为处理器是通过SPI机制实现，因此它的注册，其实就是在META-INF/services底下创建javax.annotation.processing.Processor文件，文件内容为自定义的处理器类
+因为处理器是通过SPI机制实现，因此它的注册，其实就是在`META-INF/services`底下创建`javax.annotation.processing.Processor`文件，文件内容为自定义的处理器类
 
-com.github.lybgeek.apt.process.AutoComponentProcessor
+`com.github.lybgeek.apt.process.AutoComponentProcessor`
 不过我们可以在项目的POM中引入GAV
 ```xml
 <dependency>
@@ -185,7 +194,7 @@ com.github.lybgeek.test.service.EchoService
 com.github.lybgeek.test.service.HelloService
 ```
 
-接下来就是解析lybgeek.components，并通过spring提供的扩展点和API进行bean注册，因为这块内容不属于APT的内容，本文就不再论述，对这部分感兴趣的朋友，可以通过文末提供的demo链接查看
+接下来就是解析`lybgeek.components`，并通过spring提供的扩展点和API进行bean注册，因为这块内容不属于APT的内容，本文就不再论述，对这部分感兴趣的朋友，可以通过文末提供的demo链接查看
 
 ## 总结
 在未接触APT之前，我们可能会通过反射去解析注解并实现功能，接触APT之后，我们又多了额外一种比反射更能提升性能的实现实现。不过任何东西都有其适用场景，APT主要还是用在编译期帮我们生成代码或者配置等，如果我们项目要使用APT生成的代码，有可能还是需要通过反射处理。

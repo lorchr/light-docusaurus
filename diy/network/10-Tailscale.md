@@ -113,7 +113,7 @@ $ wget https://github.com/juanfont/headscale/raw/main/config-example.yaml -O /et
 
 - 如果暂时用不到 DNS 功能，可以先将 magic_dns 设为 false。
 
-- server_url 设置为 http://<PUBLIC_IP>:8080，将 <PUBLIC_IP> 替换为公网 IP 或者域名。
+- server_url 设置为 `http://<PUBLIC_IP>:8080`，将 `<PUBLIC_IP>` 替换为公网 IP 或者域名。
 
 - 可自定义私有网段，也可同时开启 IPv4 和 IPv6：
 

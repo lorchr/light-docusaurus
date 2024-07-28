@@ -604,7 +604,7 @@ public class SearchService {
 启用编译时优化是一种有效的方法来加快 Spring Boot 应用程序的启动时间，特别是在使用 Spring Boot 2.4 及更高版本时。以下是具体的分析和说明：
 
 - 确认使用的 Spring Boot 版本：确保你的项目使用的是 Spring Boot 2.4 或更高版本。编译时优化功能是在 Spring Boot 2.4 中引入的。
-- 配置 `pom.xml` 文件：在项目的 `pom.xml` 文件中，找到 `<build>` 元素，并在其中的 `<plugins>` 元素下添加 Maven Compiler 插件配置。在 Maven Compiler 插件配置中，使用 <compilerArgs> 属性来设置编译器选项。
+- 配置 `pom.xml` 文件：在项目的 `pom.xml` 文件中，找到 `<build>` 元素，并在其中的 `<plugins>` 元素下添加 Maven Compiler 插件配置。在 Maven Compiler 插件配置中，使用 `<compilerArgs>` 属性来设置编译器选项。
 
 ```xml
 <build>

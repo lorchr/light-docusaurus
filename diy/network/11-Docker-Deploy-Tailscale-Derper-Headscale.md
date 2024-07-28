@@ -380,7 +380,7 @@ func (b *backend) Start(notify func(n ipn.Notify)) error {
 
 修改为：
 
-- 其中<公网IP地址>修改为Headscale服务器的地址。
+- 其中`<公网IP地址>`修改为Headscale服务器的地址。
 
 ```go
 func (b *backend) Start(notify func(n ipn.Notify)) error {
