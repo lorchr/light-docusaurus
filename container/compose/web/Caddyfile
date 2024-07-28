@@ -1,0 +1,85 @@
+# Caddy配置
+caddy.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/caddy.crt /etc/x509/https/caddy.key
+
+    # 反代minio的9001端口
+    reverse_proxy /minio/* minio.web:9001 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+
+    # 反代keycloak的8080端口
+    reverse_proxy /keycloak/* keycloak.web:8080 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+
+    # 反代outline的3000端口
+    reverse_proxy /outline/* outline.web:3000 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+
+}
+
+# Minio配置
+minio.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/minio.crt /etc/x509/https/minio.key
+
+    # 反代minio的9001端口
+    reverse_proxy minio.web:9001 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+}
+
+# Keycloak配置
+keycloak.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/keycloak.crt /etc/x509/https/keycloak.key
+
+    # 反代keycloak的8080端口
+    reverse_proxy keycloak.web:8080 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+}
+
+# Outline配置
+outline.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/outline.crt /etc/x509/https/outline.key
+
+    header / {
+        X-Content-Type-Options              nosniff
+        X-Frame-Options                     "SAMEORIGIN"
+        X-XSS-Protection                    "1; mode=block"
+        X-Robots-Tag                        none
+        X-Download-Options                  noopen
+        X-Permitted-Cross-Domain-Policies   none
+        Strict-Transport-Security           "max-age=31536000; includeSubDomains; preload"
+        -Server
+    }
+
+    # 反代outline的3000端口
+    reverse_proxy outline.web:3000 {
+        header_up X-Real-IP {remote_host}
+    }
+
+}

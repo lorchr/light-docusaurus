@@ -1,0 +1,105 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: basic_mysql
+    hostname: mysql.basic
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.101
+        aliases:
+          - mysql.basic
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - //d/docker/basic/mysql/data:/var/lib/mysql
+      - //d/docker/basic/mysql/conf:/etc/mysql/conf.d
+      - //d/docker/basic/mysql/logs:/var/log/mysql
+      # Init scripts location
+      - //d/docker/basic/mysql/scripts:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_USER: light
+      MYSQL_PASSWORD: light
+      MYSQL_DATABASE: light
+      MYSQL_ROOT_PASSWORD: root
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15.3
+    container_name: basic_pgsql
+    hostname: pgsql.basic
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.106
+        aliases:
+          - pgsql.basic
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    volumes:
+      - //d/docker/basic/pgsql/data:/var/lib/postgresql/data
+      - //d/docker/basic/pgsql/conf/postgresql.conf:/etc/postgresql/postgresql.conf
+      # Init scripts location
+      - //d/docker/basic/pgsql/scripts:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_USER: light
+      POSTGRES_PASSWORD: light
+      POSTGRES_DB: light
+      PGDATA: /var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:6.2
+    container_name: basic_redis
+    hostname: redis.basic
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.111
+        aliases:
+          - redis.basic
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    volumes:
+      - //d/docker/basic/redis/conf/redis.conf:/etc/redis/redis.conf
+    restart: unless-stopped
+
+networks:
+  develop:
+    external: true
+  proxy-net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 172.66.0.0/16
+
+# volumes:
+#   mysql_data:
+#   pgsql_data:

@@ -18,8 +18,19 @@ title: Geek Diyer
 4. [在下莫老师](https://space.bilibili.com/1995424953) 
    - [Gitee](https://gitee.com/zxmls/zxmls)
 
-## Youtube
+5. [可爱的小Cherry](https://zhiyou.smzdm.com/member/9674309982/)
+   - [Github](https://github.com/coracoo/awesome_docker_cn)
 
+## Youtube
+- [MatthiasBenaets](https://www.youtube.com/@matthiasbenaets) 
+  - [MatthiasBenaets/boilerplates](https://github.com/MatthiasBenaets/boilerplates/tree/master/docker)
+- [TechnoBoom](https://www.youtube.com/channel/UCpKTT07Zj4hKySbJmQUtHaA) 
+  - [TechnoBoom/YT-Files](https://github.com/TechnoBoom/YT-Files/tree/master/Arrstack-Docker)
+- [VUM星球](https://www.vumstar.com/)
+
+- [EasySelfhost](https://www.youtube.com/@easyselfhost)
+  - [Github](https://github.com/easyselfhost)
+  - [Personal](https://github.com/easyselfhost/self-host/tree/main/apps/notion-alts)
 
 ## Blog
 - [知了](https://www.zhile.io/)

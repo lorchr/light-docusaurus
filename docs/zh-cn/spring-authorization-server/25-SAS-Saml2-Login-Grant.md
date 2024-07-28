@@ -22,7 +22,7 @@
 - [https://download.csdn.net/blog/column/12259144/131198433](https://gitee.com/pearl-organization/study-spring-security-demo)
 
 **一些可本地部署的Idp服务**
-- [Keyclock SAML2](https://www.keycloak.org/docs/latest/securing_apps/index.html#using-saml-to-secure-applications-and-services)
+- [Keycloak SAML2](https://www.keycloak.org/docs/latest/securing_apps/index.html#using-saml-to-secure-applications-and-services)
 - [SeamlessAccess SAML2](https://seamlessaccess.atlassian.net/wiki/spaces/DOCUMENTAT/pages/84738190/Integrating+the+Login+Button+with+your+SAML+SP)
 - [Shibboleth Idp](https://shibboleth.atlassian.net/wiki/spaces/IDP5/overview)
 

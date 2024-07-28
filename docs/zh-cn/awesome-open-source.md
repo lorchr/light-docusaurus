@@ -1,3 +1,11 @@
+# Github Speed UP
+1. 修改hosts文件，hosts文件从这个仓库获取 https://github.com/521xueweihan/GitHub520
+2. 使用代理网站，将 https://github.com 改为 https://github.com.cnpmjs.org
+3. 使用 https://gitee.com 中转目标仓库
+4. 使用 js Deliver CDN加速，https://github.com/vuejs/vue/blob/dev/README.md 改为 https://cdn.jsdelivr.net/gh/vuejs/vue@dev/README.md
+5. 使用UU加速器 https://uu.163.com 下载客户端，搜索 “学术资源” 开启加速
+6. 使用Steam++加速器 https://steampp.net，启用 Github 加速
+
 # Awesome open source
 ## Java
 - [MallChat后端 | mallchat.cn](https://github.com/zongzibinbin/MallChat) [MallChat前端](https://github.com/Evansy/MallChatWeb)
@@ -36,6 +44,7 @@
 - [一款高颜值、开源、跨平台的云端双链笔记软件](https://github.com/blossom-editor/blossom)
 - [一款整洁、开源、专属程序员的 Web 笔记应用](https://github.com/batnoter/batnoter)
 - [一款开源、简单、轻量级的视频播放插件](https://github.com/sampotts/plyr)
+- [一个强大的开源备份工具](https://github.com/duplicati/duplicati)
 
 ## 工具类
 - [一个功能强大的开源简历生成器](https://github.com/xitanggg/open-resume)
@@ -58,8 +67,19 @@
 - [手绘风格数字白板](https://github.com/excalidraw/excalidraw)
 - [一站式自动化运维平台](https://github.com/opendevops-cn/opendevops)
 - [一款强大的密码分析工具](https://github.com/Ciphey/Ciphey)
+- [一个可以用Docker在本地托管的基于Web的PDF处理工具](https://github.com/Stirling-Tools/Stirling-PDF)
+- [本地的PDF处理](https://github.com/Stirling-Tools/Stirling-PDF)
+- [一个自托管项目管理工具](https://github.com/mattermost/focalboard)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)
 - [程序猿DD](https://www.didispace.com/)
 - [labuladong 的算法笔记](https://labuladong.github.io/algo/)
+
+## 文档类
+- [Outline](https://github.com/outline/outline) 
+- [BookStack](https://github.com/BookStackApp/BookStack)
+- [AFFiNE](https://github.com/toeverything/AFFiNE)
+- [Docmost](https://github.com/docmost/docmost)
+- [Trilium](https://github.com/zadam/trilium)
+- [Memos](https://github.com/usememos/memos)
