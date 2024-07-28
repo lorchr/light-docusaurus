@@ -138,6 +138,7 @@ outline.light.local {
 
 ### 2. Minio配置
 
+#### 使用本地认证的配置
 ```bash
 # ==================== Minio ==================== 
 # 创建文件夹
@@ -157,6 +158,23 @@ EOF
 
 ```
 
+#### 使用Keycloak认证的配置
+```bash
+cat >> D:/docker/web/minio/conf/config.env << EOF
+MINIO_VOLUMES="/mnt/data"
+# MINIO_SERVER_URL=https://minio.light.local:9000
+
+MINIO_IDENTITY_OPENID_SCOPES="openid,profile,email"
+MINIO_IDENTITY_OPENID_CLIENT_ID="Minio"
+MINIO_IDENTITY_OPENID_CLIENT_SECRET="QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy"
+MINIO_BROWSER_REDIRECT_URL=https://minio.light.local
+MINIO_IDENTITY_OPENID_CONFIG_URL=https://keycloak.light.local/realms/master/.well-known/openid-configuration
+MINIO_ROOT_USER=minio-admin
+MINIO_ROOT_PASSWORD=minio-admin
+EOF
+
+```
+
 ### 3. Keycloak配置
 
 ```bash
@@ -167,6 +185,22 @@ mkdir -p D:/docker/web/keycloak/{conf,data,logs}
 # ==================== Keycloak ==================== 
 
 ```
+
+#### 配置Minio认证
+
+1. Root URL: 
+   - https://minio.light.local/
+2. Home URL: 
+   - https://minio.light.local
+3. Valid redirect URIs: 
+   - https://minio.light.local/*
+4. Valid post logout redirect URIs 
+   - https://minio.light.local/
+5. Web origins 
+   - https://minio.light.local
+6. Admin URL: 
+   - https://minio.light.local
+
 #### 配置Outline认证
 
 1. Root URL: 
@@ -177,9 +211,11 @@ mkdir -p D:/docker/web/keycloak/{conf,data,logs}
    - https://outline.light.local/*
    - https://outline.light.local/auth/oidc
    - https://outline.light.local/auth/oidc.callback
-4. Web origins 
+4. Valid post logout redirect URIs 
+   - https://outline.light.local/
+5. Web origins 
    - https://outline.light.local
-5. Admin URL: 
+6. Admin URL: 
    - https://outline.light.local
 
 ### 4. Gitlab配置
@@ -294,7 +330,7 @@ OIDC_CLIENT_SECRET=xskE0xrGXX6RoV9ltXToz6ppBgpgOBaf
 OIDC_AUTH_URI=https://keycloak.light.local/realms/master
 OIDC_TOKEN_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/token
 OIDC_USERINFO_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/userinfo
-OIDC_LOGOUT_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/logout?redirect_uri=http%3A%2F%2Foutline.light.local%2F
+OIDC_LOGOUT_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/logout?redirect_uri=https%3A%2F%2Foutline.light.local%2F
 OIDC_DISABLE_REDIRECT=true
 
 OIDC_DISPLAY_NAME=Keycloak OpenID
