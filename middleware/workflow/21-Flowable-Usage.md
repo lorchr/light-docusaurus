@@ -1,6 +1,9 @@
 - [Flowable Offical](https://www.flowable.com/open-source)
 - [Spring Boot + Flowable 工作流引擎](https://blog.csdn.net/qq_39035773/article/details/125414301)
 - [Flowable 数据库表结构说明、Flowable 数据字典说明](https://www.cnblogs.com/phyger/p/14067201.html)
+- 分享牛Flowable文档汉化：https://github.com/qiudaoke/flowable-userguide
+- 猫七姑娘 flowable-6.6.0 运行官方 demo
+- 华格瑞沙 https://www.cnblogs.com/yangjiming/p/10938515.html
 
 想必大家再看这篇文章的时候已经对目前主流的 工作流引擎 有所了解了。目前主流的工作流开源框
 架也就 Activiti/Camunda/Flowable 这几个了，在我对这三大工作流引擎简单使用了解后，最后选择了

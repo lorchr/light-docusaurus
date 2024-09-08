@@ -1,16 +1,19 @@
 version: "3"
 
 services:
-  caddy:
-    image: caddy:2.8
-    container_name: web_caddy
-    hostname: caddy.web
+  bind:
+    image: sameersbn/bind:9.16.1-20200524
+    container_name: web_bind
+    hostname: bind.web
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.150
+        ipv4_address: 172.100.0.200
         aliases:
-          - caddy.web
+          - bind.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -22,6 +25,48 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    ports:
+      - 10000:10000/tcp
+      - 53:53/tcp
+      - 53:53/udp
+    expose:
+      - 10000
+      - 53
+    volumes:
+      - //d/docker/develop/web/dns/data:/data
+    environment:
+      TZ : 'Asia/Shanghai'
+      ROOT_PASSWORD: lightdns
+      WEBMIN_ENABLED: true      
+      WEBMIN_INIT_SSL_ENABLED: true
+    restart: unless-stopped
+  
+  caddy:
+    image: caddy:2.8
+    container_name: web_caddy
+    hostname: caddy.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.150
+        aliases:
+          - caddy.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     cap_add:
       - NET_ADMIN
     ports:
@@ -34,10 +79,10 @@ services:
       - 443
       - 2019
     volumes:
-      - //d/docker/web/caddy/cert/:/etc/x509/https/
-      - //d/docker/web/caddy/site:/srv
-      - //d/docker/web/caddy/conf:/config
-      - //d/docker/web/caddy/data:/data
+      - //d/docker/develop/web/caddy/cert/:/etc/x509/https/
+      - //d/docker/develop/web/caddy/site:/srv
+      - //d/docker/develop/web/caddy/conf:/config
+      - //d/docker/develop/web/caddy/data:/data
     entrypoint: /usr/bin/caddy run --adapter caddyfile --config /config/Caddyfile
     restart: unless-stopped
 
@@ -51,6 +96,9 @@ services:
         ipv4_address: 172.100.0.152
         aliases:
           - keycloak.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -62,6 +110,7 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 8080:8080
     expose:
@@ -107,6 +156,9 @@ services:
         ipv4_address: 172.100.0.154
         aliases:
           - minio.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -118,6 +170,7 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 9000:9000
       - 9001:9001
@@ -125,8 +178,8 @@ services:
       - 9000
       - 9001
     volumes:
-      - //d/docker/web/minio/data:/mnt/data
-      - //d/docker/web/minio/conf/config.env:/etc/minio/config.env
+      - //d/docker/develop/web/minio/data:/mnt/data
+      - //d/docker/develop/web/minio/conf/config.env:/etc/minio/config.env
     environment:
       MINIO_CONFIG_ENV_FILE: /etc/minio/config.env
     command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
@@ -144,6 +197,9 @@ services:
         ipv4_address: 172.100.0.158
         aliases:
           - outline.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -155,14 +211,17 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 3000:3000
     expose:
       - 3000
     volumes:
-      - //d/docker/web/outline/data:/var/lib/outline/data
+      - //d/docker/develop/web/outline/data:/var/lib/outline/data
+    environment:
+      NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: sh -c "yarn start --env production-ssl-disabled"
-    env_file: //d/docker/web/outline/outline.env
+    env_file: ./outline.env
     # depends_on:
     #   - postgres
     #   - redis

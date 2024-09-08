@@ -6,6 +6,7 @@
 - [Spring Authorization Server 0.3.0 实战（OAuth2.1协议和OpenID Connect 1.0协议）](https://zhuanlan.zhihu.com/p/538443308)
 - [Spring Authorization Server1.0 介绍与使用](https://blog.csdn.net/baidu_28068985/article/details/128431612)
 - [gc-oauth2](https://github.com/krycai/gc-framework/tree/master/gc-oauth2)
+- [SpringBoot 如何做到无感刷新token？](https://mp.weixin.qq.com/s/c-claYZx25s0BRS60zfEPQ)
 
 ## 一、Quick Start
 此配置中，Spring Security 及 Spring Authorization Server配置都在同一个配置类中

@@ -22,11 +22,11 @@ services:
     expose:
       - 3306
     volumes:
-      - //d/docker/basic/mysql/data:/var/lib/mysql
-      - //d/docker/basic/mysql/conf:/etc/mysql/conf.d
-      - //d/docker/basic/mysql/logs:/var/log/mysql
+      - //d/docker/develop/basic/mysql/data:/var/lib/mysql
+      - //d/docker/develop/basic/mysql/conf:/etc/mysql/conf.d
+      - //d/docker/develop/basic/mysql/logs:/var/log/mysql
       # Init scripts location
-      - //d/docker/basic/mysql/scripts:/docker-entrypoint-initdb.d
+      - //d/docker/develop/basic/mysql/scripts:/docker-entrypoint-initdb.d
     environment:
       MYSQL_USER: light
       MYSQL_PASSWORD: light
@@ -56,10 +56,10 @@ services:
     expose:
       - 5432
     volumes:
-      - //d/docker/basic/pgsql/data:/var/lib/postgresql/data
-      - //d/docker/basic/pgsql/conf/postgresql.conf:/etc/postgresql/postgresql.conf
+      - //d/docker/develop/basic/pgsql/data:/var/lib/postgresql/data
+      - //d/docker/develop/basic/pgsql/conf/postgresql.conf:/etc/postgresql/postgresql.conf
       # Init scripts location
-      - //d/docker/basic/pgsql/scripts:/docker-entrypoint-initdb.d
+      - //d/docker/develop/basic/pgsql/scripts:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: light
       POSTGRES_PASSWORD: light
@@ -88,7 +88,7 @@ services:
     expose:
       - 6379
     volumes:
-      - //d/docker/basic/redis/conf/redis.conf:/etc/redis/redis.conf
+      - //d/docker/develop/basic/redis/conf/redis.conf:/etc/redis/redis.conf
     restart: unless-stopped
 
 networks:

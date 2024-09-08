@@ -1,15 +1,141 @@
 
 ## 环境准备脚本
 
-### 1. Caddy配置
+### 1. 生成泛域名证书
+
+#### 1. 生成ROOT CA证书
+```bash
+# 创建证书目录：/root/cert，进入/root/cert 创建 ca.key，密码 123456
+openssl genrsa -des3 -out ca.key 2048
+
+# 使用生成的密钥(ca.key)来创建新的根SSL证书。并将其保存为 ca.pem，证书有效期为10年
+openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.pem
+
+# 可以替换为下面格式，不需要输入信息确认，记录CN即可
+# openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.pem -subj "/C=CN/ST=Hubei/L=Wuhan/O=Torch/OU=develop/CN=light"
+
+# 这一行是把 pem 转换成 crt 格式
+openssl x509 -outform der -in ca.pem -out ca.crt
+
+```
+
+输出结果
+```bash
+# 需要输入密码，下面生成 pem 会用到
+light@TP862:~/cert$ openssl genrsa -des3 -out ca.key 2048
+Enter PEM pass phrase:123456
+Verifying - Enter PEM pass phrase:123456
+
+# 提示填写的字段大多都可以直接回车过就行了，只要Common Name字段需要填写内容，这是生成跟证书后导入到系统的证书名称，我填的是light
+light@TP862:~/cert$ openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 -out ca.pem
+Enter pass phrase for ca.key:123456
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:CN
+State or Province Name (full name) [Some-State]:Hubei
+Locality Name (eg, city) []:Wuhan
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Torch
+Organizational Unit Name (eg, section) []:develop
+Common Name (e.g. server FQDN or YOUR name) []:light
+Email Address []:light@torch.local
+
+```
+
+#### 2. 生产域名证书
+
+```bash
+# 创建生成域名ssl证书的前置文件
+cat >> caddy.light.local.ext <<EOF
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage=digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName=@alt_names
+
+[alt_names]
+DNS.1 = caddy.light.local
+EOF
+
+# 生成域名ssl证书秘钥
+openssl req -new -sha256 -nodes -out caddy.light.local.csr -newkey rsa:2048 -keyout caddy.light.local.key
+
+# 可以替换为下面格式，不需要输入信息确认，记录CN即可
+# openssl req -new -sha256 -nodes -out  caddy.light.local.csr -newkey rsa:2048 -keyout  caddy.light.local.key -subj "/C=CN/ST=Hubei/L=Wuhan/O=Torch/OU=develop/CN=light"
+
+# 通过我们之前创建的根SSL证书 ca.pem, ca.key 颁发，创建出一个 *.light.local 的域名证书。输出是一个名为的证书文件 light.local.crt
+openssl x509 -req -in  caddy.light.local.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out  caddy.light.local.crt -days 3650 -sha256 -extfile caddy.light.local.ext
+
+```
+
+#### 3. 生产泛域名证书
+
+```bash
+# 创建生成域名ssl证书的前置文件
+cat >> light.local.ext <<EOF
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage=digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName=@alt_names
+
+[alt_names]
+DNS.1 = *.light.local
+EOF
+
+# 生成域名ssl证书秘钥
+openssl req -new -sha256 -nodes -out light.local.csr -newkey rsa:2048 -keyout light.local.key
+
+# 可以替换为下面格式，不需要输入信息确认，记录CN即可
+# openssl req -new -sha256 -nodes -out light.local.csr -newkey rsa:2048 -keyout light.local.key -subj "/C=CN/ST=Hubei/L=Wuhan/O=Torch/OU=develop/CN=light"
+
+# 通过我们之前创建的根SSL证书 ca.pem, ca.key 颁发，创建出一个 *.light.local 的域名证书。输出是一个名为的证书文件 light.local.crt
+openssl x509 -req -in light.local.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out light.local.crt -days 3650 -sha256 -extfile light.local.ext
+
+```
+
+输出结果
+```bash
+light@TP862:~/cert$ openssl req -new -sha256 -nodes -out light.local.csr -newkey rsa:2048 -keyout light.local.key
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [AU]:CN
+State or Province Name (full name) [Some-State]:Hubei
+Locality Name (eg, city) []:Wuhan
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:Torch
+Organizational Unit Name (eg, section) []:develop
+Common Name (e.g. server FQDN or YOUR name) []:light
+Email Address []:light@torch.local
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:123456
+An optional company name []:light
+
+
+light@TP862:~/cert$ openssl x509 -req -in light.local.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out light.local.crt -days 3650 -sha256 -extfile light.local.ext
+Certificate request self-signature ok
+subject=C = CN, ST = Hubei, L = Wuhan, O = Torch, OU = develop, CN = light, emailAddress = light@torch.local
+Enter pass phrase for ca.key:123456
+```
+
+### 2. Caddy配置
 - [Caddy](https://caddyserver.com/)
 - [Caddy Github](https://github.com/caddyserver/caddy)
 
-生成的证书私钥需要放到目录 `D:/docker/web/caddy/cert`
+生成的证书私钥需要放到目录 `D:/docker/develop/web/caddy/cert`
 ```bash
 # ==================== Caddy ====================
 # 创建文件夹
-mkdir -p D:/docker/web/caddy/{conf,data,logs,site,cert}
+mkdir -p D:/docker/develop/web/caddy/{conf,data,logs,site,cert}
 
 # 生成私钥，需要输入密码 1234
 openssl genrsa -des3 -out caddy.pass.key 2048
@@ -45,13 +171,15 @@ openssl x509 -req -days 3650 -in outline.csr -signkey outline.key -out outline.c
 
 ```
 
-Caddy 代理配置文件 `D:/docker/web/caddy/conf/Caddyfile`
+Caddy 代理配置文件 `D:/docker/develop/web/caddy/conf/Caddyfile`
 ```conf
+cat >> D:/docker/develop/web/caddy/conf/Caddyfile << EOF
+
 # Caddy配置
 caddy.light.local {
     encode zstd gzip
 
-    tls /etc/x509/https/caddy.crt /etc/x509/https/caddy.key
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
 
     # 反代minio的9001端口
     reverse_proxy /minio/* minio.web:9001 {
@@ -83,7 +211,7 @@ caddy.light.local {
 minio.light.local {
     encode zstd gzip
 
-    tls /etc/x509/https/minio.crt /etc/x509/https/minio.key
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
 
     # 反代minio的9001端口
     reverse_proxy minio.web:9001 {
@@ -98,7 +226,7 @@ minio.light.local {
 keycloak.light.local {
     encode zstd gzip
 
-    tls /etc/x509/https/keycloak.crt /etc/x509/https/keycloak.key
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
 
     # 反代keycloak的8080端口
     reverse_proxy keycloak.web:8080 {
@@ -114,7 +242,7 @@ keycloak.light.local {
 outline.light.local {
     encode zstd gzip
 
-    tls /etc/x509/https/outline.crt /etc/x509/https/outline.key
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
 
     header / {
         X-Content-Type-Options              nosniff
@@ -134,19 +262,21 @@ outline.light.local {
 
 }
 
+EOF
+
 ```
 
-### 2. Minio配置
+### 3. Minio配置
 
 #### 使用本地认证的配置
 ```bash
 # ==================== Minio ==================== 
 # 创建文件夹
-mkdir -p D:/docker/web/minio/{conf,data,logs}
+mkdir -p D:/docker/develop/web/minio/{conf,data,logs}
 
 # 获取默认配置文件
 # 见 https://min.io/docs/minio/container/operations/install-deploy-manage/deploy-minio-single-node-single-drive.html#id4
-cat >> D:/docker/web/minio/conf/config.env << EOF
+cat >> D:/docker/develop/web/minio/conf/config.env << EOF
 MINIO_ROOT_USER=miniouser
 MINIO_ROOT_PASSWORD=miniopassword
 
@@ -160,7 +290,7 @@ EOF
 
 #### 使用Keycloak认证的配置
 ```bash
-cat >> D:/docker/web/minio/conf/config.env << EOF
+cat >> D:/docker/develop/web/minio/conf/config.env << EOF
 MINIO_VOLUMES="/mnt/data"
 # MINIO_SERVER_URL=https://minio.light.local:9000
 
@@ -175,73 +305,37 @@ EOF
 
 ```
 
-### 3. Keycloak配置
+### 4. Keycloak配置
 
 ```bash
 # ==================== Keycloak ==================== 
 # 创建文件夹
-mkdir -p D:/docker/web/keycloak/{conf,data,logs}
+mkdir -p D:/docker/develop/web/keycloak/{conf,data,logs}
 
 # ==================== Keycloak ==================== 
 
 ```
 
-#### 配置Minio认证
-
-1. Root URL: 
-   - https://minio.light.local/
-2. Home URL: 
-   - https://minio.light.local
-3. Valid redirect URIs: 
-   - https://minio.light.local/*
-4. Valid post logout redirect URIs 
-   - https://minio.light.local/
-5. Web origins 
-   - https://minio.light.local
-6. Admin URL: 
-   - https://minio.light.local
-
-#### 配置Outline认证
-
-1. Root URL: 
-   - https://outline.light.local/
-2. Home URL: 
-   - https://outline.light.local
-3. Valid redirect URIs: 
-   - https://outline.light.local/*
-   - https://outline.light.local/auth/oidc
-   - https://outline.light.local/auth/oidc.callback
-4. Valid post logout redirect URIs 
-   - https://outline.light.local/
-5. Web origins 
-   - https://outline.light.local
-6. Admin URL: 
-   - https://outline.light.local
-
-### 4. Gitlab配置
+### 5. Gitlab配置
 
 ```bash
 # ==================== Gitlab ==================== 
 # 创建文件夹
-mkdir -p D:/docker/web/gitlab/{conf,data,logs}
+mkdir -p D:/docker/develop/web/gitlab/{conf,data,logs}
 
 # ==================== Gitlab ==================== 
 
 ```
 
-### 5. Outline配置
+### 6. Outline配置
 
 ```bash
 # ==================== Outline ==================== 
 # 创建文件夹
-mkdir -p D:/docker/web/outline/{conf,data,logs,data/uploads}
+mkdir -p D:/docker/develop/web/outline/{conf,data,logs,data/uploads}
 
-# ==================== Outline ==================== 
-
-```
-
-outline环境变量配置 `D:/docker/web/outline/outline.env`
-```conf
+# 初始化配置文件
+cat >> D:/docker/develop/web/outline/outline.env << 'EOF'
 NODE_ENV=production
 
 # Generate a hex-encoded 32-byte random key. You should use `openssl rand -hex 32`
@@ -344,6 +438,117 @@ SMTP_FROM_EMAIL=
 SMTP_REPLY_EMAIL=
 SMTP_SECURE=
 
+EOF
+
+# ==================== Outline ==================== 
+
+```
+
+outline环境变量配置 `D:/docker/develop/web/outline/outline.env`
+```conf
+cat >> D:/docker/develop/web/outline/outline.env
+NODE_ENV=production
+
+# Generate a hex-encoded 32-byte random key. You should use `openssl rand -hex 32`
+# in your terminal to generate a random value.
+SECRET_KEY=00b5677d3ce6c106f3d95ec830f9530f9014a2620d16fe60ed867a30c4964c5e
+
+# Generate a unique random key. The format is not important but you could still use
+# `openssl rand -hex 32` in your terminal to produce this.
+UTILS_SECRET=4b8235fdc01295571bd0946abb5eaf7c131f1a652386c98b658bbc4b1b4e3540
+
+# For production point these at your databases, in development the default
+# should work out of the box.
+DATABASE_URL=postgres://outline:outline@pgsql.basic:5432/outline
+# DATABASE_CONNECTION_POOL_MIN=
+# DATABASE_CONNECTION_POOL_MAX=
+# Uncomment this to disable SSL for connecting to Postgres
+PGSSLMODE=disable
+
+# For redis you can either specify an ioredis compatible url like this
+REDIS_URL=redis://redis.basic:6379
+# or alternatively, if you would like to provide additional connection options,
+# use a base64 encoded JSON connection option object. Refer to the ioredis documentation
+# for a list of available options.
+# Example: Use Redis Sentinel for high availability
+# {"sentinels":[{"host":"sentinel-0","port":26379},{"host":"sentinel-1","port":26379}],"name":"mymaster"}
+# REDIS_URL=ioredis://eyJzZW50aW5lbHMiOlt7Imhvc3QiOiJzZW50aW5lbC0wIiwicG9ydCI6MjYzNzl9LHsiaG9zdCI6InNlbnRpbmVsLTEiLCJwb3J0IjoyNjM3OX1dLCJuYW1lIjoibXltYXN0ZXIifQ==
+
+# URL should point to the fully qualified, publicly accessible URL. If using a
+# proxy the port in URL and PORT may be different.
+URL=http://outline.light.local
+PORT=3000
+
+LANGUAGE_CODE=en-us
+TIME_ZONE=Asia/Shanghai
+
+# See translate.getoutline.com for a list of available language codes and their
+# percentage translated.
+DEFAULT_LANGUAGE=zh_CN
+
+# See [documentation](docs/SERVICES.md) on running a separate collaboration
+# server, for normal operation this does not need to be set.
+COLLABORATION_URL=
+
+# Specify what storage system to use. Possible value is one of "s3" or "local".
+# For "local", the avatar images and document attachments will be saved on local disk. 
+FILE_STORAGE=local
+
+# If "local" is configured for FILE_STORAGE above, then this sets the parent directory under
+# which all attachments/images go. Make sure that the process has permissions to create
+# this path and also to write files to it.
+FILE_STORAGE_LOCAL_ROOT_DIR=/var/lib/outline/data
+
+# Maximum allowed size for the uploaded attachment.
+FILE_STORAGE_UPLOAD_MAX_SIZE=262144000
+
+# Override the maximum size of document imports, generally this should be lower
+# than the document attachment maximum size.
+FILE_STORAGE_IMPORT_MAX_SIZE=
+
+# Override the maximum size of workspace imports, these can be especially large
+# and the files are temporary being automatically deleted after a period of time.
+FILE_STORAGE_WORKSPACE_IMPORT_MAX_SIZE=
+
+#ALLOWED_DOMAINS=
+FORCE_HTTPS=false
+
+# –––––––––––––– AUTHENTICATION ––––––––––––––
+
+# Third party signin credentials, at least ONE OF EITHER Google, Slack,
+# or Microsoft is required for a working installation or you'll have no sign-in
+# options.
+
+# To configure Google auth, you'll need to create an OAuth Client ID at
+# => https://console.cloud.google.com/apis/credentials
+#
+# When configuring the Client ID, add an Authorized redirect URI:
+# https://<URL>/auth/google.callback
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+SLACK_CLIENT_ID=
+SLACK_CLIENT_SECRET=
+
+OIDC_CLIENT_ID=Outline
+OIDC_CLIENT_SECRET=twKvRwFbaocqchHv2QeEyUhJZ9edyver
+OIDC_AUTH_URI=https://keycloak.light.local/realms/master
+OIDC_TOKEN_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/token
+OIDC_USERINFO_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/userinfo
+OIDC_LOGOUT_URI=https://keycloak.light.local/realms/master/protocol/openid-connect/logout?redirect_uri=https%3A%2F%2Foutline.light.local%2F
+OIDC_DISABLE_REDIRECT=true
+
+OIDC_DISPLAY_NAME=Keycloak OpenID
+OIDC_USERNAME_CLAIM=preferred_username
+OIDC_SCOPES=openid profile email
+
+# smtp information
+SMTP_HOST=
+SMTP_PORT=
+SMTP_FROM_EMAIL=
+SMTP_REPLY_EMAIL=
+SMTP_SECURE=
+
 ```
 
 **注意**:
@@ -356,16 +561,19 @@ SMTP_SECURE=
 version: "3"
 
 services:
-  caddy:
-    image: caddy:2.8
-    container_name: web_caddy
-    hostname: caddy.web
+  bind:
+    image: sameersbn/bind:9.16.1-20200524
+    container_name: web_bind
+    hostname: bind.web
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.150
+        ipv4_address: 172.100.0.200
         aliases:
-          - caddy.web
+          - bind.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -377,6 +585,48 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    ports:
+      - 10000:10000/tcp
+      - 53:53/tcp
+      - 53:53/udp
+    expose:
+      - 10000
+      - 53
+    volumes:
+      - //d/docker/develop/web/dns/data:/data
+    environment:
+      TZ : 'Asia/Shanghai'
+      ROOT_PASSWORD: lightdns
+      WEBMIN_ENABLED: true      
+      WEBMIN_INIT_SSL_ENABLED: true
+    restart: unless-stopped
+  
+  caddy:
+    image: caddy:2.8
+    container_name: web_caddy
+    hostname: caddy.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.150
+        aliases:
+          - caddy.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     cap_add:
       - NET_ADMIN
     ports:
@@ -389,10 +639,10 @@ services:
       - 443
       - 2019
     volumes:
-      - //d/docker/web/caddy/cert/:/etc/x509/https/
-      - //d/docker/web/caddy/site:/srv
-      - //d/docker/web/caddy/conf:/config
-      - //d/docker/web/caddy/data:/data
+      - //d/docker/develop/web/caddy/cert/:/etc/x509/https/
+      - //d/docker/develop/web/caddy/site:/srv
+      - //d/docker/develop/web/caddy/conf:/config
+      - //d/docker/develop/web/caddy/data:/data
     entrypoint: /usr/bin/caddy run --adapter caddyfile --config /config/Caddyfile
     restart: unless-stopped
 
@@ -406,6 +656,9 @@ services:
         ipv4_address: 172.100.0.152
         aliases:
           - keycloak.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -417,6 +670,7 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 8080:8080
     expose:
@@ -462,6 +716,9 @@ services:
         ipv4_address: 172.100.0.154
         aliases:
           - minio.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -473,6 +730,7 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 9000:9000
       - 9001:9001
@@ -480,8 +738,8 @@ services:
       - 9000
       - 9001
     volumes:
-      - //d/docker/web/minio/data:/mnt/data
-      - //d/docker/web/minio/conf/config.env:/etc/minio/config.env
+      - //d/docker/develop/web/minio/data:/mnt/data
+      - //d/docker/develop/web/minio/conf/config.env:/etc/minio/config.env
     environment:
       MINIO_CONFIG_ENV_FILE: /etc/minio/config.env
     command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
@@ -499,6 +757,9 @@ services:
         ipv4_address: 172.100.0.158
         aliases:
           - outline.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
     extra_hosts:
       - mysql.basic:172.100.0.101
       - pgsql.basic:172.100.0.106
@@ -510,12 +771,13 @@ services:
       - minio.web:172.100.0.154
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
     ports:
       - 3000:3000
     expose:
       - 3000
     volumes:
-      - //d/docker/web/outline/data:/var/lib/outline/data
+      - //d/docker/develop/web/outline/data:/var/lib/outline/data
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: sh -c "yarn start --env production-ssl-disabled"
@@ -546,3 +808,64 @@ docker compose -f web.yaml -p web up -d
 docker compose -f web.yaml -p web down
 
 ```
+
+## 启动后配置
+
+### 1. Bind DNS配置
+1. 点击 Webmin - Change Language and theme，更换语言为中文
+2. 点击 Servers - Bind DNS Server - 现有 DNS 区域 - 创建主区域
+   1. 域名 / 网络 light.local
+   2. 主服务器	  localhost
+   3. Email 地址  light@light.local
+3. 点击 Servers - Bind DNS Server - 现有 DNS 区域 - light.local - 地址
+   1. 名称  light.local
+   2. 地址  192.168.125.3 物理机网卡的地址
+   3. 名称  *.light.local
+   4. 地址  192.168.125.3 物理机网卡的地址
+4. 修改物理机的DNS地址
+   1. 192.168.125.3
+   2. 114.114.114.114
+5. 检查配置是否成功 ping light.local
+
+
+### 2. KeyCloak配置
+
+#### 配置Minio认证
+
+Client ID: Minio
+Client authentication: ON
+Client Secret: QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy
+
+1. Root URL: 
+   - https://minio.light.local/
+2. Home URL: 
+   - https://minio.light.local
+3. Valid redirect URIs: 
+   - https://minio.light.local/*
+4. Valid post logout redirect URIs 
+   - https://minio.light.local/
+5. Web origins 
+   - https://minio.light.local
+6. Admin URL: 
+   - https://minio.light.local
+
+#### 配置Outline认证
+
+Client ID: Outline
+Client authentication: ON
+Client Secret: twKvRwFbaocqchHv2QeEyUhJZ9edyver
+
+1. Root URL: 
+   - https://outline.light.local/
+2. Home URL: 
+   - https://outline.light.local
+3. Valid redirect URIs: 
+   - https://outline.light.local/*
+   - https://outline.light.local/auth/oidc
+   - https://outline.light.local/auth/oidc.callback
+4. Valid post logout redirect URIs 
+   - https://outline.light.local/
+5. Web origins 
+   - https://outline.light.local
+6. Admin URL: 
+   - https://outline.light.local
