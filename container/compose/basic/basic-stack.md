@@ -124,6 +124,25 @@ GRANT USAGE,CREATE ON SCHEMA public TO gitlab;
 GRANT ALL ON SCHEMA public TO gitlab;
 -- 授予创建数据库权限
 ALTER ROLE gitlab CREATEDB;
+
+-- 创建用户
+CREATE USER sonar WITH PASSWORD 'sonar';
+-- 创建数据库
+CREATE DATABASE sonar
+	WITH OWNER = sonar
+	ENCODING = 'UTF8'
+	TABLESPACE = pg_default
+	LC_COLLATE = 'en_US.UTF-8'
+	LC_CTYPE = 'en_US.UTF-8'
+	CONNECTION LIMIT = -1
+	TEMPLATE template0;
+-- 设置数据库备注
+COMMENT ON DATABASE sonar IS 'SonarQube database';
+-- 将用户权限赋予数据库
+GRANT CONNECT, TEMPORARY ON DATABASE sonar TO public;
+GRANT ALL ON DATABASE sonar TO sonar;
+GRANT ALL ON DATABASE sonar TO light;
+
 EOF
 
 # ==================== Pgsql ==================== 

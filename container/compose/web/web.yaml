@@ -111,8 +111,8 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     expose:
       - 8080
     environment:
@@ -171,9 +171,9 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 9000:9000
-      - 9001:9001
+    # ports:
+    #   - 9000:9000
+    #   - 9001:9001
     expose:
       - 9000
       - 9001
@@ -185,7 +185,188 @@ services:
     command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
     restart: unless-stopped
 
-  # gitlab:
+  gitlab:
+    image: gitlab/gitlab-ce:17.1.6-ce.0
+    privileged: true
+    container_name: web_gitlab
+    hostname: gitlab.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.156
+        aliases:
+          - gitlab.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 80:80 # 注意宿主机和容器内部的端口要一致，否则external_url无法访问
+    #   - 443:443
+    #   - 22:22
+    expose:
+      - 80
+      - 443
+      - 22
+    environment:
+      TZ: Asia/Shanghai
+      GITLAB_ROOT_PASSWORD: nJAfvWGS4q1Tw09h=
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        ### Configure SSL
+        ### https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
+        external_url 'http://gitlab.light.local'
+        # registry_external_url 'http://gitlab.light.local'
+        # letsencrypt['enable'] = false
+        # nginx['redirect_http_to_https'] = true
+        # nginx['ssl_certificate'] = "/etc/gitlab/ssl/light.local.crt"
+        # nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/light.local.key"
+        # nginx['ssl_trusted_certificate'] = "/etc/gitlab/ssl/ca.crt"
+        
+        ### GitLab database settings
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/database.html
+        ###! **Only needed if you use an external database.**
+        postgresql['enable'] = false
+        gitlab_rails['db_adapter'] = "postgresql"
+        gitlab_rails['db_encoding'] = "utf-8"
+        # gitlab_rails['db_collation'] = nil
+        gitlab_rails['db_database'] = "gitlab"
+        gitlab_rails['db_username'] = "gitlab"
+        gitlab_rails['db_password'] = "gitlab"
+        gitlab_rails['db_host'] = "pgsql.basic"
+        gitlab_rails['db_port'] = 5432
+        gitlab_rails['db_pool'] = 100
+
+        ### Configuring Redis
+        ### https://docs.gitlab.com/omnibus/settings/redis.html
+        # Disable the bundled Redis
+        redis['enable'] = false
+        # Redis via TCP
+        gitlab_rails['redis_host'] = 'redis.basic'
+        gitlab_rails['redis_port'] = 6379
+        # Password to Authenticate to alternate local Redis if required
+        # gitlab_rails['redis_password'] = ''
+        
+        ### Configure Authenticaiton
+        ### Use keyCloak
+        ### https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-keycloak
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "openid_connect", # do not change this parameter
+            label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
+            args: {
+              name: "openid_connect",
+              scope: ["openid", "profile", "email"],
+              response_type: "code",
+              issuer:  "https://keycloak.light.local/realms/master",
+              client_auth_method: "query",
+              discovery: true,
+              uid_field: "preferred_username",
+              pkce: true,
+              client_options: {
+                identifier: "Gitlab",
+                secret: "5e1b5P0QhYHcWh2gyXutXalrTyEQGzrG",
+                redirect_uri: "https://gitlab.light.local/users/auth/openid_connect/callback"
+              }
+            }
+          }
+        ]
+    volumes:
+      - //d/docker/develop/web/gitlab/conf:/etc/gitlab
+      - //d/docker/develop/web/gitlab/logs:/var/log/gitlab
+      - //d/docker/develop/web/gitlab/data:/var/opt/gitlab
+    shm_size: '256m'
+    restart: unless-stopped
+    # depends_on:
+    #   - postgres
+
+  jenkins:
+    image: jenkins/jenkins:jdk21
+    container_name: web_jenkins
+    hostname: jenkins.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.160
+        aliases:
+          - jenkins.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 8080:8080
+    #   - 5000:5000
+    expose:
+      - 8080
+      - 5000
+    user: root
+    volumes:
+      - //d/docker/develop/web/jenkins/data/:/var/jenkins_home
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: web_sonarqube
+    hostname: sonarqube.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.162
+        aliases:
+          - sonarqube.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 9000:9000
+    expose:
+      - 9000
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://pgsql.basic:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - //d/docker/develop/web/sonarqube/conf:/opt/sonarqube/conf
+      - //d/docker/develop/web/sonarqube/data:/opt/sonarqube/data
+      - //d/docker/develop/web/sonarqube/extensions:/opt/sonarqube/extensions
+    restart: no
+    # depends_on:
+    #   - postgres
 
   outline:
     image: docker.getoutline.com/outlinewiki/outline:latest
@@ -212,15 +393,15 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     expose:
       - 3000
     volumes:
       - //d/docker/develop/web/outline/data:/var/lib/outline/data
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: sh -c "yarn start --env production-ssl-disabled"
+    command: sh -c "sleep 60 && yarn start --env production-ssl-disabled"
     env_file: ./outline.env
     # depends_on:
     #   - postgres

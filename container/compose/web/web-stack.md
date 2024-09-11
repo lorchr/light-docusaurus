@@ -69,6 +69,25 @@ openssl req -new -sha256 -nodes -out caddy.light.local.csr -newkey rsa:2048 -key
 # 通过我们之前创建的根SSL证书 ca.pem, ca.key 颁发，创建出一个 *.light.local 的域名证书。输出是一个名为的证书文件 light.local.crt
 openssl x509 -req -in  caddy.light.local.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out  caddy.light.local.crt -days 3650 -sha256 -extfile caddy.light.local.ext
 
+
+# 创建生成域名ssl证书的前置文件
+cat >> keycloak.light.local.ext <<EOF
+authorityKeyIdentifier=keyid,issuer
+basicConstraints=CA:FALSE
+keyUsage=digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+subjectAltName=@alt_names
+
+[alt_names]
+DNS.1 = keycloak.light.local
+EOF
+
+# 生成域名ssl证书秘钥
+# 可以替换为下面格式，不需要输入信息确认，记录CN即可
+openssl req -new -sha256 -nodes -out  keycloak.light.local.csr -newkey rsa:2048 -keyout  keycloak.light.local.key -subj "/C=CN/ST=Hubei/L=Wuhan/O=Torch/OU=develop/CN=light"
+
+# 通过我们之前创建的根SSL证书 ca.pem, ca.key 颁发，创建出一个 *.light.local 的域名证书。输出是一个名为的证书文件 light.local.crt
+openssl x509 -req -in  keycloak.light.local.csr -CA ca.pem -CAkey ca.key -CAcreateserial -out  keycloak.light.local.crt -days 3650 -sha256 -extfile keycloak.light.local.ext
+
 ```
 
 #### 3. 生产泛域名证书
@@ -237,6 +256,21 @@ keycloak.light.local {
     }
 }
 
+# Gitlab配置
+gitlab.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
+
+    # 反代Gitlab的80 443端口
+    # reverse_proxy https://gitlab.web {
+    reverse_proxy gitlab.web {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+}
 
 # Outline配置
 outline.light.local {
@@ -323,7 +357,32 @@ mkdir -p D:/docker/develop/web/keycloak/{conf,data,logs}
 # 创建文件夹
 mkdir -p D:/docker/develop/web/gitlab/{conf,data,logs}
 
+# 查看初始密码
+cat /etc/gitlab/initial_root_password
+
 # ==================== Gitlab ==================== 
+
+```
+
+### 5. Jenkins配置
+
+```bash
+# ==================== Jenkins ==================== 
+# 创建文件夹
+mkdir -p D:/docker/develop/web/jenkins/{conf,data,logs}
+
+# ==================== Jenkins ==================== 
+
+```
+
+### 5. SonarQube配置
+
+```bash
+# ==================== SonarQube ==================== 
+# 创建文件夹
+mkdir -p D:/docker/develop/web/sonarqube/{conf,data,logs,extensions}
+
+# ==================== SonarQube ==================== 
 
 ```
 
@@ -557,6 +616,24 @@ SMTP_SECURE=
 
 ## Docker Compose定义脚本
 
+| 服务      | 端口            | 暴露 | 功能     |
+| --------- | --------------- | ---- | -------- |
+| Bind      | 10000/tcp       | 是   | 管理     |
+| Bind      | 53/tcp 53/udp   | 是   | DNS      |
+| Caddy     | 80/tcp          | 是   | HTTP     |
+| Caddy     | 443/tcp 443/udp | 是   | HTTPS    |
+| Caddy     | 2019/tcp        | -    | 管理     |
+| KeyCloak  | 8080/tcp        | -    | 应用入口 |
+| Minio     | 9000/tcp        | -    | 管理     |
+| Minio     | 9001/tcp        | -    | 预览链接 |
+| Outline   | 3000/tcp        | -    | 应用入口 |
+| Gitlab    | 30080/tcp       | -    | 应用入口 |
+| Gitlab    | 443/tcp         | -    | HTTPS    |
+| Gitlab    | 22/tcp          | -    | SSH      |
+| Jenkins   | 8080/tcp        | -    | 应用入口 |
+| Jenkins   | 5000/tcp        | -    | 应用入口 |
+| SonarQube | 9000/tcp        | -    | 应用入口 |
+
 ```yaml
 version: "3"
 
@@ -671,8 +748,8 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     expose:
       - 8080
     environment:
@@ -731,9 +808,9 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 9000:9000
-      - 9001:9001
+    # ports:
+    #   - 9000:9000
+    #   - 9001:9001
     expose:
       - 9000
       - 9001
@@ -745,7 +822,188 @@ services:
     command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
     restart: unless-stopped
 
-  # gitlab:
+  gitlab:
+    image: gitlab/gitlab-ce:17.1.6-ce.0
+    privileged: true
+    container_name: web_gitlab
+    hostname: gitlab.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.156
+        aliases:
+          - gitlab.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 80:80 # 注意宿主机和容器内部的端口要一致，否则external_url无法访问
+    #   - 443:443
+    #   - 22:22
+    expose:
+      - 80
+      - 443
+      - 22
+    environment:
+      TZ: Asia/Shanghai
+      GITLAB_ROOT_PASSWORD: nJAfvWGS4q1Tw09h=
+      GITLAB_OMNIBUS_CONFIG: |
+        gitlab_rails['time_zone'] = 'Asia/Shanghai'
+        ### Configure SSL
+        ### https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
+        external_url 'http://gitlab.light.local'
+        # registry_external_url 'http://gitlab.light.local'
+        # letsencrypt['enable'] = false
+        # nginx['redirect_http_to_https'] = true
+        # nginx['ssl_certificate'] = "/etc/gitlab/ssl/light.local.crt"
+        # nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/light.local.key"
+        # nginx['ssl_trusted_certificate'] = "/etc/gitlab/ssl/ca.crt"
+        
+        ### GitLab database settings
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/database.html
+        ###! **Only needed if you use an external database.**
+        postgresql['enable'] = false
+        gitlab_rails['db_adapter'] = "postgresql"
+        gitlab_rails['db_encoding'] = "utf-8"
+        # gitlab_rails['db_collation'] = nil
+        gitlab_rails['db_database'] = "gitlab"
+        gitlab_rails['db_username'] = "gitlab"
+        gitlab_rails['db_password'] = "gitlab"
+        gitlab_rails['db_host'] = "pgsql.basic"
+        gitlab_rails['db_port'] = 5432
+        gitlab_rails['db_pool'] = 100
+
+        ### Configuring Redis
+        ### https://docs.gitlab.com/omnibus/settings/redis.html
+        # Disable the bundled Redis
+        redis['enable'] = false
+        # Redis via TCP
+        gitlab_rails['redis_host'] = 'redis.basic'
+        gitlab_rails['redis_port'] = 6379
+        # Password to Authenticate to alternate local Redis if required
+        # gitlab_rails['redis_password'] = ''
+        
+        ### Configure Authenticaiton
+        ### Use keyCloak
+        ### https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-keycloak
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "openid_connect", # do not change this parameter
+            label: "Keycloak", # optional label for login button, defaults to "Openid Connect"
+            args: {
+              name: "openid_connect",
+              scope: ["openid", "profile", "email"],
+              response_type: "code",
+              issuer:  "https://keycloak.light.local/realms/master",
+              client_auth_method: "query",
+              discovery: true,
+              uid_field: "preferred_username",
+              pkce: true,
+              client_options: {
+                identifier: "Gitlab",
+                secret: "5e1b5P0QhYHcWh2gyXutXalrTyEQGzrG",
+                redirect_uri: "https://gitlab.light.local/users/auth/openid_connect/callback"
+              }
+            }
+          }
+        ]
+    volumes:
+      - //d/docker/develop/web/gitlab/conf:/etc/gitlab
+      - //d/docker/develop/web/gitlab/logs:/var/log/gitlab
+      - //d/docker/develop/web/gitlab/data:/var/opt/gitlab
+    shm_size: '256m'
+    restart: unless-stopped
+    # depends_on:
+    #   - postgres
+
+  jenkins:
+    image: jenkins/jenkins:jdk21
+    container_name: web_jenkins
+    hostname: jenkins.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.160
+        aliases:
+          - jenkins.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 8080:8080
+    #   - 5000:5000
+    expose:
+      - 8080
+      - 5000
+    user: root
+    volumes:
+      - //d/docker/develop/web/jenkins/data/:/var/jenkins_home
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:lts
+    container_name: web_sonarqube
+    hostname: sonarqube.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.162
+        aliases:
+          - sonarqube.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - caddy.web:172.100.0.150
+      - keycloak.web:172.100.0.152
+      - minio.web:172.100.0.154
+      - gitlab.web:172.100.0.156
+      - outline.web:172.100.0.158
+      - bind.web:172.100.0.200
+    # ports:
+    #   - 9000:9000
+    expose:
+      - 9000
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://pgsql.basic:5432/sonar
+      - SONAR_JDBC_USERNAME=sonar
+      - SONAR_JDBC_PASSWORD=sonar
+    volumes:
+      - //d/docker/develop/web/sonarqube/conf:/opt/sonarqube/conf
+      - //d/docker/develop/web/sonarqube/data:/opt/sonarqube/data
+      - //d/docker/develop/web/sonarqube/extensions:/opt/sonarqube/extensions
+    restart: no
+    # depends_on:
+    #   - postgres
 
   outline:
     image: docker.getoutline.com/outlinewiki/outline:latest
@@ -772,15 +1030,15 @@ services:
       - gitlab.web:172.100.0.156
       - outline.web:172.100.0.158
       - bind.web:172.100.0.200
-    ports:
-      - 3000:3000
+    # ports:
+    #   - 3000:3000
     expose:
       - 3000
     volumes:
       - //d/docker/develop/web/outline/data:/var/lib/outline/data
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
-    command: sh -c "yarn start --env production-ssl-disabled"
+    command: sh -c "sleep 60 && yarn start --env production-ssl-disabled"
     env_file: ./outline.env
     # depends_on:
     #   - postgres
@@ -849,6 +1107,27 @@ Client Secret: QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy
 6. Admin URL: 
    - https://minio.light.local
 
+#### 配置Gitlab认证
+
+Client ID: Gitlab
+Client authentication: ON
+Client Secret: 5e1b5P0QhYHcWh2gyXutXalrTyEQGzrG
+
+1. Root URL: 
+   - https://gitlab.light.local/
+2. Home URL: 
+   - https://gitlab.light.local
+3. Valid redirect URIs: 
+   - https://gitlab.light.local/*
+   - https://gitlab.light.local/users/auth/openid_connect/callback
+4. Valid post logout redirect URIs 
+   - https://gitlab.light.local/
+5. Web origins 
+   - https://gitlab.light.local
+6. Admin URL: 
+   - https://gitlab.light.local
+
+
 #### 配置Outline认证
 
 Client ID: Outline
@@ -869,3 +1148,79 @@ Client Secret: twKvRwFbaocqchHv2QeEyUhJZ9edyver
    - https://outline.light.local
 6. Admin URL: 
    - https://outline.light.local
+
+### 3. Gitlab配置
+
+#### SSL CA证书配置
+- https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
+- https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-keycloak
+
+集成KeyCloak认证必须使用HTTPS，但自签名的证书 Gitlab 无法识别，需要将CA证书安装到 Gitlab 容器
+
+1. 将预先生成的CA证书、KeyCloak证书放到，配置目录 `D:/docker/develop/web/gitlab/conf`
+2. 将CA证书复制到 `/etc/gitlab/ssl/trusted-certs` `/usr/local/share/ca-certificates/` `/opt/gitlab/embedded/ssl/certs`
+
+```bash
+# 【无效】 复制 ca.crt 到信任证书目录
+cp /etc/gitlab/ssl/ca.crt /etc/gitlab/trusted-certs/ca.crt
+
+# 【有效】 复制 ca.pem 到信任证书目录，注意： 目标文件名称必须为 cacert.pem
+cat /etc/gitlab/ssl/ca.pem >> /opt/gitlab/embedded/ssl/certs/cacert.pem
+
+# 【无效】 复制 ca.pem 到待安装证书目录
+cp /etc/gitlab/ssl/ca.pem /usr/local/share/ca-certificates/rootCA.crt
+
+```
+
+3. 安装CA证书
+
+```bash
+# 查看已安装CA证书
+ll /etc/ssl/certs/
+
+# 需要先安装 ca-certificates
+# apt install ca-certificates
+
+update-ca-certificates
+
+# 查看已安装CA证书
+cat /etc/ssl/certs/ca-certificates.crt
+
+```
+
+4. 测试结果
+
+```bash
+# 查看证书
+openssl x509 -in /usr/local/share/ca-certificates/ca.crt -text -noout
+
+# 测试
+curl -v -I -H GET https://jd.com
+curl -v -I -H GET https://keycloak.light.local
+
+```
+   - [Solution] https://www.cnblogs.com/bfmq/p/15917975.html
+   - [Solution] https://gitlab.com/gitlab-org/gitlab/-/issues/344077
+   - https://gitlab.com/gitlab-org/gitlab/-/issues/196193
+   - https://docs.gitlab.com/omnibus/settings/ssl.html#other-certificate-authorities
+   - https://forum.gitlab.com/t/500-error-after-keycloak-login-certificate-verify-failed-unable-to-get-local-issuer-certificate/49065
+   - https://forum.gitlab.com/t/openssl-sslerror-ssl-connect-returned-1-errno-0-state-error-certificate-verify-failed-unable-to-get-local-issuer-certificate/48845
+
+5. 删除CA证书
+
+```bash
+rm /usr/local/share/ca-certificates/ca.crt
+
+update-ca-certificates --fresh
+
+```
+## 常见问题
+1. Outline 登录失败
+
+   - 可以检查是否本机开启了代理，使用 `apt update` 不报错 `connecting to 127.0.0.1:4780` 字样即可
+
+2. Gitlab Root用户创建失败（可以在数据库查看users表）
+
+   - 一般是密码包含不识别的特殊字符，建议使用 数字 大小写字母 = 等符号，不要使用@ # & $等符号
+
+

@@ -60,6 +60,36 @@ keycloak.light.local {
     }
 }
 
+# Gitlab配置
+gitlab.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
+
+    # 反代Gitlab的80/443端口
+    reverse_proxy gitlab.web {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+}
+
+# SonarQube配置
+sonar.light.local {
+    encode zstd gzip
+
+    tls /etc/x509/https/light.local.crt /etc/x509/https/light.local.key
+
+    # 反代SonarQube的9000端口
+    reverse_proxy sonar.web:9000 {
+        header_up   X-Forwarded-Proto           {http.request.scheme}
+        header_up   X-Forwarded-Host            {http.request.host}
+        header_up   Host                        {http.request.host}
+        header_down Access-Control-Allow-Origin "*"
+    }
+}
+
 # Outline配置
 outline.light.local {
     encode zstd gzip
