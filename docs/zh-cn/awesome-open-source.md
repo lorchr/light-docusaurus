@@ -64,12 +64,15 @@
 - [开源去马赛克工具](https://github.com/beurtschipper)
 - [开源 API 调试工具](https://github.com/Kong/insomnia)
 - [Web 版的 Excel 组件](https://github.com/handsontable/handsontable)
+- [一款功能强大、易于使用的、开源免费的在线流程图绘制工具](https://github.com/jgraph/drawio)
 - [手绘风格数字白板](https://github.com/excalidraw/excalidraw)
+- [自动布局算法生成可视化图形](https://gitlab.com/graphviz/graphviz)
 - [一站式自动化运维平台](https://github.com/opendevops-cn/opendevops)
 - [一款强大的密码分析工具](https://github.com/Ciphey/Ciphey)
 - [一个可以用Docker在本地托管的基于Web的PDF处理工具](https://github.com/Stirling-Tools/Stirling-PDF)
 - [本地的PDF处理](https://github.com/Stirling-Tools/Stirling-PDF)
 - [一个自托管项目管理工具](https://github.com/mattermost/focalboard)
+- [开源的SSL证书管理工具](https://github.com/usual2970/certimate)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)

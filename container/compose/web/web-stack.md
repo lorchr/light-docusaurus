@@ -1214,6 +1214,13 @@ rm /usr/local/share/ca-certificates/ca.crt
 update-ca-certificates --fresh
 
 ```
+
+#### 使用Keycloak登录
+1. 使用 root 账号在 Gitlab 创建用户账号 light
+2. 在用户详情 点击 New Identity 新增认证方式
+3. Provider 选择 Keycloak, Identifier 输入用户名 light
+4. 用户账号使用 Keycloak 登录到 Gitlab
+
 ## 常见问题
 1. Outline 登录失败
 
