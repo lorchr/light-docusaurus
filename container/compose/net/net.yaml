@@ -1,0 +1,189 @@
+version: "3"
+
+services:
+  binddns:
+    image: sameersbn/bind:9.16.1-20200524
+    container_name: net_binddns
+    hostname: binddns.net
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.150
+        aliases:
+          - binddns.net
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - bind.net:172.100.0.150
+      - stepca.net:172.100.0.152
+      - nginx.net:172.100.0.154
+      - caddy.net:172.100.0.156
+      - traefik.net:172.100.0.158
+      - ca.light.local:127.0.0.1
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 10000:10000/tcp
+    expose:
+      - 53
+      - 10000
+    volumes:
+      - //d/docker/develop/net/dns/data:/data
+    environment:
+      TZ : 'Asia/Shanghai'
+      ROOT_PASSWORD: lightdns
+      WEBMIN_ENABLED: true      
+      WEBMIN_INIT_SSL_ENABLED: true
+    restart: unless-stopped
+  
+  stepca:
+    image: smallstep/step-ca:0.27.4
+    container_name: net_stepca
+    hostname: stepca.net
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.152
+        aliases:
+          - stepca.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - bind.net:172.100.0.150
+      - stepca.net:172.100.0.152
+      - nginx.net:172.100.0.154
+      - caddy.net:172.100.0.156
+      - traefik.net:172.100.0.158
+      - ca.light.local:127.0.0.1
+    ports:
+      - 9000:9000
+    expose:
+      - 9000
+    labels:
+      - traefik.enable=false
+    volumes:
+      - //d/docker/develop/net/ca/data:/home/step
+    environment:
+      - TZ=Asia/Shanghai
+      - DOCKER_STEPCA_INIT_NAME=Smallstep Acme Corp
+      - DOCKER_STEPCA_INIT_ACME=true
+      - DOCKER_STEPCA_INIT_ADDRESS=0.0.0.0:443
+      - DOCKER_STEPCA_INIT_ADMIN_SUBJECT=root
+      - DOCKER_STEPCA_INIT_PASSWORD=lightca
+      - DOCKER_STEPCA_INIT_DNS_NAMES=ca.light.local,acme-v02.api.letsencrypt.org,localhost,stepca.net
+      - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.25
+    container_name: net_nginx
+    hostname: nginx.net
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.154
+        aliases:
+          - nginx.net
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - bind.net:172.100.0.150
+      - stepca.net:172.100.0.152
+      - nginx.net:172.100.0.154
+      - caddy.net:172.100.0.156
+      - traefik.net:172.100.0.158
+      - ca.light.local:127.0.0.1
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    expose:
+      - 80
+      - 443
+    volumes:
+      - //d/docker/develop/net/nginx/data:/usr/share/nginx/html
+      - //d/docker/develop/net/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+      - //d/docker/develop/net/nginx/conf/conf.d:/etc/nginx/conf.d
+      - //d/docker/develop/net/nginx/cert:/etc/nginx/certs
+      - //d/docker/develop/net/nginx/logs:/var/log/nginx
+      - //d/docker/develop/net/nginx/file:/usr/share/nginx/files
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Shanghai
+    restart: no # unless-stopped
+
+  caddy:
+    image: caddy:2.8
+    container_name: net_caddy
+    hostname: caddy.net
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.156
+        aliases:
+          - caddy.net
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - bind.net:172.100.0.150
+      - stepca.net:172.100.0.152
+      - nginx.net:172.100.0.154
+      - caddy.net:172.100.0.156
+      - traefik.net:172.100.0.158
+      - ca.light.local:127.0.0.1
+    cap_add:
+      - NET_ADMIN
+    ports:
+      # - 80:80
+      # - 443:443
+      # - 443:443/udp
+      - 2019:2019
+    expose:
+      - 80
+      - 443
+      - 2019
+    volumes:
+      - //d/docker/develop/net/caddy/cert/:/etc/x509/https/
+      - //d/docker/develop/net/caddy/site:/srv
+      - //d/docker/develop/net/caddy/conf:/config
+      - //d/docker/develop/net/caddy/data:/data
+    entrypoint: /usr/bin/caddy run --adapter caddyfile --config /config/Caddyfile
+    restart: no # unless-stopped
+
+networks:
+  develop:
+    external: true
+  proxy-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.77.0.0/16
+
+# volumes:
+#   nginx_data:
+#   caddy_data:

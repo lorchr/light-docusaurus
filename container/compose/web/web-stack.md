@@ -351,6 +351,11 @@ mkdir -p D:/docker/develop/web/keycloak/{conf,data,logs}
 ```
 
 ### 5. Gitlab配置
+- [0 down time deployment with GITLAB CI/CD && Docker](https://caddy.community/t/0-down-time-deployment-with-gitlab-ci-cd-docker/18698/3)
+- [Caddy as a reverse proxy for Docker 87](https://github.com/lucaslorentz/caddy-docker-proxy)
+- [Gitlab的Caddy配置](https://dengxiaolong.com/caddy/zh/example.gitlab.html)
+- [配置 Nginx 反向代理 GitLab 服务](https://blog.csdn.net/u013670453/article/details/114693147)
+- [Use a non-bundled web server](https://docs.gitlab.com/omnibus/settings/nginx.html#use-a-non-bundled-web-server)
 
 ```bash
 # ==================== Gitlab ==================== 
@@ -638,91 +643,7 @@ SMTP_SECURE=
 version: "3"
 
 services:
-  bind:
-    image: sameersbn/bind:9.16.1-20200524
-    container_name: web_bind
-    hostname: bind.web
-    networks:
-      default: null
-      develop:
-        ipv4_address: 172.100.0.200
-        aliases:
-          - bind.web
-    dns:
-      - 192.168.137.1
-      - 8.8.8.8
-    extra_hosts:
-      - mysql.basic:172.100.0.101
-      - pgsql.basic:172.100.0.106
-      - redis.basic:172.100.0.111
-      - influx.basic:172.100.0.116
-      - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
-    ports:
-      - 10000:10000/tcp
-      - 53:53/tcp
-      - 53:53/udp
-    expose:
-      - 10000
-      - 53
-    volumes:
-      - //d/docker/develop/web/dns/data:/data
-    environment:
-      TZ : 'Asia/Shanghai'
-      ROOT_PASSWORD: lightdns
-      WEBMIN_ENABLED: true      
-      WEBMIN_INIT_SSL_ENABLED: true
-    restart: unless-stopped
   
-  caddy:
-    image: caddy:2.8
-    container_name: web_caddy
-    hostname: caddy.web
-    networks:
-      default: null
-      develop:
-        ipv4_address: 172.100.0.150
-        aliases:
-          - caddy.web
-    dns:
-      - 192.168.137.1
-      - 8.8.8.8
-    extra_hosts:
-      - mysql.basic:172.100.0.101
-      - pgsql.basic:172.100.0.106
-      - redis.basic:172.100.0.111
-      - influx.basic:172.100.0.116
-      - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
-    cap_add:
-      - NET_ADMIN
-    ports:
-      - 80:80
-      - 443:443
-      - 443:443/udp
-      - 2019:2019
-    expose:
-      - 80
-      - 443
-      - 2019
-    volumes:
-      - //d/docker/develop/web/caddy/cert/:/etc/x509/https/
-      - //d/docker/develop/web/caddy/site:/srv
-      - //d/docker/develop/web/caddy/conf:/config
-      - //d/docker/develop/web/caddy/data:/data
-    entrypoint: /usr/bin/caddy run --adapter caddyfile --config /config/Caddyfile
-    restart: unless-stopped
-
   keycloak:
     image: quay.io/keycloak/keycloak:24.0
     container_name: web_keycloak
@@ -730,7 +651,7 @@ services:
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.152
+        ipv4_address: 172.100.0.170
         aliases:
           - keycloak.web
     dns:
@@ -742,12 +663,12 @@ services:
       - redis.basic:172.100.0.111
       - influx.basic:172.100.0.116
       - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
+      - keycloak.web:172.100.0.170
+      - minio.web:172.100.0.172
+      - gitlab.web:172.100.0.174
+      - gitlab-runner.web:172.100.0.175
+      - outline.web:172.100.0.176
+      - readeck.web:172.100.0.178
     # ports:
     #   - 8080:8080
     expose:
@@ -790,7 +711,7 @@ services:
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.154
+        ipv4_address: 172.100.0.172
         aliases:
           - minio.web
     dns:
@@ -802,12 +723,12 @@ services:
       - redis.basic:172.100.0.111
       - influx.basic:172.100.0.116
       - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
+      - keycloak.web:172.100.0.170
+      - minio.web:172.100.0.172
+      - gitlab.web:172.100.0.174
+      - gitlab-runner.web:172.100.0.175
+      - outline.web:172.100.0.176
+      - readeck.web:172.100.0.178
     # ports:
     #   - 9000:9000
     #   - 9001:9001
@@ -830,7 +751,7 @@ services:
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.156
+        ipv4_address: 172.100.0.174
         aliases:
           - gitlab.web
     dns:
@@ -842,16 +763,17 @@ services:
       - redis.basic:172.100.0.111
       - influx.basic:172.100.0.116
       - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
-    # ports:
+      - keycloak.web:172.100.0.170
+      - minio.web:172.100.0.172
+      - gitlab.web:172.100.0.174
+      - gitlab-runner.web:172.100.0.175
+      - outline.web:172.100.0.176
+      - readeck.web:172.100.0.178
+    ports:
     #   - 80:80 # 注意宿主机和容器内部的端口要一致，否则external_url无法访问
     #   - 443:443
     #   - 22:22
+      - 2222:22
     expose:
       - 80
       - 443
@@ -861,19 +783,41 @@ services:
       GITLAB_ROOT_PASSWORD: nJAfvWGS4q1Tw09h=
       GITLAB_OMNIBUS_CONFIG: |
         gitlab_rails['time_zone'] = 'Asia/Shanghai'
-        ### Configure SSL
-        ### https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
-        external_url 'http://gitlab.light.local'
+
+        ### 备份配置，这里不能设置自动备份，后面我将介绍怎么在容器外设置自动备份。
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/backups.html
+        gitlab_rails['backup_keep_time'] = 604800 # 备份保留的时间，单位秒，这里设置为一周
+
+        ### 配置启用、禁用 SSL
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
+        # external_url 'http://gitlab.light.local'
         # registry_external_url 'http://gitlab.light.local'
         # letsencrypt['enable'] = false
         # nginx['redirect_http_to_https'] = true
         # nginx['ssl_certificate'] = "/etc/gitlab/ssl/light.local.crt"
         # nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/light.local.key"
         # nginx['ssl_trusted_certificate'] = "/etc/gitlab/ssl/ca.crt"
-        
-        ### GitLab database settings
+
+        ### 配置使用外部 Nginx
+        ###! Docs: https://atlassc.net/2022/02/24/self-managed-gitlab-with-docker-compose
+        external_url 'https://gitlab.light.local'
+        # GitLab 景象中自带一个 Nginx，但是我希望能使用外部的 Nginx 来进行反向代理配置，这样更加灵活，所以在这里禁用掉自带的 Nginx HTTPS 配置，仅使用 80 在主机上提供 HTTP 访问
+        nginx['listen_port'] = 80
+        nginx['listen_https'] = false
+        # 强制 https
+        # 虽然禁用掉了内置 Nginx 的 HTTPS，我们还是需要在 GitLab 上设置 HTTP 请求转 HTTPS，HTTPS 的反向代理将由外部 Nginx 来完成
+        nginx['proxy_set_headers'] = {
+          "X-Forwarded-Proto" => "https",
+          "X-Forwarded-Ssl" => "on"
+        }
+
+        ### 配置SSH SSH直接映射到物理机
+        gitlab_rails['gitlab_ssh_host'] = 'gitlab.light.local'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
+        gitlab_rails['gitlab_shell_git_timeout'] = 800
+
+        ### 配置使用外部 Pgsql
         ###! Docs: https://docs.gitlab.com/omnibus/settings/database.html
-        ###! **Only needed if you use an external database.**
         postgresql['enable'] = false
         gitlab_rails['db_adapter'] = "postgresql"
         gitlab_rails['db_encoding'] = "utf-8"
@@ -885,18 +829,14 @@ services:
         gitlab_rails['db_port'] = 5432
         gitlab_rails['db_pool'] = 100
 
-        ### Configuring Redis
-        ### https://docs.gitlab.com/omnibus/settings/redis.html
-        # Disable the bundled Redis
+        ### 配置使用外部 Redis
+        ###! Docs: https://docs.gitlab.com/omnibus/settings/redis.html
         redis['enable'] = false
-        # Redis via TCP
         gitlab_rails['redis_host'] = 'redis.basic'
         gitlab_rails['redis_port'] = 6379
-        # Password to Authenticate to alternate local Redis if required
         # gitlab_rails['redis_password'] = ''
-        
-        ### Configure Authenticaiton
-        ### Use keyCloak
+
+        ### 配置使用外部认证 keyCloak
         ### https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-keycloak
         gitlab_rails['omniauth_providers'] = [
           {
@@ -928,82 +868,113 @@ services:
     # depends_on:
     #   - postgres
 
-  jenkins:
-    image: jenkins/jenkins:jdk21
-    container_name: web_jenkins
-    hostname: jenkins.web
-    networks:
-      default: null
-      develop:
-        ipv4_address: 172.100.0.160
-        aliases:
-          - jenkins.web
-    dns:
-      - 192.168.137.1
-      - 8.8.8.8
-    extra_hosts:
-      - mysql.basic:172.100.0.101
-      - pgsql.basic:172.100.0.106
-      - redis.basic:172.100.0.111
-      - influx.basic:172.100.0.116
-      - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
-    # ports:
-    #   - 8080:8080
-    #   - 5000:5000
-    expose:
-      - 8080
-      - 5000
-    user: root
-    volumes:
-      - //d/docker/develop/web/jenkins/data/:/var/jenkins_home
-    restart: unless-stopped
+  # gitlab-runner:
+  #   image: 'gitlab/gitlab-runner:latest'
+  #   container_name: web_gitlab-runner
+  #   hostname: gitlab-runner.web
+  #   networks:
+  #     default: null
+  #     develop:
+  #       ipv4_address: 172.100.0.175
+  #       aliases:
+  #         - gitlab-runner.web
+  #   dns:
+  #     - 192.168.137.1
+  #     - 8.8.8.8
+  #   extra_hosts:
+  #     - mysql.basic:172.100.0.101
+  #     - pgsql.basic:172.100.0.106
+  #     - redis.basic:172.100.0.111
+  #     - influx.basic:172.100.0.116
+  #     - mqtt.basic:172.100.0.121
+  #     - keycloak.web:172.100.0.170
+  #     - minio.web:172.100.0.172
+  #     - gitlab.web:172.100.0.174
+  #     - gitlab-runner.web:172.100.0.175
+  #     - outline.web:172.100.0.176
+  #     - readeck.web:172.100.0.178
+  #   volumes:
+  #     - '/opt/store/gitlab-runner:/etc/gitlab-runner'
+  #     # 这个挂载是将宿主机上的docker socket挂载到了容器内，这样容器内执行的docker命令会被宿主机docker daemon最终执行
+  #     - '/var/run/docker.sock:/var/run/docker.sock' 
+  #   restart: no
 
-  sonarqube:
-    image: sonarqube:lts
-    container_name: web_sonarqube
-    hostname: sonarqube.web
-    networks:
-      default: null
-      develop:
-        ipv4_address: 172.100.0.162
-        aliases:
-          - sonarqube.web
-    dns:
-      - 192.168.137.1
-      - 8.8.8.8
-    extra_hosts:
-      - mysql.basic:172.100.0.101
-      - pgsql.basic:172.100.0.106
-      - redis.basic:172.100.0.111
-      - influx.basic:172.100.0.116
-      - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
-    # ports:
-    #   - 9000:9000
-    expose:
-      - 9000
-    environment:
-      - SONAR_JDBC_URL=jdbc:postgresql://pgsql.basic:5432/sonar
-      - SONAR_JDBC_USERNAME=sonar
-      - SONAR_JDBC_PASSWORD=sonar
-    volumes:
-      - //d/docker/develop/web/sonarqube/conf:/opt/sonarqube/conf
-      - //d/docker/develop/web/sonarqube/data:/opt/sonarqube/data
-      - //d/docker/develop/web/sonarqube/extensions:/opt/sonarqube/extensions
-    restart: no
-    # depends_on:
-    #   - postgres
+  # jenkins:
+  #   image: jenkins/jenkins:jdk21
+  #   container_name: web_jenkins
+  #   hostname: jenkins.web
+  #   networks:
+  #     default: null
+  #     develop:
+  #       ipv4_address: 172.100.0.160
+  #       aliases:
+  #         - jenkins.web
+  #   dns:
+  #     - 192.168.137.1
+  #     - 8.8.8.8
+  #   extra_hosts:
+  #     - mysql.basic:172.100.0.101
+  #     - pgsql.basic:172.100.0.106
+  #     - redis.basic:172.100.0.111
+  #     - influx.basic:172.100.0.116
+  #     - mqtt.basic:172.100.0.121
+  #     - keycloak.web:172.100.0.170
+  #     - minio.web:172.100.0.172
+  #     - gitlab.web:172.100.0.174
+  #     - gitlab-runner.web:172.100.0.175
+  #     - outline.web:172.100.0.176
+  #     - readeck.web:172.100.0.178
+  #   # ports:
+  #   #   - 8080:8080
+  #   #   - 5000:5000
+  #   expose:
+  #     - 8080
+  #     - 5000
+  #   user: root
+  #   volumes:
+  #     - //d/docker/develop/web/jenkins/data/:/var/jenkins_home
+  #   restart: no # unless-stopped
+
+  # sonarqube:
+  #   image: sonarqube:lts
+  #   container_name: web_sonarqube
+  #   hostname: sonarqube.web
+  #   networks:
+  #     default: null
+  #     develop:
+  #       ipv4_address: 172.100.0.162
+  #       aliases:
+  #         - sonarqube.web
+  #   dns:
+  #     - 192.168.137.1
+  #     - 8.8.8.8
+  #   extra_hosts:
+  #     - mysql.basic:172.100.0.101
+  #     - pgsql.basic:172.100.0.106
+  #     - redis.basic:172.100.0.111
+  #     - influx.basic:172.100.0.116
+  #     - mqtt.basic:172.100.0.121
+  #     - keycloak.web:172.100.0.170
+  #     - minio.web:172.100.0.172
+  #     - gitlab.web:172.100.0.174
+  #     - gitlab-runner.web:172.100.0.175
+  #     - outline.web:172.100.0.176
+  #     - readeck.web:172.100.0.178
+  #   # ports:
+  #   #   - 9000:9000
+  #   expose:
+  #     - 9000
+  #   environment:
+  #     - SONAR_JDBC_URL=jdbc:postgresql://pgsql.basic:5432/sonar
+  #     - SONAR_JDBC_USERNAME=sonar
+  #     - SONAR_JDBC_PASSWORD=sonar
+  #   volumes:
+  #     - //d/docker/develop/web/sonarqube/conf:/opt/sonarqube/conf
+  #     - //d/docker/develop/web/sonarqube/data:/opt/sonarqube/data
+  #     - //d/docker/develop/web/sonarqube/extensions:/opt/sonarqube/extensions
+  #   restart: no # unless-stopped
+  #   # depends_on:
+  #   #   - postgres
 
   outline:
     image: docker.getoutline.com/outlinewiki/outline:latest
@@ -1012,7 +983,7 @@ services:
     networks:
       default: null
       develop:
-        ipv4_address: 172.100.0.158
+        ipv4_address: 172.100.0.176
         aliases:
           - outline.web
     dns:
@@ -1024,12 +995,12 @@ services:
       - redis.basic:172.100.0.111
       - influx.basic:172.100.0.116
       - mqtt.basic:172.100.0.121
-      - caddy.web:172.100.0.150
-      - keycloak.web:172.100.0.152
-      - minio.web:172.100.0.154
-      - gitlab.web:172.100.0.156
-      - outline.web:172.100.0.158
-      - bind.web:172.100.0.200
+      - keycloak.web:172.100.0.170
+      - minio.web:172.100.0.172
+      - gitlab.web:172.100.0.174
+      - gitlab-runner.web:172.100.0.175
+      - outline.web:172.100.0.176
+      - readeck.web:172.100.0.178
     # ports:
     #   - 3000:3000
     expose:
@@ -1152,6 +1123,7 @@ Client Secret: twKvRwFbaocqchHv2QeEyUhJZ9edyver
 ### 3. Gitlab配置
 
 #### SSL CA证书配置
+- https://docs.gitlab.com/ee/install/docker/
 - https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually
 - https://docs.gitlab.com/ee/administration/auth/oidc.html#configure-keycloak
 
@@ -1212,6 +1184,16 @@ curl -v -I -H GET https://keycloak.light.local
 rm /usr/local/share/ca-certificates/ca.crt
 
 update-ca-certificates --fresh
+
+```
+
+6. Git安装证书
+```bash
+# 防止拉取仓库时报错 SSL certificate problem: unable to get local issuer certificate
+git config --global http.sslCAInfo D:/docker/develop/web/gitlab/conf/ssl/root_ca.crt
+
+# 也可以禁用SSL证书校验
+git config --global http.sslVerify false
 
 ```
 
