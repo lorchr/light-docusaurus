@@ -1,6 +1,7 @@
 version: "3"
 
 services:
+
   binddns:
     image: sameersbn/bind:9.16.1-20200524
     container_name: net_binddns
@@ -77,6 +78,7 @@ services:
       - //d/docker/develop/net/ca/data:/home/step
     environment:
       - TZ=Asia/Shanghai
+      # CA 证书机构名
       - DOCKER_STEPCA_INIT_NAME=Smallstep Acme Corp
       - DOCKER_STEPCA_INIT_ACME=true
       - DOCKER_STEPCA_INIT_ADDRESS=0.0.0.0:443
@@ -129,7 +131,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Shanghai
-    restart: no # unless-stopped
+    restart: unless-stopped
 
   caddy:
     image: caddy:2.8

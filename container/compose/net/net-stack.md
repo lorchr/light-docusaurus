@@ -2,6 +2,7 @@
 ## 一、环境准备
 
 ### 1. Bind DNS 配置
+
 - [Bind DNS 官网](https://www.isc.org/bind/)
 - [Bind DNS Docker](https://hub.docker.com/r/sameersbn/bind)
 - [Bind DNS Docker](https://hub.docker.com/repository/docker/internetsystemsconsortium/bind9)
@@ -9,13 +10,14 @@
 ```bash
 # ==================== Bind DNS ==================== 
 # 创建文件夹
-mkdir -p D:/docker/develop/net/dns/{conf,data,logs}
+mkdir -p D:/docker/develop/net/dns/{data,conf,logs}
 
 # ==================== Bind DNS ==================== 
 
 ```
 
 ### 2. Stap CA 配置
+
 - [Stap CA 官网](https://smallstep.com/docs/step-ca/)
 - [Stap CA Docker](https://hub.docker.com/r/smallstep/step-ca)
 - [使用 Step CA 搭建私有 ACME Server](https://george.betterde.com/devops/20221119.html)
@@ -40,13 +42,14 @@ mkdir -p D:/docker/develop/net/nginx/{data,conf,conf/conf.d,logs,cert,file}
 cp ./nginx/nginx.conf   D:/docker/develop/net/nginx/conf/
 cp ./nginx/conf.d/*     D:/docker/develop/net/nginx/conf/conf.d/
 
-cp ./nginx/cert/*       D:/docker/develop/net/nginx/cert/
-
 # ==================== Nginx ==================== 
 
 ```
 
 ### 4. Caddy 配置
+
+- [Caddy](https://caddyserver.com/)
+- [Caddy Github](https://github.com/caddyserver/caddy)
 
 ```bash
 # ==================== Caddy ==================== 
@@ -72,6 +75,15 @@ mkdir -p D:/docker/develop/net/traefik/{data,conf,logs}
 ```
 
 ## 二、Docker Compose脚本及运行
+
+| 服务    | 端口            | 暴露  | 功能  |
+| ------- | --------------- | ----- | ----- |
+| Bind    | 10000/tcp       | 10000 | 管理  |
+| Bind    | 53/tcp 53/udp   | 53    | DNS   |
+| Ningx   | 80/tcp          | 80    | HTTP  |
+| Ningx   | 443/tcp 443/udp | 443   | HTTPS |
+| Caddy   | 2019/tcp        | -     | 管理  |
+| Traefik | -               | -     | 管理  |
 
 ### 1. docker-compose.yaml
 
@@ -155,12 +167,13 @@ services:
       - //d/docker/develop/net/ca/data:/home/step
     environment:
       - TZ=Asia/Shanghai
+      # CA 证书机构名
       - DOCKER_STEPCA_INIT_NAME=Smallstep Acme Corp
       - DOCKER_STEPCA_INIT_ACME=true
       - DOCKER_STEPCA_INIT_ADDRESS=0.0.0.0:443
       - DOCKER_STEPCA_INIT_ADMIN_SUBJECT=root
       - DOCKER_STEPCA_INIT_PASSWORD=lightca
-      - DOCKER_STEPCA_INIT_DNS_NAMES=localhost,stepca.net,ca.light.local,acme-v02.api.letsencrypt.org
+      - DOCKER_STEPCA_INIT_DNS_NAMES=ca.light.local,acme-v02.api.letsencrypt.org,localhost,stepca.net
       - DOCKER_STEPCA_INIT_REMOTE_MANAGEMENT=true
     restart: unless-stopped
 
@@ -190,9 +203,9 @@ services:
       - traefik.net:172.100.0.158
       - ca.light.local:127.0.0.1
     ports:
-      - 180:80
-      - 1443:443
-      - 1443:443/udp
+      - 80:80
+      - 443:443
+      - 443:443/udp
     expose:
       - 80
       - 443
@@ -207,7 +220,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Asia/Shanghai
-    restart: no # unless-stopped
+    restart: unless-stopped
 
   caddy:
     image: caddy:2.8
@@ -237,9 +250,9 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
-      - 80:80
-      - 443:443
-      - 443:443/udp
+      # - 80:80
+      # - 443:443
+      # - 443:443/udp
       - 2019:2019
     expose:
       - 80
@@ -415,9 +428,10 @@ cp D:/docker/develop/net/ca/data/certs/*       D:/docker/develop/net/nginx/cert/
 
 ```
 
-5. 对于 Gitlab 需要将 root_ca.crt 复制到容器中，并在Git命令行安装
+5. 对于 Gitlab 需要将 `root_ca.crt` 复制到容器中，并在Git命令行安装
+
 ```bash
-cp D:/docker/develop/net/ca/data/certs/root_ca.crt       D:/docker/develop/web/gitlab/conf/ssl/
+cp D:/docker/develop/net/ca/data/certs/root_ca.crt       D:/docker/develop/web/gitlab/conf/ssl/root_ca.crt
 
 # 安装ca证书，避免集成keycloak报错
 cat /etc/gitlab/ssl/root_ca.crt >> /opt/gitlab/embedded/ssl/certs/cacert.pem

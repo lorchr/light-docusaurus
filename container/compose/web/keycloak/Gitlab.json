@@ -1,0 +1,59 @@
+{
+  "clientId": "Gitlab",
+  "name": "Gitlab",
+  "description": "",
+  "rootUrl": "https://gitlab.light.local/",
+  "adminUrl": "https://gitlab.light.local/",
+  "baseUrl": "https://gitlab.light.local",
+  "surrogateAuthRequired": false,
+  "enabled": true,
+  "alwaysDisplayInConsole": false,
+  "clientAuthenticatorType": "client-secret",
+  "secret": "5e1b5P0QhYHcWh2gyXutXalrTyEQGzrG",
+  "redirectUris": [
+    "https://gitlab.light.local/users/auth/openid_connect/callback",
+    "https://gitlab.light.local/*"
+  ],
+  "webOrigins": [
+    "https://gitlab.light.local"
+  ],
+  "notBefore": 0,
+  "bearerOnly": false,
+  "consentRequired": false,
+  "standardFlowEnabled": true,
+  "implicitFlowEnabled": false,
+  "directAccessGrantsEnabled": true,
+  "serviceAccountsEnabled": false,
+  "publicClient": false,
+  "frontchannelLogout": true,
+  "protocol": "openid-connect",
+  "attributes": {
+    "oidc.ciba.grant.enabled": "false",
+    "client.secret.creation.time": "1727322156",
+    "backchannel.logout.session.required": "true",
+    "post.logout.redirect.uris": "https://gitlab.light.local/",
+    "oauth2.device.authorization.grant.enabled": "false",
+    "backchannel.logout.revoke.offline.tokens": "false"
+  },
+  "authenticationFlowBindingOverrides": {},
+  "fullScopeAllowed": true,
+  "nodeReRegistrationTimeout": -1,
+  "defaultClientScopes": [
+    "web-origins",
+    "acr",
+    "roles",
+    "profile",
+    "email"
+  ],
+  "optionalClientScopes": [
+    "address",
+    "phone",
+    "offline_access",
+    "microprofile-jwt"
+  ],
+  "access": {
+    "view": true,
+    "configure": true,
+    "manage": true
+  }
+}

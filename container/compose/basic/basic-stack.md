@@ -1,5 +1,6 @@
 
-## 环境准备脚本
+## 一、环境准备
+
 ### 1. 网络配置
 
 ```bash
@@ -8,18 +9,13 @@ docker network ls
 docker network rm develop
 docker network create --subnet=172.100.0.0/16 develop
 
-# 修改hosts 192.168.137.1 为本机IP
+# 【可选】修改hosts 192.168.137.1 为本机IP
 192.168.137.1   mysql.light.local
 192.168.137.1   pgsql.light.local
 192.168.137.1   redis.light.local
 192.168.137.1   influx.light.local
 192.168.137.1   mqtt.light.local
 
-192.168.137.1   caddy.light.local
-192.168.137.1   keycloak.light.local
-192.168.137.1   minio.light.local
-192.168.137.1   outline.light.local
-192.168.137.1   gitlab.light.local
 ```
 
 ### 2. Mysql配置
@@ -27,42 +23,16 @@ docker network create --subnet=172.100.0.0/16 develop
 ```bash
 # ==================== Mysql ==================== 
 # 创建文件夹
-mkdir -p D:/docker/develop/basic/mysql/{conf,data,logs,scripts}
+mkdir -p D:/docker/develop/basic/mysql/{data,conf,logs,scripts}
 
 # 获取默认配置文件
 docker run -d --env MYSQL_ROOT_PASSWORD=admin --name mysql_temp mysql:8.0 \
   && docker cp mysql_temp:/etc/my.cnf  D:/docker/develop/basic/mysql/conf/my.cnf \
   && docker stop mysql_temp && docker rm mysql_temp
 
-# 编辑初始化脚本
-cat >> D:/docker/develop/basic/mysql/scripts/init.sql << EOF
--- 创建新数据库 keycloak
-CREATE DATABASE keycloak CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
--- 创建新用户
-CREATE USER 'keycloak'@'%' IDENTIFIED BY 'keycloak';
--- 授予用户对新数据库的权限
-GRANT ALL PRIVILEGES ON keycloak.* TO 'keycloak'@'%';
--- 刷新权限
-FLUSH PRIVILEGES;
+# 复制初始化脚本
+cp ./mysql/init.sql D:/docker/develop/basic/mysql/scripts/init.sql
 
--- 创建新数据库 outline
-CREATE DATABASE outline CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
--- 创建新用户
-CREATE USER 'outline'@'%' IDENTIFIED BY 'outline';
--- 授予用户对新数据库的权限
-GRANT ALL PRIVILEGES ON outline.* TO 'outline'@'%';
--- 刷新权限
-FLUSH PRIVILEGES;
-
--- 创建新数据库 gitlab
-CREATE DATABASE gitlab CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
--- 创建新用户
-CREATE USER 'gitlab'@'%' IDENTIFIED BY 'gitlab';
--- 授予用户对新数据库的权限
-GRANT ALL PRIVILEGES ON gitlab.* TO 'gitlab'@'%';
--- 刷新权限
-FLUSH PRIVILEGES;
-EOF
 # ==================== Mysql ==================== 
 
 ```
@@ -72,78 +42,15 @@ EOF
 ```bash
 # ==================== Pgsql ==================== 
 # 创建文件夹
-mkdir -p D:/docker/develop/basic/pgsql/{conf,data,logs,scripts}
+mkdir -p D:/docker/develop/basic/pgsql/{data,conf,logs,scripts}
 
 # 获取默认配置文件
 docker run -d --name postgres_temp postgres:15.3 \
   && docker cp postgres_temp:/usr/share/postgresql/postgresql.conf.sample D:/docker/develop/basic/pgsql/conf/postgresql.conf \
   && docker stop postgres_temp && docker rm postgres_temp
 
-# 编辑初始化脚本
-cat >> D:/docker/develop/basic/pgsql/scripts/init.sql << EOF
--- 创建数据库 keycloak
-CREATE DATABASE keycloak;
--- 切换数据库
-\c keycloak light;
--- 创建用户
-CREATE USER keycloak WITH PASSWORD 'keycloak';
--- 将用户权限赋予数据库
-GRANT ALL PRIVILEGES ON DATABASE keycloak TO keycloak;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO keycloak;
-GRANT USAGE,CREATE ON SCHEMA public TO keycloak;
-GRANT ALL ON SCHEMA public TO keycloak;
--- 授予创建数据库权限
-ALTER ROLE keycloak CREATEDB;
-
-
--- 创建数据库 outline
-CREATE DATABASE outline;
--- 切换数据库
-\c outline light;
--- 创建用户
-CREATE USER outline WITH PASSWORD 'outline';
--- 将用户权限赋予数据库
-GRANT ALL PRIVILEGES ON DATABASE outline TO outline;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO outline;
-GRANT USAGE,CREATE ON SCHEMA public TO outline;
-GRANT ALL ON SCHEMA public TO outline;
--- 授予创建数据库权限
-ALTER ROLE outline CREATEDB;
-
-
--- 创建数据库 gitlab
-CREATE DATABASE gitlab;
--- 切换数据库
-\c gitlab light;
--- 创建用户
-CREATE USER gitlab WITH PASSWORD 'gitlab';
--- 将用户权限赋予数据库
-GRANT ALL PRIVILEGES ON DATABASE gitlab TO gitlab;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO gitlab;
-GRANT USAGE,CREATE ON SCHEMA public TO gitlab;
-GRANT ALL ON SCHEMA public TO gitlab;
--- 授予创建数据库权限
-ALTER ROLE gitlab CREATEDB;
-
--- 创建用户
-CREATE USER sonar WITH PASSWORD 'sonar';
--- 创建数据库
-CREATE DATABASE sonar
-	WITH OWNER = sonar
-	ENCODING = 'UTF8'
-	TABLESPACE = pg_default
-	LC_COLLATE = 'en_US.UTF-8'
-	LC_CTYPE = 'en_US.UTF-8'
-	CONNECTION LIMIT = -1
-	TEMPLATE template0;
--- 设置数据库备注
-COMMENT ON DATABASE sonar IS 'SonarQube database';
--- 将用户权限赋予数据库
-GRANT CONNECT, TEMPORARY ON DATABASE sonar TO public;
-GRANT ALL ON DATABASE sonar TO sonar;
-GRANT ALL ON DATABASE sonar TO light;
-
-EOF
+# 复制初始化脚本
+cp ./pgsql/init.sql D:/docker/develop/basic/pgsql/scripts/init.sql
 
 # ==================== Pgsql ==================== 
 
@@ -154,16 +61,42 @@ EOF
 ```bash
 # ==================== Redis ==================== 
 # 创建文件夹
-mkdir -p D:/docker/develop/basic/redis/{conf,data,logs}
+mkdir -p D:/docker/develop/basic/redis/{data,conf,logs}
 
 # 获取默认配置文件 http://download.redis.io/redis-stable/redis.conf
 curl https://raw.githubusercontent.com/redis/redis/6.2/redis.conf -o D:/docker/develop/basic/redis/conf/redis.conf
+
+# 复制配置文件
+cp ./redis/redis-6.2.conf D:/docker/develop/basic/redis/conf/redis.conf
 
 # ==================== Redis ==================== 
 
 ```
 
-## Docker Compose定义脚本
+### 5. Cowrie配置
+
+```bash
+# ==================== Cowrie ==================== 
+# 创建文件夹
+mkdir -p D:/docker/develop/basic/cowrie/{data,conf,logs}
+
+# 复制配置文件
+cp ./cowrie/cowrie.cfg  D:/docker/develop/basic/cowrie/conf/cowrie.cfg
+
+# 复制定时任务脚本
+cp ./cowrie/schedule.sh D:/docker/develop/basic/cowrie/schedule.sh
+
+# 编辑定时任务
+crontab -e 
+00 00 * * *     D:/docker/develop/basic/cowrie/cowrie-schedule.sh
+
+# ==================== Cowrie ==================== 
+
+```
+
+## 二、Docker Compose脚本及运行
+
+### 1. docker-compose.yaml
 
 ```yaml
 version: "3"
@@ -259,6 +192,34 @@ services:
       - //d/docker/develop/basic/redis/conf/redis.conf:/etc/redis/redis.conf
     restart: unless-stopped
 
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: basic_cowrie
+    hostname: cowrie.basic
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.112
+        aliases:
+          - cowrie.basic
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+    # ports:
+    #   - 22:2222
+    #   - 23:2223
+    expose:
+      - 2222
+      - 2223
+    volumes:
+      - //d/docker/develop/basic/cowrie/data:/cowrie/cowrie-git/var/lib/cowrie/downloads
+      - //d/docker/develop/basic/cowrie/conf:/cowrie/cowrie-git/etc
+      - //d/docker/develop/basic/cowrie/logs:/cowrie/cowrie-git/var/log/cowrie
+    restart: unless-stopped
+
 networks:
   develop:
     external: true
@@ -274,10 +235,13 @@ networks:
 
 ```
 
-## 程序启动命令
+### 2. 启动服务组
+
 ```bash
 docker compose -f basic.yaml -p basic up -d
 
 docker compose -f basic.yaml -p basic down
 
 ```
+
+## 三、启动后配置

@@ -227,7 +227,7 @@ services:
     #   - postgres
 
   # gitlab-runner:
-  #   image: 'gitlab/gitlab-runner:latest'
+  #   image: 'gitlab/gitlab-runner:ubi-fips'
   #   container_name: web_gitlab-runner
   #   hostname: gitlab-runner.web
   #   networks:
@@ -335,7 +335,7 @@ services:
   #   #   - postgres
 
   outline:
-    image: docker.getoutline.com/outlinewiki/outline:latest
+    image: outlinewiki/outline:0.80.1
     container_name: web_outline
     hostname: outline.web
     networks:
@@ -368,7 +368,63 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: sh -c "sleep 60 && yarn start --env production-ssl-disabled"
-    env_file: ./outline.env
+    env_file: ./outline/outline.env
+    # depends_on:
+    #   - postgres
+    #   - redis
+
+  readeck:
+    image: codeberg.org/readeck/readeck:0.15.3
+    container_name: web_readeck
+    hostname: readeck.web
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.178
+        aliases:
+          - readeck.web
+    dns:
+      - 192.168.137.1
+      - 8.8.8.8
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+      - keycloak.web:172.100.0.170
+      - minio.web:172.100.0.172
+      - gitlab.web:172.100.0.174
+      - gitlab-runner.web:172.100.0.175
+      - outline.web:172.100.0.176
+      - readeck.web:172.100.0.178
+    # ports:
+    #   - 8000:8000
+    expose:
+      - 8000
+    volumes:
+      - //d/docker/develop/web/readeck/data:/readeck/data
+      - //d/docker/develop/web/readeck/conf/config.toml:/readeck/config.toml
+    environment:
+      # The URL of the instance's database.
+      - READECK_DATABASE_SOURCE=postgres://readeck:readeck@pgsql.basic:5432/readeck
+      # Defines the application log level. Can be error, warning, info, debug.
+      - READECK_LOG_LEVEL=info
+      # The IP address on which Readeck listens.
+      - READECK_SERVER_HOST=0.0.0.0
+      # The TCP port on which Readeck listens. Update container port above to match (right of colon).
+      - READECK_SERVER_PORT=8000
+      # The URL prefix of Readeck.
+      - READECK_SERVER_PREFIX=/
+      # A list of hostnames allowed in HTTP requests. Required for reverse proxy configuration.
+      - READECK_ALLOWED_HOSTS=readeck.light.local
+      # Use the 'X-Forwarded-' headers. Required for reverse proxy configuration.
+      - READECK_USE_X_FORWARDED=true
+    healthcheck:
+      test: ["CMD", "/bin/readeck", "healthcheck", "-config", "config.toml"]
+      interval: 30s
+      timeout: 2s
+      retries: 3
     # depends_on:
     #   - postgres
     #   - redis
@@ -383,5 +439,5 @@ networks:
         - subnet: 172.77.0.0/16
 
 # volumes:
-#   caddy_data:
+#   keycloak_data:
 #   minio_data:

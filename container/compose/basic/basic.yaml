@@ -91,6 +91,34 @@ services:
       - //d/docker/develop/basic/redis/conf/redis.conf:/etc/redis/redis.conf
     restart: unless-stopped
 
+  cowrie:
+    image: cowrie/cowrie:latest
+    container_name: basic_cowrie
+    hostname: cowrie.basic
+    networks:
+      default: null
+      develop:
+        ipv4_address: 172.100.0.112
+        aliases:
+          - cowrie.basic
+    extra_hosts:
+      - mysql.basic:172.100.0.101
+      - pgsql.basic:172.100.0.106
+      - redis.basic:172.100.0.111
+      - influx.basic:172.100.0.116
+      - mqtt.basic:172.100.0.121
+    # ports:
+    #   - 22:2222
+    #   - 23:2223
+    expose:
+      - 2222
+      - 2223
+    volumes:
+      - //d/docker/develop/basic/cowrie/data:/cowrie/cowrie-git/var/lib/cowrie/downloads
+      - //d/docker/develop/basic/cowrie/conf:/cowrie/cowrie-git/etc
+      - //d/docker/develop/basic/cowrie/logs:/cowrie/cowrie-git/var/log/cowrie
+    restart: unless-stopped
+
 networks:
   develop:
     external: true
