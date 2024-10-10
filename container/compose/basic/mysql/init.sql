@@ -36,3 +36,13 @@ CREATE USER 'readeck'@'%' IDENTIFIED BY 'readeck';
 GRANT ALL PRIVILEGES ON readeck.* TO 'readeck'@'%';
 -- 刷新权限
 FLUSH PRIVILEGES;
+
+
+-- 创建新数据库 Nextcloud
+CREATE DATABASE nextcloud CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- 创建新用户
+CREATE USER 'nextcloud'@'%' IDENTIFIED BY 'nextcloud';
+-- 授予用户对新数据库的权限
+GRANT ALL PRIVILEGES ON nextcloud.* TO 'nextcloud'@'%';
+-- 刷新权限
+FLUSH PRIVILEGES;

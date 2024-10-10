@@ -125,3 +125,28 @@ GRANT USAGE,CREATE ON SCHEMA public TO readeck;
 GRANT ALL ON SCHEMA public TO readeck;
 -- 授予创建数据库权限
 ALTER ROLE readeck CREATEDB;
+
+-- 创建用户 Nextcloud
+CREATE USER nextcloud WITH PASSWORD 'nextcloud';
+-- 创建数据库 Nextcloud
+CREATE DATABASE nextcloud
+	WITH OWNER = nextcloud
+	ENCODING = 'UTF8'
+	TABLESPACE = pg_default
+	LC_COLLATE = 'en_US.UTF-8'
+	LC_CTYPE = 'en_US.UTF-8'
+	CONNECTION LIMIT = -1
+	TEMPLATE template0;
+-- 设置数据库备注
+COMMENT ON DATABASE nextcloud IS 'Nextcloud database';
+-- 切换数据库
+\c nextcloud light;
+-- 将用户权限赋予数据库
+GRANT CONNECT, TEMPORARY ON DATABASE nextcloud TO public;
+GRANT ALL PRIVILEGES ON DATABASE nextcloud TO nextcloud;
+GRANT ALL PRIVILEGES ON DATABASE nextcloud TO light;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO nextcloud;
+GRANT USAGE,CREATE ON SCHEMA public TO nextcloud;
+GRANT ALL ON SCHEMA public TO nextcloud;
+-- 授予创建数据库权限
+ALTER ROLE nextcloud CREATEDB;

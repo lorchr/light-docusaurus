@@ -14,7 +14,11 @@ mkdir -p D:/docker/develop/web/keycloak/{data,conf,logs}
 
 ### 2. Minio配置
 
-#### 使用本地认证的配置
+- [Configure NGINX Proxy for MinIO Server](https://min.io/docs/minio/linux/integrations/setup-nginx-proxy-with-minio.html)
+- [Configure MinIO for Authentication using Keycloak](https://min.io/docs/minio/linux/operations/external-iam/configure-keycloak-identity-management.html)
+- [External Identity Management](https://min.io/docs/minio/linux/operations/external-iam.html?ref=con#minio-external-iam-oidc)
+- [OpenID Identity Management Settings](https://min.io/docs/minio/linux/reference/minio-server/settings/iam/openid.html#minio-server-envvar-external-identity-management-openid)
+
 ```bash
 # ==================== Minio ==================== 
 # 创建文件夹
@@ -183,7 +187,9 @@ services:
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
       # PROXY_ADDRESS_FORWARDING: true
-    command: start --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
+    ### 日志默认位置 opt/keycloak/data/log
+    ###! Docs: https://www.keycloak.org/server/logging#_configuring_the_location_and_name_of_the_log_file
+    command: start --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true --log="console,file"
     restart: unless-stopped
     # depends_on:
     #   - postgres
@@ -589,22 +595,26 @@ docker compose -f web.yaml -p web down
 
 #### 2. 配置Minio认证
 
-Client ID: Minio
-Client authentication: ON
-Client Secret: QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy
+- Client ID: Minio
+- Always display in UI: On
+- Client authentication: On
+- Client Secret: QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy
+- Authentication flow:
+  - Standard flow
+  - Direct access grants
 
 1. Root URL: 
-   - https://minio.light.local/
+   - https://minio.console.light.local/
 2. Home URL: 
-   - https://minio.light.local
+   - https://minio.console.light.local
 3. Valid redirect URIs: 
-   - https://minio.light.local/*
+   - https://minio.console.light.local/*
 4. Valid post logout redirect URIs 
-   - https://minio.light.local/
+   - https://minio.console.light.local/
 5. Web origins 
-   - https://minio.light.local
+   - https://minio.console.light.local
 6. Admin URL: 
-   - https://minio.light.local
+   - https://minio.console.light.local
 
 #### 3. 配置Gitlab认证
 
@@ -649,6 +659,30 @@ Client Secret: twKvRwFbaocqchHv2QeEyUhJZ9edyver
    - https://outline.light.local
 
 
+#### 5. 配置Nextcloud认证
+
+Client ID: Nextcloud
+Client authentication: ON
+Client Secret: gKy0Ot3Y6msNWqzColMbK3KYy6NRjORf
+
+1. Root URL: 
+   - https://nextcloud.light.local/
+2. Home URL: 
+   - https://nextcloud.light.local
+3. Valid redirect URIs: 
+   - https://nextcloud.light.local/*
+4. Valid post logout redirect URIs 
+   - https://nextcloud.light.local/
+5. Web origins 
+   - https://nextcloud.light.local
+6. Admin URL: 
+   - https://nextcloud.light.local
+
+
+7. Advance - Fine grain OpenID Connect configuration
+   - ID token signature algorithm: RS256
+8. Advance - Advance Settings (可选项，且Social Login 时不能设置此选项)
+   - Proof Key for Code Exchange Code Challenge Method: S256
 
 ### 2. Gitlab配置
 
@@ -742,6 +776,18 @@ git config --global http.sslVerify false
 2. 在用户详情 点击 New Identity 新增认证方式
 3. Provider 选择 Keycloak, Identifier 输入用户名 light
 4. 用户账号使用 Keycloak 登录到 Gitlab
+
+### 3. Minio配置
+
+
+
+### 4. Outline配置
+
+
+
+### 5. Readeck配置
+1. 浏览器访问 https://readeck.light.local 
+2. 设置账户密码 root / 12345678
 
 ## 四、常见问题
 
