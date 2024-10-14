@@ -472,6 +472,13 @@ step ca certificate *.light.local certs/light.local.crt certs/light.local.key
 # 查看证书
 step certificate inspect certs/light.local.crt
 
+# Gitlab子域名证书
+step ca certificate *.gitlab.light.local certs/gitlab.light.local.crt certs/gitlab.light.local.key
+step ca certificate *.pages.gitlab.light.local certs/pages.gitlab.light.local.crt certs/pages.gitlab.light.local.key
+
+# Minio子域名证书
+step ca certificate *.minio.light.local certs/minio.light.local.crt certs/minio.light.local.key
+
 ```
 
 4. 将证书复制到Web Server中

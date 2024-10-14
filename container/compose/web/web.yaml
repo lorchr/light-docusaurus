@@ -98,7 +98,7 @@ services:
       - //d/docker/develop/web/minio/conf/config.env:/etc/minio/config.env
     environment:
       MINIO_CONFIG_ENV_FILE: /etc/minio/config.env
-    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
+    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001', '--certs-dir', '/opt/minio/certs/']
     restart: unless-stopped
 
   gitlab:

@@ -187,9 +187,7 @@ services:
       KC_HTTP_ENABLED: true
       KC_HEALTH_ENABLED: true
       # PROXY_ADDRESS_FORWARDING: true
-    ### 日志默认位置 opt/keycloak/data/log
-    ###! Docs: https://www.keycloak.org/server/logging#_configuring_the_location_and_name_of_the_log_file
-    command: start --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true --log="console,file"
+    command: start --spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true
     restart: unless-stopped
     # depends_on:
     #   - postgres
@@ -230,7 +228,7 @@ services:
       - //d/docker/develop/web/minio/conf/config.env:/etc/minio/config.env
     environment:
       MINIO_CONFIG_ENV_FILE: /etc/minio/config.env
-    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001']
+    command: ['server', '/data', '--address', ':9000', '--console-address', ':9001', '--certs-dir', '/opt/minio/certs/']
     restart: unless-stopped
 
   gitlab:
@@ -359,7 +357,7 @@ services:
     #   - postgres
 
   # gitlab-runner:
-  #   image: 'gitlab/gitlab-runner:latest'
+  #   image: 'gitlab/gitlab-runner:ubi-fips'
   #   container_name: web_gitlab-runner
   #   hostname: gitlab-runner.web
   #   networks:
@@ -467,7 +465,7 @@ services:
   #   #   - postgres
 
   outline:
-    image: docker.getoutline.com/outlinewiki/outline:latest
+    image: outlinewiki/outline:0.80.1
     container_name: web_outline
     hostname: outline.web
     networks:
@@ -500,13 +498,13 @@ services:
     environment:
       NODE_TLS_REJECT_UNAUTHORIZED: "0"
     command: sh -c "sleep 60 && yarn start --env production-ssl-disabled"
-    env_file: ./outline.env
+    env_file: ./outline/outline.env
     # depends_on:
     #   - postgres
     #   - redis
 
   readeck:
-    image: codeberg.org/readeck/readeck:latest
+    image: codeberg.org/readeck/readeck:0.15.3
     container_name: web_readeck
     hostname: readeck.web
     networks:
@@ -604,17 +602,18 @@ docker compose -f web.yaml -p web down
   - Direct access grants
 
 1. Root URL: 
-   - https://minio.console.light.local/
+   - https://console.minio.light.local/
 2. Home URL: 
-   - https://minio.console.light.local
+   - https://console.minio.light.local
 3. Valid redirect URIs: 
-   - https://minio.console.light.local/*
+   - https://console.minio.light.local/*
+   - https://console.minio.light.local/oauth_callback/*
 4. Valid post logout redirect URIs 
-   - https://minio.console.light.local/
+   - https://console.minio.light.local/
 5. Web origins 
-   - https://minio.console.light.local
+   - https://console.minio.light.local
 6. Admin URL: 
-   - https://minio.console.light.local
+   - https://console.minio.light.local
 
 #### 3. 配置Gitlab认证
 
@@ -799,4 +798,76 @@ git config --global http.sslVerify false
 
    - 一般是密码包含不识别的特殊字符，建议使用 数字 大小写字母 = 等符号，不要使用@ # & $等符号
 
+### 3. Outline 标题可以编辑，内容无法编辑
+- https://github.com/outline/outline/issues/6568
+- https://linear.app/outline/issue/OLN-269/the-title-can-be-entered-but-the-content-cannot-be-entered
+- https://github.com/outline/outline/discussions/6569
+- https://github.com/outline/outline/discussions/3677
 
+
+```conf
+proxy_set_header Connection         keep-alive;
+
+# 将上面的配置改为下面的值即可
+proxy_set_header Upgrade            $http_upgrade;
+proxy_set_header Connection         "Upgrade";
+proxy_redirect                      off;
+```
+
+### 4. Outline 集成Minio文件下载
+- https://github.com/chsasank/outline-wiki-docker-compose/issues/1
+- https://github.com/outline/outline/issues/1912
+
+
+### 5. Minio集成Keycloak认证失败
+- https://min.io/docs/minio/linux/integrations/setup-nginx-proxy-with-minio.html
+
+```bash
+# 在容器中执行
+curl https://keycloak.light.local/realms/master/.well-known/openid-configuration
+
+curl --insecure https://keycloak.light.local/realms/master/.well-known/openid-configuration
+
+```
+
+1. 未知的主机 `dial tcp: lookup keycloak.light.local on 127.0.0.11:53: no such host`
+
+```bash
+Get "https://keycloak.light.local/realms/master/.well-known/openid-configuration": dial tcp: lookup keycloak.light.local on 127.0.0.11:53: no such host
+```
+
+```bash
+# 查看原来的DNS
+cat /etc/resolv.conf 
+
+# 添加宿主机的DNS
+cat > /etc/resolv.conf << EOF
+nameserver 127.0.0.11
+nameserver 192.168.137.1
+nameserver 8.8.8.8
+options ndots:0
+EOF
+
+# 修改完成后重启容器
+```
+
+2. 无法识别的CA `unable to get local issuer certificate` `x509: certificate signed by unknown authority`
+
+- https://min.io/docs/minio/container/operations/network-encryption.html#third-party-certificate-authorities
+- https://github.com/minio/minio/issues/16616
+
+```bash
+docker cp D:/docker/develop/net/nginx/cert/light.local.key        web_minio:/opt/minio/certs/light.local.key
+docker cp D:/docker/develop/net/nginx/cert/light.local.crt        web_minio:/opt/minio/certs/light.local.crt
+docker cp D:/docker/develop/net/nginx/cert/minio.light.local.key  web_minio:/opt/minio/certs/minio.light.local.key
+docker cp D:/docker/develop/net/nginx/cert/minio.light.local.crt  web_minio:/opt/minio/certs/minio.light.local.crt
+
+docker cp D:/docker/develop/net/nginx/cert/root_ca.crt            web_minio:/opt/minio/certs/CAs/root_ca.crt
+docker cp D:/docker/develop/net/nginx/cert/intermediate_ca.crt    web_minio:/opt/minio/certs/CAs/intermediate_ca.crt
+
+# 安装CA证书
+cp /opt/minio/certs/*.crt     /etc/ssl/certs/
+cp /opt/minio/certs/CAs/*.crt /etc/ssl/certs/
+update-ca-trust
+
+```
