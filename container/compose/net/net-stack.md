@@ -88,8 +88,6 @@ mkdir -p D:/docker/develop/net/traefik/{data,conf,logs}
 ### 1. docker-compose.yaml
 
 ```yaml
-version: "3"
-
 services:
 
   binddns:
@@ -136,8 +134,8 @@ services:
   
   # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
   pihole:
-    image: pihole/pihole:latest
-     container_name: net_pihole
+    image: pihole/pihole:2024.07.0
+    container_name: net_pihole
     hostname: pihole.net
     networks:
       default: null

@@ -128,8 +128,6 @@ docker run -d --name readeck_temp codeberg.org/readeck/readeck:0.15.3 \
 ### 1. docker-compose.yaml
 
 ```yaml
-version: "3"
-
 services:
   
   keycloak:

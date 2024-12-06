@@ -71,8 +71,6 @@ mkdir -p D:/docker/develop/app/nextcloud/{data,conf,logs,html,apps,themes}
 ### 1. docker-compose.yaml
 
 ```yaml
-version: "3"
-
 services:
 
   aria2:
@@ -165,7 +163,7 @@ services:
 
   # http://wiki-zh.bitcomet.com/linux版bitcomet安装指南
   bitcomet:
-    image: wxhere/bitcomet:latest
+    image: wxhere/bitcomet:v2.11.0-amd64
     container_name: app_bitcomet
     hostname: bitcomet.app
     networks:
@@ -208,7 +206,8 @@ services:
       HTTP_PASSWORD: lightbit
 
   alist:
-    image: xhofe/alist:latest
+    image: xhofe/alist:v3.40.0
+    # image: xiaoyaliu/alist:latest
     container_name: app_alist
     hostname: alist.app
     networks:
@@ -245,7 +244,7 @@ services:
     restart: unless-stopped
 
   nextcloud:
-    image: nextcloud:latest
+    image: nextcloud:30.0.2-apache
     container_name: app_nextcloud
     hostname: nextcloud.app
     networks:
@@ -274,10 +273,25 @@ services:
       - 80
     volumes:
       - //d/docker/develop/app/nextcloud/data:/var/www/html/data
-      - //d/docker/develop/app/nextcloud/html:/var/www/html
+      # - //d/docker/develop/app/nextcloud/html:/var/www/html
       - //d/docker/develop/app/nextcloud/apps:/var/www/html/custom_apps
       - //d/docker/develop/app/nextcloud/conf:/var/www/html/config
       - //d/docker/develop/app/nextcloud/themes:/var/www/html/themes
+    environment:
+      - NEXTCLOUD_ADMIN_USER=root
+      - NEXTCLOUD_ADMIN_PASSWORD=root
+      - NEXTCLOUD_DATA_DIR=/var/www/html/data
+      - NEXTCLOUD_TRUSTED_DOMAINS=172.100.0.186 nextcloud.app nextcloud.light.local
+      # Pgsql
+      - POSTGRES_HOST=pgsql.basic:5432
+      # - POSTGRES_HOST_PORT=5432
+      - POSTGRES_DB=nextcloud
+      - POSTGRES_USER=nextcloud
+      - POSTGRES_PASSWORD=nextcloud
+      # Redis
+      - REDIS_HOST=redis.basic
+      - REDIS_HOST_PORT=6379
+      # - REDIS_HOST_PASSWORD=
     restart: no # unless-stopped
 
 networks:

@@ -1,5 +1,3 @@
-version: "3"
-
 services:
 
   aria2:
@@ -92,7 +90,7 @@ services:
 
   # http://wiki-zh.bitcomet.com/linux版bitcomet安装指南
   bitcomet:
-    image: wxhere/bitcomet:latest
+    image: wxhere/bitcomet:v2.11.0-amd64
     container_name: app_bitcomet
     hostname: bitcomet.app
     networks:
@@ -135,7 +133,8 @@ services:
       HTTP_PASSWORD: lightbit
 
   alist:
-    image: xhofe/alist:latest
+    image: xhofe/alist:v3.40.0
+    # image: xiaoyaliu/alist:latest
     container_name: app_alist
     hostname: alist.app
     networks:
@@ -172,7 +171,7 @@ services:
     restart: unless-stopped
 
   nextcloud:
-    image: nextcloud:latest
+    image: nextcloud:30.0.2-apache
     container_name: app_nextcloud
     hostname: nextcloud.app
     networks:

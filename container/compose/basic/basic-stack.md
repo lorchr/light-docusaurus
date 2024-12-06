@@ -99,8 +99,6 @@ crontab -e
 ### 1. docker-compose.yaml
 
 ```yaml
-version: "3"
-
 services:
   mysql:
     image: mysql:8.0
