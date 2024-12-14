@@ -107,7 +107,7 @@ echo "deb https://mirrors.ustc.edu.cn/proxmox/debian/pve bookworm pve-no-subscri
 ls /etc/apt/sources.list.d
 
 # 备份旧的文件
-mv /etc/apt/sources.list.d/ceph.list            /etc/apt/sources.list.d/ceph.list.backup
+cp /etc/apt/sources.list.d/ceph.list            /etc/apt/sources.list.d/ceph.list.backup
 
 # 更换Ceph源
 if [ -f /etc/apt/sources.list.d/ceph.list ]; then
@@ -820,7 +820,129 @@ wget https://www.ikuai8.com/download.php?n=/3.x/iso/iKuai8_x64_3.7.12_Build20240
 10. 在系统管理 - 登录管理 - 远程访问开启远程维护，端口为22，账号密码 sshd / admin123
 11. 在网络设置 - DHCP设置 - DHCP服务端 修改目标网段，或者关闭DHCP服务，否则会污染内网设备的IP分配
 
-## 七、安装 iStoreOS
+## 七、安装 OpenWrt
+
+1. 在BIOS中打开硬件直通相关选项（VT-d & VMX）
+2. 编辑Grub开启网口直通
+
+```bash
+nano /etc/default/grub
+
+# 开启硬件直通
+# 将 GRUB_CMDLINE_LINUX_DEFAULT="quiet" 改为 GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"
+
+# 如果你的pcie设备分组有问题也可以换成这一行对分组拆分（直通遇到问题都可以尝试这个）
+# GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on pcie_acs_override=downstream"
+
+# 更新grub
+update-grub
+
+root@pve:~/pvetools# update-grub
+Generating grub configuration file ...
+Found linux image: /boot/vmlinuz-6.8.4-3-pve
+Found initrd image: /boot/initrd.img-6.8.4-3-pve
+Found linux image: /boot/vmlinuz-6.8.4-2-pve
+Found initrd image: /boot/initrd.img-6.8.4-2-pve
+Found memtest86+ 64bit EFI image: /boot/memtest86+x64.efi
+Adding boot menu entry for UEFI Firmware Settings ...
+done
+
+```
+
+3. 记录外部网口与编码映射关系
+
+```bash
+# 获取网卡名称
+ip addr
+
+# 获取网卡的PCI地址
+ethtool --driver enp1s0
+ethtool --driver enp2s0
+ethtool --driver enp3s0  ethtool --driver eno1
+ethtool --driver enp4s0
+
+# 从PCI上查看网卡
+root@pve:~# lspci | grep -i 'Ethernet'
+01:00.0 Ethernet controller: Intel Corporation Ethernet Controller I226-V (rev 04)
+02:00.0 Ethernet controller: Intel Corporation Ethernet Controller I226-V (rev 04)
+03:00.0 Ethernet controller: Intel Corporation Ethernet Controller I226-V (rev 04)
+04:00.0 Ethernet controller: Intel Corporation Ethernet Controller I226-V (rev 04)
+
+
+```
+
+| 外部编号 | 网卡名      | PCI地址 | 备注 |
+| -------- | ----------- | ------- | ---- |
+| ETH0     | enp1s0      | 01:00.0 | WAN  |
+| ETH1     | enp2s0      | 02:00.0 | LAN  |
+| ETH2     | eno1 enp3s0 | 03:00.0 | LAN  |
+| ETH3     | enp4s0      | 04:00.0 | MNG  |
+
+4. 下载镜像
+
+```bash
+# https://firmware-selector.openwrt.org/?version=23.05.5&target=x86%2Fgeneric&id=generic
+wget https://downloads.openwrt.org/releases/23.05.5/targets/x86/generic/openwrt-23.05.5-x86-generic-generic-squashfs-combined-efi.img.gz
+
+gzip -d openwrt-23.05.5-x86-generic-generic-squashfs-combined-efi.img.gz
+```
+
+5. 创建虚拟机
+   1. 常规: 序号 202 名称 OpenWrt
+   2. 操作系统: 不使用任何介质
+   3. 系统: 默认，或把BIOS改为 UEFI(OpenWrt使用默认的SeaBIOS)
+   4. 磁盘: 删除硬盘
+   5. CPU: 1C4T 类别: Host
+   6.  内存: 2048 MB
+   7.  网络: vmbr0 VirtIO半虚拟化
+
+6.  导入镜像
+
+```bash
+cd /root/
+
+# 202为虚拟机编号  istoreos为下载的镜像名称
+qm importdisk 202 openwrt-23.05.5-x86-generic-generic-squashfs-combined-efi.img local-lvm
+
+# 如果合并了 local 和 local-lvm 将结尾的 local-lvm 改为 local
+```
+
+7.  OpenWrt - 硬件 - 未使用的磁盘0，双击添加
+8.  OpenWrt - 选项 - 引导顺序，仅勾选挂载的 disk 磁盘，并将其移动到第一位
+9.  OpenWrt - 硬件 - EFI磁盘 - 移除
+9.  OpenWrt - 硬件 - 添加 - PCI设备，选择需要直通的网卡
+10. 开机进入命令行，配置默认的ip地址
+
+```bash
+vim /etc/config/network
+
+config interface 'loopback'
+        option device 'lo'
+        option proto 'static'
+        option ipaddr '127.0.0.1'
+        option netmask '255.0.0.0'
+
+config globals 'globals'
+        option ula_prefix 'fd57:6dbb:d2f3::/48'
+
+config device
+        option name 'br-lan'
+        option type 'bridge'
+        list ports 'eth0'
+
+config interface 'lan'
+        option device 'br-lan'
+        option proto 'static'
+        option ipaddr '192.168.0.202'
+        option netmask '255.255.255.0'
+        option gateway '192.168.0.1'
+        option peerdns '0'
+        list dns '223.5.5.5'
+
+```
+
+## 八、安装 iStoreOS
 
 1. 在BIOS中打开硬件直通相关选项（VT-d & VMX）
 2. 编辑Grub开启网口直通
@@ -888,7 +1010,7 @@ gzip -d istoreos-22.03.6-2024061415-x86-64-squashfs-combined.img.gz
 ```
 
 5. 创建虚拟机
-   1. 常规: 序号 102 名称 iStoreOS
+   1. 常规: 序号 203 名称 iStoreOS
    2. 操作系统: 不使用任何介质
    3. 系统: 默认，或把BIOS改为 UEFI(OpenWrt使用默认的SeaBIOS)
    4. 磁盘: 删除硬盘
@@ -901,14 +1023,15 @@ gzip -d istoreos-22.03.6-2024061415-x86-64-squashfs-combined.img.gz
 ```bash
 cd /root/
 
-# 101为虚拟机编号  istoreos为下载的镜像名称
-qm importdisk 102 istoreos-22.03.6-2024061415-x86-64-squashfs-combined.img local-lvm
+# 203为虚拟机编号  istoreos为下载的镜像名称
+qm importdisk 203 istoreos-22.03.6-2024061415-x86-64-squashfs-combined.img local-lvm
 
 # 如果合并了 local 和 local-lvm 将结尾的 local-lvm 改为 local
 ```
 
 7.  iStoreOS - 硬件 - 未使用的磁盘0，双击添加
 8.  iStoreOS - 选项 - 引导顺序，仅勾选挂载的 disk 磁盘，并将其移动到第一位
+9.  iStoreOS - 硬件 - EFI磁盘 - 移除
 9.  iStoreOS - 硬件 - 添加 - PCI设备，选择需要直通的网卡
 10. 开机进入命令行，配置默认的ip地址
 
@@ -932,7 +1055,7 @@ config device
 config interface 'lan'
         option device 'br-lan'
         option proto 'static'
-        option ipaddr '192.168.0.202'
+        option ipaddr '192.168.0.203'
         option netmask '255.255.255.0'
         option gateway '192.168.0.1'
         option peerdns '0'
@@ -946,7 +1069,7 @@ config interface 'lan'
 
 访问iStoreOS http://istoreos.local
 
-## 八、安装 HassOS
+## 九、安装 HassOS
 
 1. 常规: 序号 110 名称 HassOS
 2. 操作系统: 不使用任何介质
