@@ -60,20 +60,22 @@ curl -X GET "https://api.cloudflare.com/client/v4/user/tokens/verify" \
 ### 3.3 查询刚才添加的 AAAA 记录的 ID
 按以下格式执行命令：
 ```shell
-curl -s -X GET "https://api.cloudflare.com/client/v4/zones/<刚才获取的 Zone ID>/dns_records?type=AAAA&name=<DDNS 域名>&content=127.0.0.1&page=1&per_page=100&order=type&direction=desc&match=any" \
+curl -s -X GET "https://api.cloudflare.com/client/v4/zones/<刚才获取的 Zone ID>/dns_records?type=AAAA&name=<DDNS 域名>&content=::1&page=1&per_page=100&order=type&direction=desc&match=any" \
     -H "X-Auth-Email: <Cloudflare 账号的邮箱地址>" \
     -H "X-Auth-Key: <刚才获取的 API Key>" \
     -H "Content-Type: application/json" \
     | python -m tool.json
 ```
+
 例如
 ```shell
-curl -s -X GET "https://api.cloudflare.com/client/v4/zones/12345678901234567890/dns_records?type=AAAA&name=ipv6-ddns.dyndns.com&content=127.0.0.1&page=1&per_page=100&order=type&direction=desc&match=any" \
+curl -s -X GET "https://api.cloudflare.com/client/v4/zones/12345678901234567890/dns_records?type=AAAA&name=xx.yy.ip-ddns.com&content=::1&page=1&per_page=100&order=type&direction=desc&match=any" \
     -H "X-Auth-Email: mail@example.com" \
     -H "X-Auth-Key: 11111111111111111111" \
     -H "Content-Type: application/json" \
     | python -m tool.json
 ```
+
 运行结果
 
 ```json
@@ -92,13 +94,13 @@ curl -s -X GET "https://api.cloudflare.com/client/v4/zones/12345678901234567890/
                 "managed_by_argo_tunnel": false
             },
             "modified_on": "2019-06-14T19:01:14.374270Z",
-            "name": "ipv6-ddns.example.com",
+            "name": "xx.yy.ip-ddns.com",
             "proxiable": true,
             "proxied": false,
             "ttl": 120,
             "type": "AAAA",
             "zone_id": "12345678901234567890",
-            "zone_name": "example.com"
+            "zone_name": "yy.ip-ddns.com"
         }
     ],
     "result_info": {
@@ -125,12 +127,14 @@ curl -X PUT "https://api.cloudflare.com/client/v4/zones/<刚才获取的 Zone ID
 EOF
 chmod +x /etc/ipv6-ddns.sh 
 ```
+
 例如
 ```shell
 cat << EOF > /etc/ipv6-ddns.sh 
 #!/bin/sh
 sleep 10
 IP6=\`ip -6 addr show dev eth0 | grep global | awk '{print \$2}' | awk -F "/" '{print \$1}'\`
+echo \$IP6
 [ -z \$IP6 ] && exit
 curl -X PUT "https://api.cloudflare.com/client/v4/zones/12345678901234567890/dns_records/22222222222222222222" -H "X-Auth-Email: mail@example.com" -H "X-Auth-Key: 11111111111111111111" -H "Content-Type: application/json" --data '{"type":"AAAA","name":"ipv6-ddns.example.com","content":"'"\${IP6}"'","ttl":120,"proxied":false}'
 EOF

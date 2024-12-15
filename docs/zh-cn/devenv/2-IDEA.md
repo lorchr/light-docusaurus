@@ -9,15 +9,14 @@
 
 ## 1. IDEA激活
 
-1. 登录账户试用 jb@163.com
-2. 进入程序，`Help` -> `Edit Custom VM Options`
+1. 解压压缩包，修改 `bin/idea64.exe.vmoptions`
     ```shell
-    -javaagent:D:/Develop/IDEA/ja-netfilter/ja-netfilter.jar
+    -javaagent:D:/Develop/IDEA/ja-netfilter/ja-netfilter.jar=jetbrains
     --add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED
     --add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED
     ```
-3. 退出登录用户
-4. 输入激活码 https://aijihuo.cn/jetbrains-activation-codes.html
+2. 从热心大佬出找激活码 https://jetbra.in/s
+3. 输入激活码 https://aijihuo.cn/jetbrains-activation-codes.html
 
 ## 2. IDEA注释模板
 
@@ -115,10 +114,10 @@ time()
 10. Free Mybatis Plugin , MybatisX
 11. EasyCode
 12. EasyYapi
-13. GeneratrSerialVersionUID
+13. GenerateSerialVersionUID
 14. JFormDesigner
 15. PlantUML Integration
-16. ResourceBundle Editor
+16. Resource Bundle Editor
 17. SonarAnalyzer
 18. TestMe
 19. UML Generator
@@ -143,3 +142,29 @@ time()
 37. Stack trace to UML — 根据 JVM 异常堆栈画 UML时序图和通信图
 38. Java Stream Debugger — Stream 将操作步骤可视化
 39. IDEA QAPlug - 帮助我们提前找到潜在的问题bug
+
+## 5. 卸载
+
+### 1. 清除注册表
+每个程序安装后，在注册表中都会留下相关信息。如何清理呢？
+
+按住快捷键 `windows + R`, 然后输入 `regedit` 回车调出注册表。
+
+依次点击菜单 `计算机\HKEY_CURRENT_USER\SOFTWARE\JavaSoft\Prefs\jetbrains`， 然后右键删除。
+
+
+### 2. 残留清理
+最后，还有几个地方的缓存数据需要删除：
+
+```bash
+C:\用户\${用户名称}\IdeaProjects\
+# 如果你想删除 IDEA 相关，则只需要删除 JetBrains 目录下包含 IDEA 的文件夹即可
+C:\用户\${用户名称}\AppData\Roaming\JetBrains
+# 如果你想删除 IDEA 相关，则只需要删除 JetBrains 目录下包含 IDEA 的文件夹即可
+C:\用户\${用户名称}\AppData\Local\JetBrains
+C:\用户\公用\.jetbrains
+# 如果你想删除 IDEA 相关，则只需要删除 JetBrains 目录下包含 IDEA 的文件夹即可
+C:\Program Files\JetBrains
+C:\ProgramData\Microsoft\Windows\Start Menu\Programs\JetBrains\
+```
+
