@@ -73,6 +73,7 @@
 - [本地的PDF处理](https://github.com/Stirling-Tools/Stirling-PDF)
 - [一个自托管项目管理工具](https://github.com/mattermost/focalboard)
 - [开源的SSL证书管理工具](https://github.com/usual2970/certimate)
+- [本地 SSL 证书生成神器](https://github.com/FiloSottile/mkcert)
 
 ## 学习类
 - [Java充电社](http://itsoku.com/)
@@ -86,3 +87,10 @@
 - [Docmost](https://github.com/docmost/docmost)
 - [Trilium](https://github.com/zadam/trilium)
 - [Memos](https://github.com/usememos/memos)
+
+## IPTV
+- [IPTV直播APP](https://github.com/lizongying/my-tv/)
+- [IPTV直播APP](https://github.com/yaoxieyoulei/mytv-android/)
+- [IPTV直播源](https://github.com/joevess/IPTV)
+- [IPTV直播源](https://github.com/fanmingming/live)
+- [IPTV-API](https://github.com/Guovin/iptv-api)

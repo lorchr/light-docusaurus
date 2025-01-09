@@ -501,6 +501,33 @@ root@iStoreOS:~# umount /dev/sda1 /mnt/sda/
 
 ```
 
+6. 使用UUID挂载磁盘
+
+```shell
+# 安装 ntfs-3g 挂在 NTFS 磁盘
+apt-get install ntfs-3g
+
+# 查看磁盘
+fdisk -l
+
+# 获取UUID  21729cd9-6b93-4321-8061-5ac641b1020c
+blkid /dev/sdb
+
+# 创建挂载点
+mkdir /mnt/sdb
+
+# 挂在磁盘
+cp /etc/fstab /etc/fstab.bak
+vim /etc/fstab 
+
+# 写入配置
+/dev/sdb                                   /mnt/sdb  ntfs-3g  rw,locale=zh_CN.utf8,uid=1000        0 0 
+UUID=21729cd9-6b93-4321-8061-5ac641b1020c  /mnt/sdb  ntfs-3g  nofail,rw,locale=zh_CN.utf8,uid=1000 0 0 
+UUID=21729cd9-6b93-4321-8061-5ac641b1020c  /mnt/sda  ext4     defaults,noatime,nofail              0 0 
+
+```
+
+其中nofail选项确保即使硬盘未连接或出错，系统也能正常启动
 
 
 ### 修改虚拟机编号VMID
