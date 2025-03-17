@@ -1,0 +1,655 @@
+
+- [在 SpringBoot 项目中如何动态切换数据源、数据库？](https://mp.weixin.qq.com/s/oEefNMM7ftLrzwo_YODR1w)
+- [【总结】在SpringBoot项目中如何动态切换数据源、数据库？（可直接CV）](https://blog.csdn.net/cyuyanya__/article/details/139605809)
+
+## 前言
+本文介绍了如何在SpringBoot项目中使用AOP和自定义注解实现MySQL主从数据库的动态切换，当从库故障时，能自动切换到主库，确保服务的高可用性。
+
+实现效果：
+
+如果服务器搭建的是一主多从多个mysql数据源，主服务器用来读。从服务器用来写。此时你在代码层面用注解指定了一个增删改方法到从数据源，但是碰巧此时从数据源失效了，那么就会自动的切换到其它服务器。
+
+
+## 为什么要切换数据源，有哪些应用场景？
+动态切换数据源通常是为了满足以下需求：
+
+1. 读写分离： 在数据库架构中，为了提高性能和可用性，常常使用主从复制的方式。主数据库处理写操作，而从数据库处理读操作。动态切换数据源可以在不同的操作中使用不同的数据库，以达到优化性能的目的。
+2. 多租户架构： 在SaaS（Software as a Service）应用中，不同的租户可能需要操作不同的数据库。动态数据源允许系统根据租户的身份来切换到对应的数据源。
+3. 分库分表： 在处理大规模数据时，可能会采用分库分表的策略来分散数据存储的压力。动态切换数据源可以在执行跨库或跨表操作时，根据需要切换到正确的数据源。
+4. 环境隔离： 在开发、测试和生产环境中，可能需要连接到不同的数据库。动态数据源可以在不同环境之间无缝切换，以确保数据的隔离和安全性。 
+5. 灵活的数据库管理： 在复杂的业务场景下，可能需要根据不同的业务逻辑来选择不同的数据源。动态数据源提供了这种灵活性，允许开发者根据运行时的条件来选择最合适的数据源。 
+6. 故障转移和高可用性： 当主数据库不可用时，动态切换数据源可以自动或手动切换到备用数据库，以保证服务的连续性和数据的可用性。 
+
+
+## 如何切换数据源？
+- SpringBoot版本：3.0.4
+- jdk版本：JDK17
+
+### 1、pom文件
+
+```xml
+<dependency>
+<groupId>org.projectlombok</groupId>
+<artifactId>lombok</artifactId>
+</dependency>
+<!-- aop切面-->
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+<!--druid连接池-->
+<dependency>
+  <groupId>com.alibaba</groupId>
+  <artifactId>druid-spring-boot-starter</artifactId>
+  <version>1.2.20</version>
+</dependency>
+<!--mysql驱动-->
+<dependency>
+  <groupId>com.mysql</groupId>
+  <artifactId>mysql-connector-j</artifactId>
+</dependency>
+<!--MybatisPlus-->
+<dependency>
+  <groupId>com.baomidou</groupId>
+  <artifactId>mybatis-plus-boot-starter</artifactId>
+  <version>3.5.3.1</version>
+</dependency>
+```
+
+### 2、配置文件：application.yml、application-druid.yml
+
+application.yml配置文件：
+
+```yaml
+#application.yml
+ 
+server:
+  port: 8000
+spring:
+  profiles:
+    active: druid
+```
+
+application-druid.yml配置文件：
+
+```yaml
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://localhost:3306/study?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      # 从库数据源
+      slave:
+        # 从数据源开关/默认关闭
+        enabled: true
+        url: jdbc:mysql://localhost:3306/t_lyj?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      # 初始连接数
+      initialSize: 5
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置连接超时时间
+      connectTimeout: 30000
+      # 配置网络超时时间
+      socketTimeout: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+```
+
+### 3、数据源名称枚举DataSourceType
+
+```java
+/**
+ * 数据源
+ * 
+ * @author ruoyi
+ */
+public enum DataSourceType
+{
+    /**
+     * 主库
+     */
+    MASTER,
+ 
+    /**
+     * 从库
+     */
+    SLAVE
+}
+```
+
+### 4、Bean工具类SpringUtils
+
+```java
+@Component
+public final class SpringUtils implements BeanFactoryPostProcessor, ApplicationContextAware 
+{
+    /** Spring应用上下文环境 */
+    private static ConfigurableListableBeanFactory beanFactory;
+ 
+    private static ApplicationContext applicationContext;
+ 
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException 
+    {
+        SpringUtils.beanFactory = beanFactory;
+    }
+ 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException 
+    {
+        SpringUtils.applicationContext = applicationContext;
+    }
+ 
+    /**
+     * 获取对象
+     *
+     * @param name
+     * @return Object 一个以所给名字注册的bean的实例
+     * @throws BeansException
+     *
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getBean(String name) throws BeansException
+    {
+        return (T) beanFactory.getBean(name);
+    }
+ 
+    /**
+     * 获取类型为requiredType的对象
+     *
+     * @param clz
+     * @return
+     * @throws BeansException
+     *
+     */
+    public static <T> T getBean(Class<T> clz) throws BeansException
+    {
+        T result = (T) beanFactory.getBean(clz);
+        return result;
+    }
+ 
+    /**
+     * 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true
+     *
+     * @param name
+     * @return boolean
+     */
+    public static boolean containsBean(String name)
+    {
+        return beanFactory.containsBean(name);
+    }
+ 
+    /**
+     * 判断以给定名字注册的bean定义是一个singleton还是一个prototype。 如果与给定名字相应的bean定义没有被找到，将会抛出一个异常（NoSuchBeanDefinitionException）
+     *
+     * @param name
+     * @return boolean
+     * @throws NoSuchBeanDefinitionException
+     *
+     */
+    public static boolean isSingleton(String name) throws NoSuchBeanDefinitionException
+    {
+        return beanFactory.isSingleton(name);
+    }
+ 
+    /**
+     * @param name
+     * @return Class 注册对象的类型
+     * @throws NoSuchBeanDefinitionException
+     *
+     */
+    public static Class<?> getType(String name) throws NoSuchBeanDefinitionException
+    {
+        return beanFactory.getType(name);
+    }
+ 
+    /**
+     * 如果给定的bean名字在bean定义中有别名，则返回这些别名
+     *
+     * @param name
+     * @return
+     * @throws NoSuchBeanDefinitionException
+     *
+     */
+    public static String[] getAliases(String name) throws NoSuchBeanDefinitionException
+    {
+        return beanFactory.getAliases(name);
+    }
+ 
+    /**
+     * 获取aop代理对象
+     * 
+     * @param invoker
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getAopProxy(T invoker)
+    {
+        return (T) AopContext.currentProxy();
+    }
+ 
+    /**
+     * 获取当前的环境配置，无配置返回null
+     *
+     * @return 当前的环境配置
+     */
+    public static String[] getActiveProfiles()
+    {
+        return applicationContext.getEnvironment().getActiveProfiles();
+    }
+ 
+    /**
+     * 获取当前的环境配置，当有多个环境配置时，只获取第一个
+     *
+     * @return 当前的环境配置
+     */
+    public static String getActiveProfile()
+    {
+        final String[] activeProfiles = getActiveProfiles();
+        return StringUtils.isNotEmpty(Arrays.toString(activeProfiles)) ? activeProfiles[0] : null;
+    }
+ 
+    /**
+     * 获取配置文件中的值
+     *
+     * @param key 配置文件的key
+     * @return 当前的配置文件的值
+     *
+     */
+    public static String getRequiredProperty(String key)
+    {
+        return applicationContext.getEnvironment().getRequiredProperty(key);
+    }
+}
+```
+
+### 5、多数据源切换注解DataSource
+
+```java
+/**
+ * 自定义多数据源切换注解
+ *
+ * 优先级：先方法，后类，如果方法覆盖了类上的数据源类型，以方法的为准，否则以类上的为准
+ *
+ * @author lyj
+ */
+@Target({ ElementType.METHOD, ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
+public @interface DataSource
+{
+    /**
+     * 切换数据源名称
+     */
+    public DataSourceType value() default DataSourceType.MASTER;
+}
+```
+
+### 6、数据源解析配置类DruidConfig
+
+```java
+@Configuration
+public class DruidConfig {
+
+   @Bean
+   @ConfigurationProperties("spring.datasource.druid.master")
+   public DataSource masterDataSource(DruidProperties druidProperties){
+       DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+       return druidProperties.dataSource(dataSource);
+   }
+
+   @Bean
+   @ConfigurationProperties("spring.datasource.druid.slave")
+   @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
+   public DataSource slaveDataSource(DruidProperties druidProperties) {
+       DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+       return druidProperties.dataSource(dataSource);
+   }
+
+   @Bean(name = "dynamicDataSource")
+   @Primary
+   public DynamicDataSource dataSource(DataSource masterDataSource) {
+       Map<Object, Object> targetDataSources = new HashMap<>();
+       targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
+       setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
+       return new DynamicDataSource(masterDataSource, targetDataSources);
+   }
+
+
+   /**
+    * 设置数据源
+    *
+    * @param targetDataSources 备选数据源集合
+    * @param sourceName 数据源名称
+    * @param beanName bean名称
+    */
+   public void setDataSource(Map<Object, Object> targetDataSources, String sourceName, String beanName) {
+       try {
+           DataSource dataSource = SpringUtils.getBean(beanName);
+           targetDataSources.put(sourceName, dataSource);
+       } catch (Exception e) {
+       }
+   }
+}
+```
+
+### 7、数据源注入核心类DynamicDataSource
+
+```java
+/**
+ * 动态数据源
+ * 
+ * @author lyj
+ */
+public class DynamicDataSource extends AbstractRoutingDataSource {
+    public DynamicDataSource(DataSource defaultTargetDataSource, Map<Object, Object> targetDataSources)
+    {
+        //设置默认数据源
+        super.setDefaultTargetDataSource(defaultTargetDataSource);
+        //设置目标数据源的映射
+        super.setTargetDataSources(targetDataSources);
+        //初始化
+        super.afterPropertiesSet();
+    }
+ 
+    @Override
+    protected Object determineCurrentLookupKey()
+    {
+        return DynamicDataSourceContextHolder.getDataSourceType();
+    }
+}
+```
+
+### 8、数据源切换处理类DynamicDataSourceContextHolder
+
+```java
+/**
+ * 数据源切换处理
+ * 
+ * @author lyj
+ */
+public class DynamicDataSourceContextHolder
+{
+    public static final Logger log = LoggerFactory.getLogger(DynamicDataSourceContextHolder.class);
+ 
+    /**
+     * 使用ThreadLocal维护变量，ThreadLocal为每个使用该变量的线程提供独立的变量副本，
+     * 所以每一个线程都可以独立地改变自己的副本，而不会影响其它线程所对应的副本。
+     */
+    private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
+ 
+    /**
+     * 设置数据源的变量
+     */
+    public static void setDataSourceType(String dsType)
+    {
+        log.info("切换到{}数据源", dsType);
+        CONTEXT_HOLDER.set(dsType);
+    }
+ 
+    /**
+     * 获得数据源的变量，默认使用主数据源
+     */
+    public static String getDataSourceType()
+    {
+        return CONTEXT_HOLDER.get() == null ? DataSourceType.MASTER.name() : CONTEXT_HOLDER.get();
+    }
+ 
+    /**
+     * 清空数据源变量
+     */
+    public static void clearDataSourceType()
+    {
+        CONTEXT_HOLDER.remove();
+    }
+}
+```
+
+### 9、Aop切面类
+
+```java
+@Aspect
+@Order(1)
+@Component
+public class DataSourceAspect {
+ 
+ 
+    @Pointcut("@annotation(com.LYJ.study.DynamicDataSource.annocation.DataSource)"
+            + "|| @within(com.LYJ.study.DynamicDataSource.annocation.DataSource)")
+    public void dsPointCut(){}
+ 
+    @Around("dsPointCut()")
+ 
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable{
+        DataSource dataSource = getDataSource(joinPoint);
+        if (dataSource != null){
+            DynamicDataSourceContextHolder.setDataSourceType(dataSource.value().name());
+        }
+        try {
+            return joinPoint.proceed();
+        }
+        finally {
+            // 销毁数据源 在执行方法之后
+            DynamicDataSourceContextHolder.clearDataSourceType();
+        }
+    }
+ 
+    /**
+     * 获取需要切换的数据源
+     */
+    public DataSource getDataSource(ProceedingJoinPoint point)
+    {
+        MethodSignature signature = (MethodSignature) point.getSignature();
+        com.LYJ.study.DynamicDataSource.annocation.DataSource dataSource = AnnotationUtils.findAnnotation(signature.getMethod(), com.LYJ.study.DynamicDataSource.annocation.DataSource.class);
+        if (Objects.nonNull(dataSource)) {
+            return dataSource;
+        }
+        return AnnotationUtils.findAnnotation(signature.getDeclaringType(), DataSource.class);
+    }
+}
+```
+
+### 10、在业务中使用
+若要使用从数据源，将从数据源的enabled置为true，默认为false
+
+```yaml
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://localhost:3306/study?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      # 从库数据源
+      slave:
+        # 从数据源开关/默认关闭
+        enabled: true
+        url: jdbc:mysql://localhost:3306/t_lyj?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+```
+
+```java
+@Service
+@RequiredArgsConstructor
+@DataSource(value=DataSourceType.MASTER)
+//@DataSource(value=DataSourceType.SLAVE)
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+ 
+    private final UserMapper userMapper;
+    @Override
+    @DataSource(value=DataSourceType.MASTER)
+    //@DataSource(value=DataSourceType.SLAVE)
+    public List<User> queryAll() {
+        return userMapper.selectList(null);
+    }
+}
+```
+
+我们在service、mapper的类和方法上使用都可以。
+
+## 补充：有很多从数据源怎么办？
+我们上面已经配置了一个从数据源了，接下来我们继续配置多个从数据源
+
+首先在application-druid.yml文件添加新的数据源
+
+```yaml
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://localhost:3306/study?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      # 从库数据源
+      slave:
+        # 从数据源开关/默认关闭
+        enabled: true
+        url: jdbc:mysql://localhost:3306/t_lyj?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+      slave2:
+        # 从数据源开关/默认关闭
+        enabled: true
+        url: jdbc:mysql://localhost:3306/t_lyj?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+        username: root
+        password: 123456
+```
+
+在枚举添加数据源名称
+```java
+//如果配置多数据源，继续添加即可
+public enum DataSourceType
+{
+    /**
+     * 主库
+     */
+    MASTER,
+ 
+    /**
+     * 从库
+     */
+    SLAVE,
+    /**
+     * 从库2
+     */
+    SLAVE2
+}
+
+```
+
+注册新的数据源，并添加到Map
+```java
+@Configuration
+public class DruidConfig {
+
+   @Bean
+   @ConfigurationProperties("spring.datasource.druid.master")
+   public DataSource masterDataSource(DruidProperties druidProperties){
+       DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+       return druidProperties.dataSource(dataSource);
+   }
+
+   @Bean
+   @ConfigurationProperties("spring.datasource.druid.slave")
+   @ConditionalOnProperty(prefix = "spring.datasource.druid.slave", name = "enabled", havingValue = "true")
+   public DataSource slaveDataSource(DruidProperties druidProperties) {
+       DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+       return druidProperties.dataSource(dataSource);
+   }
+
+   @Bean
+   @ConfigurationProperties("spring.datasource.druid.slave2")
+   @ConditionalOnProperty(prefix = "spring.datasource.druid.slave2", name = "enabled", havingValue = "true")
+   public DataSource slaveDataSource2(DruidProperties druidProperties) {
+       DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+       return druidProperties.dataSource(dataSource);
+   }
+
+   @Bean(name = "dynamicDataSource")
+   @Primary
+   public DynamicDataSource dataSource(DataSource masterDataSource) {
+       Map<Object, Object> targetDataSources = new HashMap<>();
+       targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
+       setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
+       setDataSource(targetDataSources, DataSourceType.SLAVE2.name(), "slaveDataSource2");
+       return new DynamicDataSource(masterDataSource, targetDataSources);
+   }
+
+
+   /**
+    * 设置数据源
+    *
+    * @param targetDataSources 备选数据源集合
+    * @param sourceName 数据源名称
+    * @param beanName bean名称
+    */
+   public void setDataSource(Map<Object, Object> targetDataSources, String sourceName, String beanName) {
+       try {
+           DataSource dataSource = SpringUtils.getBean(beanName);
+           targetDataSources.put(sourceName, dataSource);
+       } catch (Exception e) {
+       }
+   }
+}
+```
+
+## 如何切换数据库？
+我们就以Oracle为例
+
+```xml
+<!--oracle驱动-->
+<dependency>
+  <groupId>com.oracle</groupId>
+  <artifactId>ojdbc6</artifactId>
+  <version>11.2.0.3</version>
+</dependency>
+```
+
+在application-druid.yml添加
+```yaml
+slave3:
+  # 从数据源开关/默认关闭
+  enabled: true
+  url: jdbc:oracle:thin:@127.0.0.1:1521:oracle
+  username: root
+  password: password
+
+```
+
+然后删除指定的mysql驱动，默认会自动寻找驱动
+```yaml
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver # 删除这一行
+```
+
+添加数据源和用法参考上面即可，都是一样的。
+
+**注意：** 在切换数据库时，因为mysql跟Oracle的sql语法有差别，启动时可能报错。

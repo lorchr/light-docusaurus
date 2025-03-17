@@ -1,5 +1,6 @@
 - [ApacheDS安装 [ LDAP和Kerberos ] 配置](https://blog.csdn.net/zhanglong_4444/article/details/114900046)
-
+- [apacheDS ldap 安装，配置，增删查该及备份恢复](https://blog.csdn.net/wanglei_storage/article/details/105392025)
+- [（超详细图文）apacheDS安装与LDAP/kerberos配置](https://blog.csdn.net/qq_24186017/article/details/114583734)
 - [快速搭建Kerberos服务端及入门使用](https://www.cnblogs.com/yinzhengjie/p/10765503.html)
 
 ## 一 .前言
