@@ -249,7 +249,7 @@ cat /etc/systemd/system/emqx.service
 cat > /etc/systemd/system/emqx.service << 'EOF'
 [Unit]
 Description=EMQX Broker
-After=network.target
+After=syslog.target network.target
 
 [Service]
 Type=forking
@@ -679,9 +679,9 @@ listeners.tcp.default {
 ```
 
 ```shell
-rm -rf etc/emqx.conf
+rm -rf /opt/emqx/etc/emqx.conf
 
-cat >> etc/emqx.conf << 'EOF'
+cat > /opt/emqx/etc/emqx.conf << 'EOF'
 ## NOTE:
 ## This config file overrides data/configs/cluster.hocon,
 ## and is merged with environment variables which start with 'EMQX_' prefix.
@@ -1107,7 +1107,7 @@ server {
   proxy_pass            emqx_servers;
 
   # 启用此项时，对应后端监听器也需要启用 proxy_protocol
-  # proxy_protocol        on;
+  proxy_protocol        on;
   proxy_connect_timeout 10s;   
   # 默认心跳时间为 10 分钟
   proxy_timeout         60s;
@@ -1563,7 +1563,66 @@ Topic订阅属于客户端自身的行为，需要在客户端实现重连之后
 - Nginx 拥有更多的用户，更完善的社区文档，上手门槛更低，但是对于MQTT的支持较弱。
 - HAProxy 在性能以及高可用上更胜一筹，对MQTT的支持也更好，但是相对用户量少，门槛更高，运维成本高。
 
-## 十、常见问题
+## 十、其他问题
+### 1. 共享订阅
+
+- [共享订阅 - MQTT 5.0 新特性](https://www.emqx.com/zh/blog/introduction-to-mqtt5-protocol-shared-subscription)
+- [MQTT核心概念-共享订阅](https://www.emqx.io/docs/zh/v5.0/messaging/mqtt-concepts.html#%E5%85%B1%E4%BA%AB%E8%AE%A2%E9%98%85)
+- [MQTT高级特性-共享订阅](https://docs.emqx.com/zh/emqx/v5.0/mqtt/mqtt-shared-subscription.html)
+- [不带组别的共享订阅](https://www.emqx.io/docs/en/v4.4/advanced/shared-subscriptions.html#shared-subscription)
+- [共享订阅配置参数](https://docs.emqx.com/zh/emqx/v5.0/configuration/configuration-manual.html#共享订阅)
+
+在不使用共享订阅时，每个客户端都会收到全量的消息，造成消息的重复消费，同时也会导致客户端消息处理能力的下降。
+
+MQTT在5.0之后新增了共享订阅特性，很好的避免了这个问题，使用共享订阅，可以实现在扩展客户端的同时，充分利用每个客户端的消息处理能力，同时也避免了消息的重复消费
+
+共享订阅在EMQX中时默认开启的，只需要在订阅topic时添加对应的前缀即可实现，Web配置位置如下图所示
+![](./img/12/共享订阅7.png)
+
+| 示例                            | 前缀   | 组别        | topic              |
+| ------------------------------- | ------ | ----------- | ------------------ |
+| $share/{ShareName}/{topic-name} | $share | {ShareName} | {topic-name}       |
+| $share/pisx/A2-F1/电压表        | $share | lux         | A2-F1/电压表       |
+| $share/yunyi/01_混配/1#罐流量计 | $share | yunyi       | 01_混配/1#罐流量计 |
+| $queue/01_混配/1#罐流量计       | $queue | -           | 01_混配/1#罐流量计 |
+
+
+Note: 除了使用`$share/<group-name>` 这种共享订阅方式之外，EMQX还提供了不带组别的共享订阅 `$queue`，详情见[不带组别的共享订阅](https://www.emqx.io/docs/en/v4.4/advanced/shared-subscriptions.html#shared-subscription)
+
+
+1. 四个客户端连接到集群，分别采用相同的共享订阅前缀订阅 topic `testtopic`，带前缀的topic地址为 `$share/pisx/testtopic`
+
+2. 其中一个客户端向 topic `testtopic` 发送消息，可以看到只有一个客户端收到消息
+![](./img/12/共享订阅1.png)
+
+3. 再次发送消息，仍然是一个客户端收到消息
+![](./img/12/共享订阅2.png)
+![](./img/12/共享订阅3.png)
+
+4. 继续发送，剩余的两个客户端也分别收到了消息
+![](./img/12/共享订阅4.png)
+![](./img/12/共享订阅5.png)
+![](./img/12/共享订阅6.png)
+
+共享订阅有多种策略，默认的策略为随机，具体配置项见[共享订阅配置参数](https://docs.emqx.com/zh/emqx/v5.0/configuration/configuration-manual.html#共享订阅)
+![](./img/12/共享订阅8.png)
+
+### 2. 客户端断开重连丢失已订阅Topic
+
+搭建EMQX集群是为了实现EMQX服务的高可用，需要考虑部分服务端节点意外中断的场景，在此场景下，使用Nginx或者HAProxy可以实现客户端的自动重连，对服务端的切换无感，但是由于消息订阅属于客户端的行为，集群并不能保证连接到新的节点时自动订阅相同的Topic。
+
+经测试，目前平台在订阅消息后缓存当前客户端所有的Topic，重连时继续重新订阅这些Topic可以达到此目的，无需额外的开发工作，注意配置即可
+
+订阅断开时会抛出异常，在异常处理中执行重新连接逻辑
+![](./img/12/断开重连1.png)
+
+重连成功后再次订阅之前缓存的Topic
+![](./img/12/断开重连2.png)
+
+但是由于 断开 - 重连 - 重新订阅 这个过程会消耗一定的时间，在这个过程中可能会有部分点位数据的丢失，这个时间间隔大约为 15s。
+
+
+## 十一、常见问题
 
 ### 1. 服务启动失败
 使用 `emqx console` 命令启动，可以看到命令行打印如下日志
