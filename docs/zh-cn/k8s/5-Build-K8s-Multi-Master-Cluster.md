@@ -32,11 +32,9 @@
 | 操作系统      | CentOS 8.5                 | 内核版本 4.18.0-348.7.1.el8_5.x86_64 |
 | Kubernates    | 1.30.11                    |                                      |
 | 容器运行时    | Docker CE 26.1.3-1         |                                      |
-| K8s CNI组件   | Calico-v3.25               |                                      |
+| K8s网络组件   | Calico-v3.25               |                                      |
 | Helm          | helm-v3.17.2               | 用于安装Dashboard                    |
 | K8s Dashbaord | kubernetes-dashboard-7.7.0 |                                      |
-| HAProxy       | -                          | 系统源安装                           |
-| Keepalive     | -                          | 系统源安装                           |
 
 ### 2.2 服务器规划
 
@@ -121,9 +119,7 @@ getenforce
 ### 3.5 配置防火墙放行规则
 - [Kubernates运行必要的端口](https://kubernetes.io/zh-cn/docs/reference/networking/ports-and-protocols/)
 
-**注意** 
-1. 由于K8s的网络结构较为复杂，**强烈建议第一次部署时关闭防火墙**，以规避各种网络问题导致的异常情况。
-2. 在确认不能关闭防火墙的场景，可以在确认部署流程没有问题后再打开防火墙，配置放行规则。
+经实际多次测试，这个接口列表缺少很多端口，仅kubernetes核心的端口，一些必要的组件端口并没有列出来，同一组件在不同工作模式下的规则还不相同，建议第一次部署时关闭防火墙。
 
 控制面
 | 协议 | 方向 | 端口范围  | 目的                    | 使用者               |
@@ -155,14 +151,31 @@ sudo firewall-cmd --permanent --zone=public --add-port=10257/tcp
 sudo firewall-cmd --permanent --zone=public --add-port=10259/tcp
 sudo firewall-cmd --permanent --zone=public --add-port=30000-32767/tcp
 
-# DNS默认端口
+# HTTP HTTPS
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --permanent --add-port=443/tcp
+
+# CoreDNS
+sudo firewall-cmd --permanent --add-port=53/tcp
 sudo firewall-cmd --permanent --add-port=53/udp
+sudo firewall-cmd --permanent --add-port=9153/udp
+
+# DHCP
+sudo firewall-cmd --permanent --add-port=67/udp
+sudo firewall-cmd --permanent --add-port=68/udp
+
+# ETCD
+sudo firewall-cmd --permanent --add-port=6666/tcp
+sudo firewall-cmd --permanent --add-port=6667/tcp
 
 # 重启防火墙
 sudo firewall-cmd --reload
 
 # 查看开放的端口
 sudo firewall-cmd --list-port
+
+# 查看所有防火墙规则
+sudo firewall-cmd --list-all
 
 ```
 
@@ -173,6 +186,86 @@ sudo firewall-cmd --list-port
 sudo dnf install -y nc
 
 nc 127.0.0.1 6443 -zv -w 2
+
+```
+
+#### 强烈建议直接打通节点之间的网络，在K8s节点之间直接放行
+
+由于各个组件之间通讯逻辑十分复杂，且不通版本之间的网络规则还存在区别，对于生产环境，建议在不能关闭防火墙的情况下配置节点之间直接放行，
+
+```shell
+# 在防火墙中启用 Masquerade（NAT）
+sudo firewall-cmd --permanent --zone=public --add-masquerade
+
+# K8s的Master 节点及Node节点
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.121/24
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.122/24
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.123/24
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.131/24
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.132/24
+sudo firewall-cmd --permanent --zone=public --add-source=192.168.137.133/24
+
+# Service 网络及 Pod网络
+# 这两个网段是在初始化集群时指定
+sudo firewall-cmd --permanent --zone=public --add-source=10.244.0.0/16
+sudo firewall-cmd --permanent --zone=public --add-source=10.96.0.0/12
+
+# K8s的Master 节点及Node节点
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.121/24" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.122/24" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.123/24" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.131/24" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.132/24" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.133/24" accept'
+
+# Service 网络及 Pod网络
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="10.244.0.0/16" accept'
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="10.96.0.0/12" accept'
+
+# 允许 Pod 网段到网关 DNS（192.168.137.1）的 UDP 53 流量
+# 如果是在虚拟机部署，这里是物理机的ip，同时注意物理机关闭防火墙，避免pod网络dns请求报错
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.244.0.0/16 destination address=192.168.137.1/32 port port=53 protocol=udp accept'
+
+# 允许 Pod 网段到外部 DNS（如 8.8.8.8）的 UDP 53 流量
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=10.244.0.0/16 destination address=8.8.8.8/32 port port=53 protocol=udp accept'
+
+# 重新加载防火墙规则
+sudo firewall-cmd --reload
+
+# 查看规则
+sudo firewall-cmd --list-all --zone=public
+
+```
+
+查看规则的输出示例如下
+```shell
+[diginn@k8s-master-01 ~]$ sudo firewall-cmd --list-all --zone=public
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp0s3 enp0s8
+  sources: 192.168.137.121/24 192.168.137.122/24 192.168.137.123/24 192.168.137.131/24 192.168.137.132/24 192.168.137.133/24 10.244.0.0/16 10.96.0.0/12
+  services: cockpit dhcpv6-client ssh
+  ports: 6443/tcp 2379-2380/tcp 10250/tcp 10256/tcp 10257/tcp 10259/tcp 30000-32767/tcp 53/udp 179/tcp 8472/udp 5473/tcp 9099/tcp 9091/tcp 16443/tcp 80/tcp 443/tcp 53/tcp 9153/udp 67/udp 68/udp 6666/tcp 6667/tcp
+  protocols: vrrp
+  forward: no
+  masquerade: yes
+  forward-ports:
+  source-ports:
+  icmp-blocks:
+  rich rules:
+        rule family="ipv4" source address="192.168.137.132/24" accept
+        rule family="ipv4" source address="10.96.0.0/12" accept
+        rule family="ipv4" source address="192.168.137.122/24" accept
+        rule protocol value="4" accept
+        rule family="ipv4" source address="224.0.0.18/32" accept
+        rule family="ipv4" source address="192.168.137.121/24" accept
+        rule family="ipv4" source address="192.168.137.133/24" accept
+        rule family="ipv4" source address="10.244.0.0/16" destination address="192.168.137.1/32" port port="53" protocol="udp" accept
+        rule family="ipv4" source address="192.168.137.123/24" accept
+        rule family="ipv4" source address="192.168.137.131/24" accept
+        rule family="ipv4" source address="10.244.0.0/16" accept
+        rule family="ipv4" source address="10.244.0.0/16" destination address="8.8.8.8/32" port port="53" protocol="udp" accept
 
 ```
 
@@ -394,7 +487,7 @@ sudo usermod -aG docker $USER
 docker run hello-world
 
 ```
-![](./img/Docker测试1.png)
+![](./img/5/Docker测试1.png)
 
 ### 4.4 配置Docker驱动及镜像仓库
 
@@ -580,7 +673,7 @@ ip link | grep link/ether
 sudo cat /sys/class/dmi/id/product_uuid
 ```
 
-![](./IMG/MAC地址和UUID.png)
+![](./img/5/MAC地址和UUID.png)
 
 ### 5.2 添加 Kubernetes 的 yum 仓库
 
@@ -623,8 +716,8 @@ kubectl version --client
 kubelet --version
 
 ```
-![](./img/k8s安装1.png)
-![](./img/k8s安装2.png)
+![](./img/5/k8s安装1.png)
+![](./img/5/k8s安装2.png)
 
 修改配置
 ```shell
@@ -669,7 +762,7 @@ docker image list
 
 ```
 
-![](./img/k8s安装3.png)
+![](./img/5/k8s安装3.png)
 
 ## 六、【仅Master节点】安装HAProxy Keepalived
 
@@ -852,7 +945,7 @@ sudo systemctl status keepalived
 sudo systemctl status haproxy
 
 ```
-![](./img/VIP1.png)
+![](./img/5/VIP1.png)
 
 在配置防火墙规则之前，每台机器都有 `192.168.137.140` IP
 
@@ -886,7 +979,7 @@ sudo firewall-cmd --list-all
 
 ```
 
-![](./img/VIP2.png)
+![](./img/5/VIP2.png)
 
 在配置防火墙规则之后，`192.168.137.140` IP仅在Keepalived主节点上，备份节点没有这个ip，备份节点也可以通过这个IP访问到主节点
 
@@ -954,8 +1047,8 @@ Then you can join any number of worker nodes by running the following on each as
 kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
         --discovery-token-ca-cert-hash sha256:19a7d01e6cb761d17cbd3fae2bd40ebb25eeb833ad12c3110b5c0f26057e46f1
 ```
-![](./img/k8s安装4.png)
-![](./img/k8s安装5.png)
+![](./img/5/k8s安装4.png)
+![](./img/5/k8s安装5.png)
 
 ### 7.2 配置Master节点
 
@@ -970,7 +1063,7 @@ kubectl get nodes
 kubectl get pods --all-namespaces
 
 ```
-![](./img/k8s安装6.png)
+![](./img/5/k8s安装6.png)
 
 ## 八、【其他Master节点】Master节点加入集群
 
@@ -993,7 +1086,7 @@ kubectl version --client
 kubelet --version
 
 ```
-![](./img/Master节点加入1.png)
+![](./img/5/Master节点加入1.png)
 
 ### 8.3 加入Master节点
 #### 8.3.1 生成加入集群的Token
@@ -1032,11 +1125,11 @@ sudo kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
 
 **注意** 要加上`-control-plane` `--certificate-key` ，不然就会添加为node节点而不是master
 
-![](./img/Master节点加入2.png)
-![](./img/Master节点加入3.png)
+![](./img/5/Master节点加入2.png)
+![](./img/5/Master节点加入3.png)
 
-![](./img/Master节点加入4.png)
-![](./img/Master节点加入5.png)
+![](./img/5/Master节点加入4.png)
+![](./img/5/Master节点加入5.png)
 
 ### 8.4 在主Master节点查看新的节点是否成功加入
 
@@ -1045,7 +1138,7 @@ kubectl get node
 kubectl get pod --all-namespaces
 
 ```
-![](./img/Master节点加入6.png)
+![](./img/5/Master节点加入6.png)
 
 ## 九、【所有Node节点】Node节点加入集群
 
@@ -1066,7 +1159,7 @@ kubectl version --client
 kubelet --version
 
 ```
-![](./img/Node节点加入1.png)
+![](./img/5/Node节点加入1.png)
 
 ### 9.3 加入Node节点
 
@@ -1081,7 +1174,7 @@ sudo kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
 
 ```
 
-![](./img/Node节点加入2.png)
+![](./img/5/Node节点加入2.png)
 
 ### 9.4 在主Master节点查看新的节点是否成功加入
 
@@ -1092,7 +1185,7 @@ kubectl get node
 kubectl get pod --all-namespaces
 
 ```
-![](./img/Node节点加入3.png)
+![](./img/5/Node节点加入3.png)
 
 
 ## 十、【第一个Master节点】网络插件安装及证书延期
@@ -1126,6 +1219,8 @@ sudo firewall-cmd --reload
 # 查看开放的端口
 sudo firewall-cmd --list-port
 
+# 查看防火墙所有规则
+sudo firewall-cmd --list-all
 ``` 
 
 ### 10.2 安装Calico网络服务
@@ -1161,8 +1256,8 @@ kubectl apply -f ~/k8s/calico.yaml
 kubectl delete -f ~/k8s/calico.yaml
 
 ```
-![](./img/k8s安装7.png)
-![](./img/k8s安装8.png)
+![](./img/5/k8s安装7.png)
+![](./img/5/k8s安装8.png)
 
 ### 10.3 检查节点状态
 等待 calico 容器镜像下载启动完成，可能需要几分钟
@@ -1173,7 +1268,7 @@ kubectl get pods --all-namespaces
 
 ```
 
-![](./img/k8s安装9.png)
+![](./img/5/k8s安装9.png)
 
 ### 10.4 检查CoreDNS是否正常
 安装 Pod 网络后，你可以通过在 `kubectl get pods --all-namespaces` 输出中检查 CoreDNS Pod 是否 Running 来确认其是否正常运行。 一旦 CoreDNS Pod 启用并运行，你就可以继续加入节点。
@@ -1215,7 +1310,7 @@ sudo kubeadm certs check-expiration
 
 ```
 
-![](./img/证书有效期1.png)
+![](./img/5/证书有效期1.png)
 
 
 2. 延长证书有效期[更新K8s证书有效期脚本](https://github.com/yuyicai/update-kube-cert)
@@ -1237,8 +1332,8 @@ sudo kubeadm certs check-expiration
 
 ```
 
-![](./img/证书有效期2.png)
-![](./img/证书有效期3.png)
+![](./img/5/证书有效期2.png)
+![](./img/5/证书有效期3.png)
 
 可以看到，服务及CA证书都延长到了10年
 
@@ -1347,7 +1442,7 @@ kubectl get svc -n kubernetes-dashboard
 
 ```
 
-![](./img/Dashbaord1.png)
+![](./img/5/Dashbaord1.png)
 
 ### 11.4 创建Token
 
@@ -1394,7 +1489,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjJtWTBjMHlsN2tSVkVaamI1WGU0YTZkMi1EclRfUXdBLUdnR3VF
 kubectl describe secret -n kubernetes-dashboard $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 
 ```
-![](./img/Dashbaord2.png)
+![](./img/5/Dashbaord2.png)
 
 ### 11.5 访问Dashboard
 
@@ -1423,11 +1518,11 @@ kubectl logs -n kubernetes-dashboard kubernetes-dashboard-kong-7696bb8c88-c2qkt
 
 ```
 
-![](./img/Dashbaord3.png)
+![](./img/5/Dashbaord3.png)
 
 - 浏览器访问 `https://192.168.137.131:30443`，输入前面生成的Token即可访问页面
 
-![](./img/Dashbaord4.png)
+![](./img/5/Dashbaord4.png)
 
 ### 11.6 删除Dashboard
 ```shell
@@ -1464,7 +1559,7 @@ sudo kubeadm reset --cri-socket=unix:///var/run/cri-dockerd.sock
 kubectl get nodes
 
 # 获取所有Pod
-kubectl get pod --all-namespaces
+kubectl get pods --all-namespaces
 
 # 创建资源对象
 kubectl create -f calico.yaml
@@ -1472,6 +1567,7 @@ kubectl create -f calico.yaml
 # 删除资源对象
 kubectl delete -f calico.yaml
 
+kubectl logs -n kube-system calico-node-hqf25
 ```
 
 ### 12.1 基础操作命令
@@ -1795,7 +1891,7 @@ Please ensure that:
 
 To see the stack trace of this error execute with --v=5 or higher
 ```
-![](./img/加入Master节点异常1.png)
+![](./img/5/加入Master节点异常1.png)
 
 #### 解决
 如果在第一个集群使用kubeadm初始化时没有指定vip则会出现上述报错
@@ -1829,13 +1925,13 @@ data:
 ```
 
 
-![](./img/加入Master节点异常2.png)
+![](./img/5/加入Master节点异常2.png)
 
 ### 2. Calico 服务运行异常
 - [记录一次K8s 集群故障（路由&Calico）](https://blog.csdn.net/qq_43024789/article/details/136127430)
 
 集群在加入节点后 `calico-node` 服务运行状态异常
-![](./img/Calico运行异常1.png)
+![](./img/5/Calico运行异常1.png)
 
 #### 解决
 
@@ -1863,5 +1959,71 @@ sudo firewall-cmd --reload
 # 查看开放的端口
 sudo firewall-cmd --list-port
 
+# 查询所有calico-node 
+kubectl get pods -n kube-system -l k8s-app=calico-node
+
+# 删除所有calico-node 
+kubectl delete pods -n kube-system -l k8s-app=calico-node
+
 ```
-![](./img/Calico运行异常2.png)
+![](./img/5/Calico运行异常2.png)
+
+### 3. Dashboard访问异常
+访问Dashboard时报错
+```shell
+failed the initial dns/balancer resolve for 'kubernetes-dashboard-web' with: failed to receive reply from UDP server 10.96.0.10:53: no route to host.
+
+request_id: d4fe874d5f8e335cd8fdb52ae1d33c04
+
+```
+![](./img/5/Dashboard访问异常1.png)
+
+这个问题也属于网络问题的范畴，通常是CoreDNS的问题
+```shell
+# 查找CoreDNS Pod
+kubectl get pods -n kube-system -l k8s-app=kube-dns
+
+# 查看日志是否有异常
+kubectl logs -n kube-system coredns-cb4864fb5-4mj8d
+kubectl logs -n kube-system coredns-cb4864fb5-gxrdp
+
+# 确认CoreDNS的ip
+kubectl get svc -n kube-system kube-dns
+
+# 确认防火墙的放行规则
+sudo firewall-cmd --list-port
+
+# 进入容器内部交互模式
+kubectl exec -it -n kube-system coredns-cb4864fb5-4mj8d -- sh
+
+```
+
+![](./img/5/Dashboard访问异常2.png)
+
+```shell
+# 1. 所有节点开放CoreDNS相关端口
+sudo firewall-cmd --permanent --add-port=53/tcp
+sudo firewall-cmd --permanent --add-port=53/udp
+sudo firewall-cmd --permanent --add-port=9153/udp
+# DHCP端口
+sudo firewall-cmd --permanent --add-port=67/udp
+sudo firewall-cmd --permanent --add-port=68/udp
+sudo firewall-cmd --reload
+
+
+# 2. 在Master节点上删除 coredns 和 calico-node 相关pods，等待重建
+kubectl delete pods -n kube-system -l k8s-app=calico-node
+kubectl delete pods -n kube-system -l k8s-app=kube-dns
+
+# 3. 在Master节点上删除 kubernetes-dashboard 相关pods，等待重建
+kubectl get pods -n kubernetes-dashboard
+kubectl delete pods --all -n kubernetes-dashboard
+
+# 4. 验证
+sudo firewall-cmd --list-all
+kubectl get pods --all-namespaces -o wide
+
+```
+![](./img/5/Dashboard访问异常3.png)
+![](./img/5/Dashboard访问异常4.png)
+
