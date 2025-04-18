@@ -1,4 +1,3 @@
-
 ## 一、相关链接
 - [CentOS官网](https://www.centos.org/)
 - [CentOS下载-阿里云镜像站](https://mirrors.aliyun.com/centos/)
@@ -1581,10 +1580,10 @@ MQTT在5.0之后新增了共享订阅特性，很好的避免了这个问题，�
 
 | 示例                            | 前缀   | 组别        | topic              |
 | ------------------------------- | ------ | ----------- | ------------------ |
-| $share/{ShareName}/{topic-name} | $share | {ShareName} | {topic-name}       |
-| $share/pisx/A2-F1/电压表        | $share | lux         | A2-F1/电压表       |
-| $share/yunyi/01_混配/1#罐流量计 | $share | yunyi       | 01_混配/1#罐流量计 |
-| $queue/01_混配/1#罐流量计       | $queue | -           | 01_混配/1#罐流量计 |
+| `$share/{ShareName}/{topic-name}` | `$share` | `{ShareName}` | `{topic-name}`       |
+| `$share/pisx/A2-F1/电压表`        | `$share` | `lux`         | `A2-F1/电压表`       |
+| `$share/yunyi/01_混配/1#罐流量计` | `$share` | `yunyi`       | `01_混配/1#罐流量计` |
+| `$queue/01_混配/1#罐流量计`       | `$queue` | -           | `01_混配/1#罐流量计` |
 
 
 Note: 除了使用`$share/<group-name>` 这种共享订阅方式之外，EMQX还提供了不带组别的共享订阅 `$queue`，详情见[不带组别的共享订阅](https://www.emqx.io/docs/en/v4.4/advanced/shared-subscriptions.html#shared-subscription)

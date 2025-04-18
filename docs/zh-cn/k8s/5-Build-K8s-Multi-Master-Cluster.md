@@ -487,7 +487,6 @@ sudo usermod -aG docker $USER
 docker run hello-world
 
 ```
-![](./img/5/Docker测试1.png)
 
 ### 4.4 配置Docker驱动及镜像仓库
 
@@ -672,8 +671,6 @@ ip link | grep link/ether
 # 查看 product_uuid
 sudo cat /sys/class/dmi/id/product_uuid
 ```
-
-![](./img/5/MAC地址和UUID.png)
 
 ### 5.2 添加 Kubernetes 的 yum 仓库
 
