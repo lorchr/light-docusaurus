@@ -89,7 +89,6 @@ sudo whoami
 ```
 
 ### 3.2 禁用系统交换分区
-
 ```shell
 # 临时禁用
 sudo swapoff -a
@@ -101,7 +100,6 @@ swapon --show
 ```
 
 ### 3.3 禁用 SELinux
-
 ```shell
 # 临时禁用
 sudo setenforce 0
@@ -228,6 +226,7 @@ sudo timedatectl set-timezone Asia/Shanghai
 sudo firewall-cmd --permanent --zone=public --add-masquerade
 
 # K8s的Master 节点及Node节点
+# 这里 192.168.137.121/32 限定了当前IP，如果要允许 192.168.137.x 整个网段，可以设置为 192.168.137.0/24
 sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.121/32" accept'
 sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.122/32" accept'
 sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.137.123/32" accept'
@@ -269,6 +268,7 @@ sudo firewall-cmd --list-all --zone=public
 查看规则的输出示例如下
 ```shell
 [diginn@k8s-master-01 ~]$ sudo firewall-cmd --list-all --zone=public
+[sudo] diginn 的密码：
 public (active)
   target: default
   icmp-block-inversion: no
@@ -283,21 +283,22 @@ public (active)
   source-ports:
   icmp-blocks:
   rich rules:
+        rule family="ipv4" source address="224.0.0.18/32" accept
         rule family="ipv4" source address="192.168.137.131/32" accept
-        rule family="ipv4" source address="192.168.137.133/32" accept
-        rule family="ipv4" source address="192.168.137.121/32" accept
-        rule family="ipv4" source address="10.244.0.0/16" destination address="192.168.137.1/32" port port="53" protocol="udp" accept
-        rule family="ipv4" source address="10.244.0.0/16" destination address="8.8.8.8/32" port port="53" protocol="udp" accept
+        rule family="ipv4" source address="10.96.0.0/12" accept
         rule protocol value="4" accept
+        rule family="ipv4" source address="192.168.137.121/32" accept
+        rule family="ipv4" source address="192.168.137.123/32" accept
         rule family="ipv4" source address="192.168.137.132/32" accept
+        rule family="ipv4" source address="192.168.137.133/32" accept
+        rule family="ipv4" source address="10.244.0.0/16" accept
+        rule family="ipv4" source address="10.244.0.0/16" destination address="192.168.137.1/32" port port="53" protocol="udp" accept
         rule protocol value="112" accept
         rule family="ipv4" source address="192.168.137.122/32" accept
-        rule family="ipv4" source address="224.0.0.18/32" accept
-        rule family="ipv4" source address="192.168.137.123/32" accept
-        rule family="ipv4" source address="10.96.0.0/12" accept
-        rule family="ipv4" source address="10.244.0.0/16" accept
+        rule family="ipv4" source address="10.244.0.0/16" destination address="8.8.8.8/32" port port="53" protocol="udp" accept
 
 ```
+![](./img/6/防火墙设置1.png)
 
 ### 3.9 配置防火墙放行规则
 - [Kubernates运行必要的端口](https://kubernetes.io/zh-cn/docs/reference/networking/ports-and-protocols/)
@@ -372,50 +373,32 @@ nc 127.0.0.1 6443 -zv -w 2
 
 ```
 
-### 3.10 【在线】依赖项安装
-
+### 3.10 安装包上传解压
 ```shell
-sudo dnf install -y vim wget tar unzip ebtables ethtool nc net-tools yum-utils iproute-tc ipset ipvsadm bash-completion
+# 1. 将 k8s-1.30.11-offline.tar.gz 上传到服务器（192.168.137.121）
+
+# 2. 将 tar-1.30-5.el8.x86_64.rpm 也上传到服务器（192.168.137.121）
+
+# 3. 检查本地是否有tar，没有则安装 tar
+tar --version
+sudo rpm -ivh ./tar-1.30-5.el8.x86_64.rpm
+
+# 4. 将tar安装包及离线安装包传输到其他需要安装的节点
+scp -r ./k8s-1.30.11-offline.tar.gz diginn@192.168.137.122:/home/diginn/
+scp -r ./tar-1.30-5.el8.x86_64.rpm diginn@192.168.137.122:/home/diginn/
+
+# ...  其他节点省略，修改ip即可
 
 ```
 
-### 3.10 【离线】依赖项安装
-- [阿里云CentOS8镜像](https://mirrors.aliyun.com/centos/8.5.2111/BaseOS/x86_64/os/Packages/)
-
-**注意** 需要本地准备一台与服务器系统版本一致的虚拟机，在虚拟机上下载各种依赖包
+### 3.11 依赖项安装
 
 ```shell
-# 1. 需要先安装 yum-utils 来下载其他的依赖
-curl https://mirrors.aliyun.com/centos/8.5.2111/BaseOS/x86_64/os/Packages/yum-utils-4.0.21-3.el8.noarch.rpm -o ./yum-utils-4.0.21-3.el8.noarch.rpm
-rpm -ivh yum-utils-4.0.21-3.el8.noarch.rpm
+# 1. 解压压缩包
+tar -zxvf ./k8s-1.30.11-offline.tar.gz
+cd k8s-install
 
-# 2. 本地虚拟机下载依赖
-mkdir -p ~/k8s-install/lib/ && cd ~/k8s-install/
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/vim             vim
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/tar             tar
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/unzip           unzip
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/wget            wget
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/tree            tree
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/nc              nc
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/ebtables        ebtables
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/ethtool         ethtool
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/net-tools       net-tools
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/iproute-tc      iproute-tc
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/ipset           ipset
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/ipvsadm         ipvsadm
-yumdownloader --archlist=x86_64 --resolve --destdir=./lib/bash-completion bash-completion
-
-# HAProxy Keepalived Nginx 单独目录
-yumdownloader --archlist=x86_64 --resolve --destdir=./haproxy     haproxy
-yumdownloader --archlist=x86_64 --resolve --destdir=./keepalived  keepalived
-yumdownloader --archlist=x86_64 --resolve --destdir=./nginx       nginx
-
-# 3. 打包依赖为压缩包
-tar -zcvf lib.tar.gz ./lib 
-
-# 4. 下载完成后传输到内网机器上
-
-# 5. 内网机安装安装
+# 2. 安装各种依赖
 sudo rpm -ivh ./lib/vim/*.rpm
 sudo rpm -ivh ./lib/tar/*.rpm
 sudo rpm -ivh ./lib/unzip/*.rpm
@@ -437,7 +420,6 @@ sudo rpm -ivh ./lib/bash-completion/*.rpm
 - [Docker离线安装包下载](https://download.docker.com/linux/centos/8/x86_64/stable/Packages/)
 
 ### 4.1 卸载已有Docker Engine
-
 ```shell
 sudo dnf remove docker \
                 docker-client \
@@ -450,67 +432,11 @@ sudo dnf remove docker \
 
 ```
 
-### 4.2 添加Docker yum仓库
+### 4.2 安装Docker
 
 ```shell
-# 添加docker仓库源
-sudo dnf install -y dnf-plugins-core
-sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-# 如果官方源下载速度慢，可以使用阿里源
-sudo dnf config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-
-# 查看Docker源
-cat /etc/yum.repos.d/docker-ce.repo
-
-```
-
-### 4.3 【在线】安装Docker
-
-```shell
-# 查看Docker的版本
-sudo dnf list docker-ce.x86_64 --showduplicates | sort -r
-
-# 安装最新版本Docker
-sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# 安装指定版本的Docker
-# sudo dnf install docker-ce-3:26.1.3-1.el8 docker-ce-cli-1:26.1.3-1.el8 containerd.io docker-buildx-plugin docker-compose-plugin
-
-# 运行Docker Engine
-sudo systemctl enable --now docker
-
-# 将当前用户加入到docker操作组 设置完后需要重新登录
-sudo usermod -aG docker $USER
-
-# 测试Docker是否安装成功
-docker run hello-world
-
-```
-
-### 4.3 【离线】安装Docker
-
-```shell
-mkdir -p ~/k8s-install/docker/ && cd ~/k8s-install/
-
-# 下载安装包
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/containerd.io-1.6.9-3.1.el8.x86_64.rpm -o ./docker/containerd.io-1.6.9-3.1.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-buildx-plugin-0.14.0-1.el8.x86_64.rpm -o ./docker/docker-buildx-plugin-0.14.0-1.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-ce-26.1.3-1.el8.x86_64.rpm -o ./docker/docker-ce-26.1.3-1.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-ce-cli-26.1.3-1.el8.x86_64.rpm -o ./docker/docker-ce-cli-26.1.3-1.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-ce-rootless-extras-26.1.3-1.el8.x86_64.rpm -o ./docker/docker-ce-rootless-extras-26.1.3-1.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-compose-plugin-2.6.0-3.el8.x86_64.rpm -o ./docker/docker-compose-plugin-2.6.0-3.el8.x86_64.rpm
-curl -sSLf https://download.docker.com/linux/centos/8/x86_64/stable/Packages/docker-scan-plugin-0.23.0-1.el8.x86_64.rpm -o ./docker/docker-scan-plugin-0.23.0-1.el8.x86_64.rpm
-
-
-# 下载依赖包
-
-yumdownloader --archlist=x86_64 --resolve --destdir=./docker/docker-ce              docker-ce 
-yumdownloader --archlist=x86_64 --resolve --destdir=./docker/docker-ce-cli          docker-ce-cli
-yumdownloader --archlist=x86_64 --resolve --destdir=./docker/containerd             containerd.io
-yumdownloader --archlist=x86_64 --resolve --destdir=./docker/docker-buildx-plugin   docker-buildx-plugin
-yumdownloader --archlist=x86_64 --resolve --destdir=./docker/docker-compose-plugin  docker-compose-plugin
-
+# 此处目录为离线安装包解压后的目录
+cd ~/k8s-install
 
 # 安装离线包
 sudo rpm -ivh ./docker/docker-ce/*.rpm
@@ -530,9 +456,9 @@ docker run hello-world
 
 ```
 
-![](./img/5/Docker测试1.png)
+![](./img/6/DockerInfo1.png)
 
-### 4.4 如果需要卸载，使用以下命令
+### 4.3 如果需要卸载，使用以下命令
 
 ```shell
 # 卸载 docker
@@ -544,7 +470,7 @@ sudo rm -rf /var/lib/containerd
 
 ```
 
-### 4.5 配置Docker驱动及镜像仓库
+### 4.4 配置Docker驱动及镜像仓库
 
 ```shell
 # 配置驱动
@@ -577,18 +503,12 @@ sudo systemctl restart docker
 
 ```
 
-### 4.6 安装cri-dockerd驱动（Docker与K8s集成的适配层）
+### 4.5 安装cri-dockerd驱动（Docker与K8s集成的适配层）
 - [CRI-Dockerd安装文档](https://mirantis.github.io/cri-dockerd/usage/install/)
 
 Docker Engine 没有实现 [CRI](https://kubernetes.io/zh-cn/docs/concepts/architecture/cri/)， 而这是容器运行时在 Kubernetes 中工作所需要的。 为此，必须安装一个额外的服务 [cri-dockerd](https://github.com/Mirantis/cri-dockerd)。 cri-dockerd 是一个基于传统的内置 Docker 引擎支持的项目， 它在 1.24 版本从 kubelet 中[移除](https://kubernetes.io/zh-cn/dockershim)。
 
-
-#### 4.6.1 【推荐】rpm安装
-
 ```shell
-mkdir -p ~/k8s-install/cri/ && cd ~/k8s-install/
-curl -sSLf https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.14/cri-dockerd-0.3.14-3.el8.x86_64.rpm -o ./cri/cri-dockerd-0.3.14-3.el8.x86_64.rpm
-
 sudo rpm -ivh ./cri/cri-dockerd-0.3.14-3.el8.x86_64.rpm
 
 # 启动
@@ -604,109 +524,7 @@ ll /run/cri-dockerd.sock
 ll /var/run/cri-dockerd.sock
 
 ```
-
-#### 4.6.2 源码安装
-
-```shell
-mkdir -p ~/k8s-install/cri/ && cd ~/k8s-install/
-
-# 下载 cri-dockerd（注意系统版本，这里是amd64）
-curl -sSLf https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.14/cri-dockerd-0.3.14.amd64.tgz -o ./cri/cri-dockerd-0.3.14.amd64.tgz
-
-scp -r ./cri/cri-dockerd-0.3.14.amd64.tgz diginn@192.168.137.121:/home/diginn/k8s-install/cri/
-scp -r ./cri/cri-dockerd-0.3.14.amd64.tgz diginn@192.168.137.123:/home/diginn/k8s-install/cri/
-scp -r ./cri/cri-dockerd-0.3.14.amd64.tgz diginn@192.168.137.131:/home/diginn/k8s-install/cri/
-scp -r ./cri/cri-dockerd-0.3.14.amd64.tgz diginn@192.168.137.132:/home/diginn/k8s-install/cri/
-scp -r ./cri/cri-dockerd-0.3.14.amd64.tgz diginn@192.168.137.133:/home/diginn/k8s-install/cri/
-
-# 解压
-tar -zxvf ./cri/cri-dockerd-0.3.14.amd64.tgz
-
-# 移动到系统路径
-sudo mv ./cri/cri-dockerd/cri-dockerd /usr/local/bin/
-```
-
-#### 4.6.3 【仅源码安装】注册为系统服务
-```shell
-sudo tee /etc/systemd/system/cri-docker.service <<EOF
-[Unit]
-Description=CRI Interface for Docker Application Container Engine
-Documentation=https://docs.mirantis.com
-After=network-online.target firewalld.service docker.service
-Wants=network-online.target
-Requires=cri-docker.socket
-
-[Service]
-Type=notify
-ExecStart=/usr/local/bin/cri-dockerd --container-runtime-endpoint fd:// --network-plugin=cni --pod-infra-container-image=registry.aliyuncs.com/google_containers/pause:3.10
-ExecReload=/bin/kill -s HUP $MAINPID
-TimeoutSec=0
-RestartSec=2
-Restart=always
-
-# Note that StartLimit* options were moved from "Service" to "Unit" in systemd 229.
-# Both the old, and new location are accepted by systemd 229 and up, so using the old location
-# to make them work for either version of systemd.
-StartLimitBurst=3
-
-# Note that StartLimitInterval was renamed to StartLimitIntervalSec in systemd 230.
-# Both the old, and new name are accepted by systemd 230 and up, so using the old name to make
-# this option work for either version of systemd.
-StartLimitInterval=60s
-
-# Having non-zero Limit*s causes performance problems due to accounting overhead
-# in the kernel. We recommend using cgroups to do container-local accounting.
-LimitNOFILE=infinity
-LimitNPROC=infinity
-LimitCORE=infinity
-
-# Comment TasksMax if your systemd version does not support it.
-# Only systemd 226 and above support this option.
-TasksMax=infinity
-Delegate=yes
-KillMode=process
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-```
-
-```shell
-# cri-docker.socket
-sudo tee /etc/systemd/system/cri-docker.socket <<EOF
-[Unit]
-Description=CRI Docker Socket for the API
-PartOf=cri-docker.service
-
-[Socket]
-ListenStream=%t/cri-dockerd.sock
-SocketMode=0660
-SocketUser=root
-SocketGroup=docker
-
-[Install]
-WantedBy=sockets.target
-EOF
-
-```
-
-#### 4.6.4 【仅源码安装】启动 cri-dockerd
-
-```shell
-# 启动cri-dockerd
-sudo systemctl daemon-reload
-sudo systemctl enable --now cri-docker.socket
-
-
-# 检查CRI套接字
-ll /run/cri-dockerd.sock
-
-ll /var/run/cri-dockerd.sock
-
-```
-
-对于 `cri-dockerd`，默认情况下，CRI 套接字是 `/run/cri-dockerd.sock`。
+![](./img/6/CRI-Docker1.png)
 
 ## 五、【所有节点】安装 kubeadm、kubelet 和 kubectl
 - [Kubernetes下载](https://www.downloadkubernetes.com/)
@@ -739,95 +557,15 @@ ip link | grep link/ether
 sudo cat /sys/class/dmi/id/product_uuid
 ```
 
-![](./img/5/MAC地址和UUID.png)
+![](./img/6/MAC地址和UUID.png)
 
-### 5.2 添加 Kubernetes 的 yum 仓库
-
-```shell
-# 此操作会覆盖 /etc/yum.repos.d/kubernetes.repo 中现存的所有配置
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-EOF
-
-
-# 如果慢，可以改成阿里云的源
-cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
-[kubernetes]
-name=Kubernetes
-baseurl=https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://mirrors.aliyun.com/kubernetesnew/core/stable/v1.30/rpm/repodata/repomd.xml.key
-EOF
-
-```
-
-### 5.3 【在线】安装 kubelet、kubeadm 和 kubectl
+### 5.2 安装 kubelet、kubeadm 和 kubectl
 
 ```shell
+# 此处目录为离线安装包的解压后的目录
+cd ~/k8s-install
+
 # 安装 kubelet、kubeadm 和 kubectl
-sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-
-# 查看版本
-kubeadm version 
-
-kubectl version --client
-
-kubelet --version
-
-```
-![](./img/5/k8s安装1.png)
-![](./img/5/k8s安装2.png)
-
-修改配置
-```shell
-sudo vim /etc/sysconfig/kubelet
-# 将KUBELET_EXTRA_ARGS 的值设置为
-KUBELET_EXTRA_ARGS="--cgroup-driver=systemd"
-
-# 启用 kubelet 以确保它在启动时自动启动
-sudo systemctl enable --now kubelet
-
-```
-
-### 5.3 【离线】安装 kubelet、kubeadm 和 kubectl
-- [Kubernetes下载](https://www.downloadkubernetes.com/)
-- [阿里云Kubeadm Kubectl Kubelet下载](https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/x86_64/)
-
-```shell
-mkdir -p ~/k8s-install/k8s/ && cd ~/k8s-install/
-
-# 二进制包
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/apiextensions-apiserver ./k8s/apiextensions-apiserver
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-aggregator         ./k8s/kube-aggregator
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-apiserver          ./k8s/kube-apiserver
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-controller-manager ./k8s/kube-controller-manager
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-log-runner         ./k8s/kube-log-runner
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-proxy              ./k8s/kube-proxy
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kube-scheduler          ./k8s/kube-scheduler
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kubeadm                 ./k8s/kubeadm
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kubectl                 ./k8s/kubectl
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kubectl-convert         ./k8s/kubectl-convert
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/kubelet                 ./k8s/kubelet
-wget https://dl.k8s.io/v1.30.11/bin/linux/amd64/mounter                 ./k8s/mounter
-
-# 适用于CentOS的RPM包
-wget https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/x86_64/kubeadm-1.30.11-150500.1.1.x86_64.rpm -O ./k8s/kubeadm-1.30.11-150500.1.1.x86_64.rpm
-wget https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/x86_64/kubectl-1.30.11-150500.1.1.x86_64.rpm -O ./k8s/kubectl-1.30.11-150500.1.1.x86_64.rpm
-wget https://mirrors.aliyun.com/kubernetes-new/core/stable/v1.30/rpm/x86_64/kubelet-1.30.11-150500.1.1.x86_64.rpm -O ./k8s/kubelet-1.30.11-150500.1.1.x86_64.rpm
-
-# 1. 下载依赖包
-yumdownloader --archlist=x86_64 --resolve --destdir=./k8s/kubeadm kubeadm
-yumdownloader --archlist=x86_64 --resolve --destdir=./k8s/kubectl kubectl
-yumdownloader --archlist=x86_64 --resolve --destdir=./k8s/kubelet kubelet
-
-# 2. 安装 kubelet、kubeadm 和 kubectl
 sudo rpm -ivh ./k8s/kubeadm/*.rpm
 sudo rpm -ivh ./k8s/kubectl/*.rpm
 sudo rpm -ivh ./k8s/kubelet/*.rpm
@@ -845,51 +583,23 @@ sudo systemctl enable --now kubelet
 
 ```
 
-### 5.4 下载K8s依赖镜像
+### 5.3 下载K8s依赖镜像
 
 ```shell
 # 查看初始化所需的镜像
 kubeadm config images list
 
-# 拉取镜像
-kubeadm config images pull
-
-# 官方下载慢，可以使用阿里云的下载
-docker pull registry.aliyuncs.com/google_containers/kube-apiserver:v1.30.11
-docker pull registry.aliyuncs.com/google_containers/kube-controller-manager:v1.30.11
-docker pull registry.aliyuncs.com/google_containers/kube-scheduler:v1.30.11
-docker pull registry.aliyuncs.com/google_containers/kube-proxy:v1.30.11
-docker pull registry.aliyuncs.com/google_containers/coredns:v1.11.3
-docker pull registry.aliyuncs.com/google_containers/pause:3.9
-docker pull registry.aliyuncs.com/google_containers/etcd:3.5.15-0
-
-# 重新打Tag
-docker tag registry.aliyuncs.com/google_containers/kube-apiserver:v1.30.11          registry.k8s.io/kube-apiserver:v1.30.11
-docker tag registry.aliyuncs.com/google_containers/kube-controller-manager:v1.30.11 registry.k8s.io/kube-controller-manager:v1.30.11
-docker tag registry.aliyuncs.com/google_containers/kube-scheduler:v1.30.11          registry.k8s.io/kube-scheduler:v1.30.11
-docker tag registry.aliyuncs.com/google_containers/kube-proxy:v1.30.11              registry.k8s.io/kube-proxy:v1.30.11
-docker tag registry.aliyuncs.com/google_containers/coredns:v1.11.3                  registry.k8s.io/coredns/coredns:v1.11.3
-docker tag registry.aliyuncs.com/google_containers/pause:3.9                        registry.k8s.io/pause:3.9
-docker tag registry.aliyuncs.com/google_containers/etcd:3.5.15-0                    registry.k8s.io/etcd:3.5.15-0
-
-# 删除阿里云Tag
-docker rmi registry.aliyuncs.com/google_containers/kube-apiserver:v1.30.11
-docker rmi registry.aliyuncs.com/google_containers/kube-controller-manager:v1.30.11
-docker rmi registry.aliyuncs.com/google_containers/kube-scheduler:v1.30.11
-docker rmi registry.aliyuncs.com/google_containers/kube-proxy:v1.30.11
-docker rmi registry.aliyuncs.com/google_containers/coredns:v1.11.3
-docker rmi registry.aliyuncs.com/google_containers/pause:3.9
-docker rmi registry.aliyuncs.com/google_containers/etcd:3.5.15-0
+# 加载镜像
+cd ~/k8s-install/
+./docker_image_tool.sh import images
 
 # 查看镜像列表
 docker image list
 
-# 导出镜像
-./docker_image_tool.sh export ~/k8s-install/images/
-
 ```
 
-![](./img/5/k8s安装3.png)
+![](./img/6/Docker镜像导入1.png)
+![](./img/6/Docker镜像导入2.png)
 
 ## 六、【仅Master节点】安装HAProxy Keepalived
 
@@ -927,35 +637,16 @@ sudo firewall-cmd --list-all
 
 ```
 
-![](./img/5/VIP2.png)
+![](./img/6/VIP2.png)
 
 在配置防火墙规则之后，`192.168.137.140` IP仅在Keepalived主节点上，备份节点没有这个ip，备份节点也可以通过这个IP访问到主节点
 
-### 6.2 【在线】安装Keepalived HAProxy
+### 6.2 安装Keepalived HAProxy
 此步骤所有Master节点都要执行
 
 ```shell
-# 在线安装keepalived haproxy
-sudo yum install -y keepalived haproxy
+cd ~/k8s-install
 
-# 离线安装keepalived haproxy
-sudo rpm -ivh ~/k8s-install/haproxy/*.rpm
-sudo rpm -ivh ~/k8s-install/keepalived/*.rpm
-
-# 备份配置文件
-sudo mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.bakup
-sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.bakup
-
-# 查看配置文件
-ll /etc/keepalived/
-ll /etc/haproxy/
-
-```
-
-### 6.2 【离线】安装Keepalived HAProxy
-此步骤所有Master节点都要执行
-
-```shell
 # 离线安装keepalived haproxy
 sudo rpm -ivh ./haproxy/*.rpm
 sudo rpm -ivh ./keepalived/*.rpm
@@ -1128,9 +819,9 @@ sudo systemctl status keepalived
 sudo systemctl status haproxy
 
 ```
-![](./img/5/VIP1.png)
+![](./img/6/VIP1.png)
 
-在配置防火墙规则之前，每台机器都有 `192.168.137.140` IP
+可以看到，只有 `192.168.137.121` 有虚拟IP `192.168.137.140`
 
 ## 七、【第一个Master节点】使用kubeadm创建集群并配置网络
 
@@ -1161,7 +852,6 @@ sudo kubeadm init \
   --kubernetes-version=v1.30.11 \
   --control-plane-endpoint=192.168.137.140:16443 \
   --image-repository=registry.k8s.io \
-  # --image-repository=registry.aliyuncs.com/google_containers \
   --service-cidr=10.96.0.0/12 \
   --pod-network-cidr=10.244.0.0/16 \
   --upload-certs \
@@ -1203,9 +893,9 @@ Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
 
 You can now join any number of the control-plane node running the following command on each as root:
 
-  kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
-        --discovery-token-ca-cert-hash sha256:19a7d01e6cb761d17cbd3fae2bd40ebb25eeb833ad12c3110b5c0f26057e46f1 \
-        --control-plane --certificate-key 3f3d619638bb3cb780d9a54bc2153d61996c9a367d79e8f584992fa961d2659b
+  kubeadm join 192.168.137.140:16443 --token 2r9al6.7aihc5kam8ipilf2 \
+        --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca \
+        --control-plane --certificate-key 3add7e76c93d21c016162a9cb89f3bff78b2a358f79b78995855d6d306380d28
 
 Please note that the certificate-key gives access to cluster sensitive data, keep it secret!
 As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you can use
@@ -1213,11 +903,11 @@ As a safeguard, uploaded-certs will be deleted in two hours; If necessary, you c
 
 Then you can join any number of worker nodes by running the following on each as root:
 
-kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
-        --discovery-token-ca-cert-hash sha256:19a7d01e6cb761d17cbd3fae2bd40ebb25eeb833ad12c3110b5c0f26057e46f1
+kubeadm join 192.168.137.140:16443 --token 2r9al6.7aihc5kam8ipilf2 \
+        --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca
 ```
-![](./img/5/k8s安装4.png)
-![](./img/5/k8s安装5.png)
+![](./img/6/集群初始化1.png)
+![](./img/6/集群初始化2.png)
 
 ### 7.2 配置Master节点
 
@@ -1229,10 +919,11 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # 获取节点信息和pod信息
 kubectl get nodes
+
 kubectl get pods --all-namespaces
 
 ```
-![](./img/5/k8s安装6.png)
+![](./img/6/集群初始化3.png)
 
 ## 八、【其他Master节点】Master节点加入集群
 
@@ -1255,17 +946,17 @@ kubectl version --client
 kubelet --version
 
 ```
-![](./img/5/Master节点加入1.png)
+![](./img/6/Master节点加入1.png)
 
 ### 8.3 加入Master节点
 #### 8.3.1 生成加入集群的Token
 ```shell
-# 在Master节点打印加入节点指令
+# 在初始化的Master节点打印加入节点指令
 sudo kubeadm token create --print-join-command
 
 # 输出内容如下
-kubeadm join 192.168.137.140:16443 --token lp0sqf.ikkxltrxmirs15zn \
-  --discovery-token-ca-cert-hash sha256:1dfe993019b8a38fa80357e0a91490c7e2fc0ab3a0a3b16ddc4c7644af04a4ae
+[diginn@k8s-master-01 k8s-install]$ sudo kubeadm token create --print-join-command
+kubeadm join 192.168.137.140:16443 --token hug90i.rk23nqjt4tm0jnwq --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca
 
 ```
 
@@ -1275,32 +966,36 @@ kubeadm join 192.168.137.140:16443 --token lp0sqf.ikkxltrxmirs15zn \
 sudo kubeadm init phase upload-certs --upload-certs
 
 # 输出内容如下
-[diginn@k8s-master-01 k8s]$ sudo kubeadm init phase upload-certs --upload-certs
-I0326 14:09:10.693417   10336 version.go:256] remote version is much newer: v1.32.3; falling back to: stable-1.30
+[diginn@k8s-master-01 k8s-install]$ sudo kubeadm init phase upload-certs --upload-certs
+I0401 10:48:50.757795   11069 version.go:256] remote version is much newer: v1.32.3; falling back to: stable-1.30
 [upload-certs] Storing the certificates in Secret "kubeadm-certs" in the "kube-system" Namespace
 [upload-certs] Using certificate key:
-273174b4ecf9ae7ea9e366cbfe26895f5de0e5a41f1aca60a52a86bc59d10758
+861a7ce66363657e5de05431f426e1bcf29eac99301dbd4b57cecdfbc4a02bbb
 
 ```
 
 #### 8.3.3 加入新的Master节点
 ```shell
-sudo kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
-        --discovery-token-ca-cert-hash sha256:19a7d01e6cb761d17cbd3fae2bd40ebb25eeb833ad12c3110b5c0f26057e46f1 \
-        --control-plane --certificate-key 3f3d619638bb3cb780d9a54bc2153d61996c9a367d79e8f584992fa961d2659b \
+# 指定运行时（添加 --cri-socket 参数）
+sudo kubeadm join 192.168.137.140:16443 --token hug90i.rk23nqjt4tm0jnwq \
+        --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca \
+        --control-plane --certificate-key 861a7ce66363657e5de05431f426e1bcf29eac99301dbd4b57cecdfbc4a02bbb \
         --cri-socket=unix:///var/run/cri-dockerd.sock
+
+# 配置
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 ```
 
 **注意** 要加上`-control-plane` `--certificate-key` ，不然就会添加为node节点而不是master
 
-![](./img/5/Master节点加入2.png)
-![](./img/5/Master节点加入3.png)
-
-![](./img/5/Master节点加入4.png)
-![](./img/5/Master节点加入5.png)
+![](./img/6/Master节点加入2.png)
+![](./img/6/Master节点加入3.png)
 
 ### 8.4 在主Master节点查看新的节点是否成功加入
+由于此时还没有配置网络插件，节点的状态均为`NotReady`
 
 ```shell
 kubectl get nodes
@@ -1308,7 +1003,7 @@ kubectl get nodes
 kubectl get pods --all-namespaces
 
 ```
-![](./img/5/Master节点加入6.png)
+![](./img/6/Master节点加入4.png)
 
 ## 九、【所有Node节点】Node节点加入集群
 
@@ -1329,33 +1024,38 @@ kubectl version --client
 kubelet --version
 
 ```
-![](./img/5/Node节点加入1.png)
+
+![](./img/6/Node节点加入1.png)
 
 ### 9.3 加入Node节点
 
 ```shell
-# 在Master节点打印加入节点指令
+# 在初始化Master节点打印加入节点指令
 kubeadm token create --print-join-command
 
-# 指定运行时（添加--cri-socket参数）
-sudo kubeadm join 192.168.137.140:16443 --token qcijsr.wrehhv9qqqic9ce6 \
-  --discovery-token-ca-cert-hash sha256:19a7d01e6cb761d17cbd3fae2bd40ebb25eeb833ad12c3110b5c0f26057e46f1 \
-  --cri-socket=unix:///var/run/cri-dockerd.sock
+# 输出如下
+[diginn@k8s-master-01 k8s-install]$ kubeadm token create --print-join-command
+kubeadm join 192.168.137.140:16443 --token q7tomc.lzxefwohdr7vibs6 --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca
+
+# 指定运行时（添加 --cri-socket 参数）
+sudo kubeadm join 192.168.137.140:16443 --token q7tomc.lzxefwohdr7vibs6 \
+    --discovery-token-ca-cert-hash sha256:92617f50af1f76b87c539ce97614eadaef174e5d4c27e0d858ad1713d0e15fca \
+    --cri-socket=unix:///var/run/cri-dockerd.sock
 
 ```
 
-![](./img/5/Node节点加入2.png)
+![](./img/6/Node节点加入2.png)
 
 ### 9.4 在主Master节点查看新的节点是否成功加入
 
-由于需要等待 `Master` 下发镜像及Pod启动，需要等待2分钟左右Node的状态才会变成`Ready`
+由于此时还没有配置网络插件，节点的状态均为`NotReady`
 ```shell
 kubectl get nodes
 
 kubectl get pods --all-namespaces
 
 ```
-![](./img/5/Node节点加入3.png)
+![](./img/6/Node节点加入3.png)
 
 
 ## 十、【第一个Master节点】网络插件安装及证书延期
@@ -1395,15 +1095,12 @@ sudo firewall-cmd --list-all
 
 ### 10.2 安装Calico网络服务
 ```shell
-mkdir -p ~/k8s-install/calico/ && cd ~/k8s-install/
-
-# 下载calico.yaml
-# wget https://raw.githubusercontent.com/projectcalico/calico/refs/heads/release-v3.25/manifests/calico.yaml -0 ./calico/calico.yaml
-curl -sSLf https://docs.tigera.io/archive/v3.25/manifests/calico.yaml -o ./calico/calico.yaml
+cd ~/k8s-install
 
 # 修改配置文件中的 CALICO_IPV4POOL_CIDR
 sudo vim ./calico/calico.yaml
 
+# ========== 修改的内容如下 ==========
 # 在 CLUSTER_TYPE 后添加 IP_AUTODETECTION_METHOD value 为网卡名称
 # Cluster type to identify the deployment type
 - name: CLUSTER_TYPE
@@ -1419,6 +1116,12 @@ sudo vim ./calico/calico.yaml
 - name: CALICO_IPV4POOL_CIDR
   value: "10.244.0.0/16"
 
+```
+
+![](./img/6/Calico1.png)
+![](./img/6/Calico2.png)
+
+```shell
 # 启动calico
 kubectl apply -f ./calico/calico.yaml
 
@@ -1426,8 +1129,7 @@ kubectl apply -f ./calico/calico.yaml
 kubectl delete -f ./calico/calico.yaml
 
 ```
-![](./img/5/k8s安装7.png)
-![](./img/5/k8s安装8.png)
+![](./img/6/Calico3.png)
 
 ### 10.3 检查节点状态
 等待 calico 容器镜像下载启动完成，可能需要几分钟
@@ -1438,7 +1140,7 @@ kubectl get pods --all-namespaces
 
 ```
 
-![](./img/5/k8s安装9.png)
+![](./img/6/Calico4.png)
 
 ### 10.4 检查CoreDNS是否正常
 安装 Pod 网络后，你可以通过在 `kubectl get pods --all-namespaces` 输出中检查 CoreDNS Pod 是否 Running 来确认其是否正常运行。 一旦 CoreDNS Pod 启用并运行，你就可以继续加入节点。
@@ -1469,29 +1171,18 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 # 查看有效期
 openssl x509 -in /etc/kubernetes/pki/apiserver.crt -noout -text | grep Not
 
-# 输出以下结果，默认只有一年的有效期
-[diginn@k8s-master-01 k8s]$ openssl x509 -in /etc/kubernetes/pki/apiserver.crt -noout -text | grep Not
-            Not Before: Mar 26 07:14:03 2025 GMT
-            Not After : Mar 26 07:19:03 2026 GMT
-
 # 查看各项服务证书的有效期
 sudo kubeadm certs check-expiration
 
 ```
 
-![](./img/5/证书有效期1.png)
+![](./img/6/证书有效期1.png)
 
 
 2. 延长证书有效期[更新K8s证书有效期脚本](https://github.com/yuyicai/update-kube-cert)
 
 ```shell
-cd ~/k8s-install/
-
-# 下载脚本
-wget https://raw.githubusercontent.com/yuyicai/update-kube-cert/refs/heads/master/update-kubeadm-cert.sh  -O ./update-kubeadm-cert.sh
-
 # 执行脚本
-chmod +x ./update-kubeadm-cert.sh
 sudo ./update-kubeadm-cert.sh all
 
 # 查看有效期
@@ -1502,13 +1193,12 @@ sudo kubeadm certs check-expiration
 
 ```
 
-![](./img/5/证书有效期2.png)
-![](./img/5/证书有效期3.png)
+![](./img/6/证书有效期2.png)
+![](./img/6/证书有效期3.png)
 
 可以看到，服务及CA证书都延长到了10年
 
-
-## 十一、安装Dashboard
+## 十一、【第一个Master节点】安装Dashboard
 - [kubernetes系列(十六) - Helm安装和入门](https://www.cnblogs.com/baoshu/p/13296659.html)
 - [kubernetes系列(十七) - 通过helm安装dashboard详细教程](https://www.cnblogs.com/baoshu/p/13326480.html)
 
@@ -1518,10 +1208,7 @@ Kubernetes仪表板是Kubernetes集群的通用、基于Web的UI。它允许用�
 
 ### 11.1 Helm安装
 ```shell
-mkdir -p ~/k8s-install/helm/ && cd ~/k8s-install/
-
-# Helm 下载
-wget https://get.helm.sh/helm-v3.17.2-linux-amd64.tar.gz -O ./helm/helm-v3.17.2-linux-amd64.tar.gz
+cd ~/k8s-install
 
 # 解压
 tar -zxvf ./helm/helm-v3.17.2-linux-amd64.tar.gz
@@ -1532,64 +1219,23 @@ sudo mv ./linux-amd64/helm  /usr/bin/
 # 查看版本
 helm version
 
-# 安装命令补全
-sudo yum install -y bash-completion
-
+# 配置自动补全
 echo "source <(helm completion bash)" >> ~/.bashrc
 
 ```
+![](./img/6//Helm安装1.png)
 
-### 11.2 【仅在线】配置Dashboard仓库并拉取默认配置
-```shell
-# 添加helmhub上的dashboard官方repo仓库
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-
-# 查看添加完成后的仓库
-helm repo list
-
-# 查询dashboard的chart
-helm search repo kubernetes-dashboard
-
-# 新建文件夹用于保存chart
-mkdir -p dashboard-chart && cd dashboard-chart
-
-# 拉取chart
-helm pull kubernetes-dashboard/kubernetes-dashboard
-
-# 此时会有一个压缩包，默认下载的是最新版本，可能与kubernates版本不兼容，需要去github确认
-tar -zxvf kubernetes-dashboard-7.11.1.tgz
-
-# 进入到解压后的文件夹
-cd kubernetes-dashboard
-
-```
-
-如果下载较慢，可以从Github直接下载后上传到服务器
-```shell
-mkdir -p ~/k8s-install/dashboard/ && cd ~/k8s-install/
-
-# 最后一个确认支持 kubernates 1.30 的 dashboard 版本 
-wget https://github.com/kubernetes/dashboard/releases/download/kubernetes-dashboard-7.7.0/kubernetes-dashboard-7.7.0.tgz -O ./dashboard/kubernetes-dashboard-7.7.0.tgz
-
-# 安装所需的容器镜像也可以在 release页面找到 https://github.com/kubernetes/dashboard/releases/tag/kubernetes-dashboard-7.7.0
-docker pull kubernetesui/dashboard-api:1.8.1
-docker pull kubernetesui/dashboard-auth:1.1.3
-docker pull kubernetesui/dashboard-metrics-scraper:1.1.1
-docker pull kubernetesui/dashboard-web:1.4.0
-
-```
-
-### 11.3 修改Dashboard配置并安装
+### 11.2 修改Dashboard配置并安装
 
 ```shell
-# 解压
+# 1. 解压
 tar -zxvf ./dashboard/kubernetes-dashboard-7.7.0.tgz
 cd kubernetes-dashboard
 
-# 备份原始配置文件
+# 2. 备份原始配置文件
 cp values.yaml values.yaml.bakup
 
-# 修改配置
+# 3. 修改配置
 vim values.yaml
 
 # 如果使用Nginx代理，可以在此处配置域名
@@ -1601,23 +1247,24 @@ ingress:
     - dashboard.example.com
 
 
-# 安装Dashboard  执行路径在values.yaml目录
+# 4. 安装Dashboard  执行路径在values.yaml目录
 helm install kubernetes-dashboard . --create-namespace --namespace kubernetes-dashboard -f values.yaml
 
-# 查看Helm部署的资源
+# 5. 查看Helm部署的资源
 helm ls --namespace kubernetes-dashboard
 
-# 查看dashboard pod
+# 6. 查看dashboard pod
 kubectl get pods -n kubernetes-dashboard -o wide
 
-# 查看服务端口信息
+# 7. 查看服务端口信息
 kubectl get svc -n kubernetes-dashboard
 
 ```
 
-![](./img/5/Dashbaord1.png)
+![](./img/6/Dashbaord1.png)
+![](./img/6/Dashbaord2.png)
 
-### 11.4 创建Token
+### 11.3 创建Token
 
 ```shell
 cat > dashboard-adminuser.yaml << EOF
@@ -1657,14 +1304,14 @@ kubectl apply -f dashboard-adminuser.yaml
 # 获取token
 kubectl get secret admin-user -n kubernetes-dashboard -o jsonpath={".data.token"} | base64 -d
 
-eyJhbGciOiJSUzI1NiIsImtpZCI6IjJtWTBjMHlsN2tSVkVaamI1WGU0YTZkMi1EclRfUXdBLUdnR3VFRDl1QTAifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyZDAxMDdkYy04YTk3LTQ2YjItOTMwMC1iOGMyNGIzZTdkNGEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.k9ndYMW8yKPkZUg-EXkNDM9Uye7OdbZAo5JvfEb9Nad77KQigh6tCplWeYNXuOzjo0H1s7Huy4Jkwv5z7fvybI_y7RjjOGrtTnrYXEsMlXi7y8Gm0YYthnCiYYBU-Jwkk6rreJOpHoJ2hjryQgfQx3rS85fBtn8KdjronMFor3ZTCqSk1QTI387EzOgnLJ5YbJLdQJVCxheIr6Aso6bwKYk7H9lDKCP684cgsYJ-ZbRuYe2Ec-Mr2u_OvoLckGgojJSqNbVJ1zMBs9sHxuEBYut-TvpdL-HRJDDUTI8Y1mBZlS6l4rYUANcC6qVufQAbQq8FNMB_q3qdQzTxt39hzg
+eyJhbGciOiJSUzI1NiIsImtpZCI6IkZvMml4OGhLVFpTTXN6Vm9pTXo2MEpoMjFWblNKUVA1Q0JjOHkwWGRJWkEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJhZG1pbi11c2VyIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXVzZXIiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiI3NDhhY2M3Ni0wZDZlLTQyZjUtOWY3ZC00ODA4ZTcyYzQ3MDEiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6a3ViZXJuZXRlcy1kYXNoYm9hcmQ6YWRtaW4tdXNlciJ9.ZORtrGEtEicJyFbvrXgzSbrUizM_VF8FJD-QloxyRWDXzD2v4hoGe5FQ8EskWCBVkPiACldk4SnAwk8L5yZGD5ENLLQxftSkxmm_1Zup7L8R0on8ZEpRlEQZ2kZ8oLtLKcX-WK46B8DciJf-kJzfMp9LJVgCgQDLS-jIDPwUKbz9Do8MkPl4ngAIxsMcJNCQ7qd0YlV93Ja6zCOdhjk9Ir5ZC6RKWW-n_w-6IfjLUAEE6wH_rtbDRlmCLUyvyBlgIuVFNUJjck_3WLToDXBavdd4cHFnOGQaPqrd0EOb-lyJ5zqAnT0Syredam-mVkSSi0f0RqCf8eo1KCee6wi1hw
 
 kubectl describe secret -n kubernetes-dashboard $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 
 ```
-![](./img/5/Dashbaord2.png)
+![](./img/6/Dashbaord3.png)
 
-### 11.5 访问Dashboard
+### 11.4 访问Dashboard
 
 如果需要直接使用集群的IP端口访问Dashboard，按照下面配置映射的端口，配置完成后回重新运行新的容器，可能需要等待几分钟
 ```shell
@@ -1687,17 +1334,16 @@ kubectl get svc -n kubernetes-dashboard
 # 查看kong-proxy所在的节点
 kubectl get pods -n kubernetes-dashboard -o wide
 
-kubectl logs -n kubernetes-dashboard kubernetes-dashboard-kong-7696bb8c88-c2qkt
-
 ```
 
-![](./img/5/Dashbaord3.png)
+![](./img/6/Dashboard4.png)
+![](./img/6/Dashboard5.png)
 
 - 浏览器访问 `https://192.168.137.131:30443`，输入前面生成的Token即可访问页面
 
-![](./img/5/Dashbaord4.png)
+![](./img/6/Dashboard6.png)
 
-### 11.6 删除Dashboard
+### 11.5 删除Dashboard
 ```shell
 # 用Helm卸载 Dashboard
 [diginn@k8s-master-01 k8s]$ helm -n kubernetes-dashboard uninstall kubernetes-dashboard
@@ -1930,273 +1576,3 @@ kubectl delete statefulset/[stateful_set_name] --cascade=false – Delete Statef
 1. 使用 `--force --grace-period=0` 强制删除资源时需谨慎（可能导致数据不一致）。
 2. 查看日志时，若Pod有多个容器，需指定容器名：`kubectl logs <pod-name> -c <container-name>`。
 3. 复杂操作建议优先使用YAML文件（`kubectl apply -f`）。
-
-## 十三、K8s网络设计
-
-在K8s的安装使用过程中，最复杂也最难排查的问题通常都是网络问题，K8s的设计决定了网络结构的复杂度，可以用AI梳理一下K8s的网络模型
-
-理解 Kubernetes（K8s）网络需要从它的设计理念、核心组件及网络模型入手。K8s 网络模型旨在解决容器化应用中复杂的通信需求，以下是逐步拆解的关键点：
-
----
-
-### 1. K8s 网络的核心需求
-K8s 网络需满足以下基本条件：
-1. **Pod 间直接通信**  
-   - 所有 Pod 可以直接通过 IP 地址通信，无需 NAT。
-   - 无论 Pod 是否在同一节点上，网络必须支持跨节点通信。
-2. **节点与 Pod 通信**  
-   - 节点（物理机/虚拟机）可以直接访问其上的 Pod。
-3. **Service 抽象**  
-   - 通过 Service 为一组 Pod 提供稳定的虚拟 IP（ClusterIP）和 DNS 名称。
-   - 支持负载均衡和流量转发。
-4. **外部访问**  
-   - 通过 `Ingress` 或 `LoadBalancer` 类型 Service 暴露服务到集群外部。
-
----
-
-### 2. K8s 网络模型设计
-K8s 本身不直接实现网络功能，而是定义了一套标准模型，依赖插件（CNI）实现。核心设计如下：
-
-#### 1. **Pod 网络**
-- **每个 Pod 拥有独立 IP**  
-  - Pod 内的容器共享网络命名空间，通过 `localhost` 直接通信。
-  - 每个 Pod 的 IP 在整个集群中唯一（称为 `Pod IP`）。
-- **跨节点通信**  
-  - 不同节点上的 Pod 可以直接通信，无需 NAT。  
-  - 由 CNI 插件（如 Calico、Flannel、Cilium 等）实现底层网络隧道（如 VXLAN、IPIP）或路由策略。
-
-#### 2. **Service 网络**
-- **Service 的虚拟 IP（ClusterIP）**  
-  - Service 不是实体组件，而是通过 `kube-proxy` 在节点上配置的 iptables/IPVS 规则实现。
-  - 流量从 Service IP 转发到后端 Pod（负载均衡）。
-- **DNS 服务发现**  
-  - CoreDNS 为 Service 提供 DNS 记录（如 `my-svc.my-namespace.svc.cluster.local`）。
-
-#### 3. **网络插件（CNI）**
-- **CNI 的作用**  
-  - 负责为 Pod 分配 IP、配置网络接口、路由规则等。
-  - 常见插件：Calico（基于 BGP 路由）、Flannel（基于 VXLAN 隧道）、Cilium（基于 eBPF）。
-- **选择 CNI 插件的影响**  
-  - 性能（如延迟、吞吐量）、网络策略支持（NetworkPolicy）、多集群互联能力等。
-
-#### 4. **网络策略（NetworkPolicy）**
-- 通过 `NetworkPolicy` 定义 Pod 间的通信规则（白名单），实现微服务网络安全。
-- 需要 CNI 插件支持（如 Calico、Cilium）。
-
----
-
-### 3. 关键组件详解
-
-#### 1. **kube-proxy**
-- **作用**：维护节点上的网络规则，实现 Service 的流量转发。
-- **实现方式**：
-  - **iptables 模式**：通过 iptables 规则匹配目标 IP 和端口，转发到随机后端 Pod。
-  - **IPVS 模式**：基于内核的 IP Virtual Server，性能更高，适合大规模集群。
-
-#### 2. **CoreDNS**
-- **作用**：为 Service 和 Pod 提供 DNS 解析服务。
-- **记录类型**：
-  - `A` 记录：Service 的 ClusterIP。
-  - `SRV` 记录：服务端口信息。
-  - Pod 的 DNS 记录（需显式配置 `hostname` 和 `subdomain`）。
-
-#### 3. **Ingress Controller**
-- **作用**：通过 HTTP/HTTPS 路由规则暴露服务到集群外。
-- **常见实现**：Nginx Ingress、Traefik、HAProxy。
-
----
-
-### 4. 网络通信示例
-假设集群中有以下资源：
-- Pod A（IP: `10.244.1.2`，节点: Node1）
-- Pod B（IP: `10.244.2.3`，节点: Node2）
-- Service S（ClusterIP: `10.96.0.10`，后端为 Pod A 和 Pod B）
-
-#### 1. **Pod A → Pod B**
-- 直接通过 Pod IP `10.244.2.3` 通信。
-- CNI 插件确保跨节点流量通过隧道或路由到达目标节点。
-
-#### 2. **Pod A → Service S**
-- 请求发送到 `10.96.0.10:80`。
-- `kube-proxy` 通过 iptables/IPVS 将流量转发到 Pod A 或 Pod B。
-
-#### 3. **外部访问 Service S**
-- 通过 `NodePort`（如 `30080`）或 `LoadBalancer` 类型的 Service。
-- Ingress 控制器根据域名和路径路由到 Service。
-
----
-
-### 5. 常见问题与排查
-1. **Pod 无法跨节点通信**  
-   - 检查 CNI 插件是否安装，节点防火墙是否开放 VXLAN/BGP 端口。
-2. **Service 无法访问**  
-   - 检查 `kube-proxy` 是否运行，iptables/IPVS 规则是否正确。
-3. **DNS 解析失败（CoreDNS Pending）**  
-   - 确保网络插件已安装，CoreDNS Pod 调度正常（如容忍主节点污点）。
-
----
-
-### 6. 总结
-K8s 网络的核心是 **Pod 直接通信 + Service 抽象 + CNI 插件实现**，理解其分层模型和组件协作是关键。实际应用中需根据场景选择合适的 CNI 插件，并通过 `kubectl describe`、`kubectl logs` 等工具排查网络问题。
-
-## 十四、问题
-
-### 1. 加入新的Master节点时报错 `cluster that doesn't have a stable controlPlaneEndpoint address`
-
-```shell
-[diginn@centos ~]$ sudo kubeadm join 192.168.137.121:6443 --token dvoeut.f4ebwfjuvxfrq8en \
->   --discovery-token-ca-cert-hash sha256:6dc91db6dcca58593100b04e03f2f534490fdecdcdb19717775fb7940df32c35 \
->   --control-plane --certificate-key a42a3d42d713581b588a689b64cc78c47bed8c320c01e763ccc358abde775918 \
->   --cri-socket=unix:///var/run/cri-dockerd.sock
-[sudo] diginn 的密码：
-[preflight] Running pre-flight checks
-[preflight] Reading configuration from the cluster...
-[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -o yaml'
-error execution phase preflight:
-One or more conditions for hosting a new control plane instance is not satisfied.
-
-unable to add a new control plane instance to a cluster that doesn't have a stable controlPlaneEndpoint address
-
-Please ensure that:
-* The cluster has a stable controlPlaneEndpoint address.
-* The certificates that must be shared among control plane instances are provided.
-
-
-To see the stack trace of this error execute with --v=5 or higher
-```
-![](./img/5/加入Master节点异常1.png)
-
-#### 解决
-如果在第一个集群使用kubeadm初始化时没有指定vip则会出现上述报错
-
-1. 在主master节点查看 `kubeadm-config.yaml`
-```shell
-kubectl -n kube-system get cm kubeadm-config -o yaml | grep controlPlaneEndpoint
-
-```
-如果没有筛选到 `controlPlaneEndpoint` ，代表初始化时没有配置
-
-2. 编辑`kubeadm-config`，添加`controlPlaneEndpoint`
-```shell
-kubectl -n kube-system edit cm kubeadm-config
-
-```
-
-```yaml
-data:
-  ClusterConfiguration: |
-    apiServer:
-      timeoutForControlPlane: 4m0s
-    apiVersion: kubeadm.k8s.io/v1beta3
-    certificatesDir: /etc/kubernetes/pki
-    clusterName: kubernetes
-    # 此处加加入高可用vip
-    controlPlaneEndpoint: 192.168.137.140:16443
-    controllerManager: {}
-    dns: {}
-
-```
-
-
-![](./img/5/加入Master节点异常2.png)
-
-### 2. Calico 服务运行异常
-- [记录一次K8s 集群故障（路由&Calico）](https://blog.csdn.net/qq_43024789/article/details/136127430)
-
-集群在加入节点后 `calico-node` 服务运行状态异常
-![](./img/5/Calico运行异常1.png)
-
-#### 解决
-
-calico各节点之间通讯需要开放一些端口，端口开放后访问正常
-```shell
-# BGP 端口
-sudo firewall-cmd --permanent --add-port=179/tcp
-
-# 根据封装模式选择 IP-in-IP 或 VXLAN
-# IP-in-IP
-sudo firewall-cmd --permanent --add-rich-rule='rule protocol value="4" accept'
-# 或 VXLAN
-sudo firewall-cmd --permanent --add-port=8472/udp
-
-# Typha 端口（若启用）
-sudo firewall-cmd --permanent --add-port=5473/tcp
-
-# 指标端口（按需）
-sudo firewall-cmd --permanent --add-port=9099/tcp
-sudo firewall-cmd --permanent --add-port=9091/tcp
-
-# 重启防火墙
-sudo firewall-cmd --reload
-
-# 查看开放的端口
-sudo firewall-cmd --list-port
-
-# 查询所有calico-node 
-kubectl get pods -n kube-system -l k8s-app=calico-node
-
-# 删除所有calico-node 
-kubectl delete pods -n kube-system -l k8s-app=calico-node
-
-```
-![](./img/5/Calico运行异常2.png)
-
-### 3. Dashboard访问异常
-访问Dashboard时报错
-```shell
-failed the initial dns/balancer resolve for 'kubernetes-dashboard-web' with: failed to receive reply from UDP server 10.96.0.10:53: no route to host.
-
-request_id: d4fe874d5f8e335cd8fdb52ae1d33c04
-
-```
-![](./img/5/Dashboard访问异常1.png)
-
-这个问题也属于网络问题的范畴，通常是CoreDNS的问题
-```shell
-# 查找CoreDNS Pod
-kubectl get pods -n kube-system -l k8s-app=kube-dns
-
-# 查看日志是否有异常
-kubectl logs -n kube-system coredns-cb4864fb5-4mj8d
-kubectl logs -n kube-system coredns-cb4864fb5-gxrdp
-
-# 确认CoreDNS的ip
-kubectl get svc -n kube-system kube-dns
-
-# 确认防火墙的放行规则
-sudo firewall-cmd --list-port
-
-# 进入容器内部交互模式
-kubectl exec -it -n kube-system coredns-cb4864fb5-4mj8d -- sh
-
-```
-
-![](./img/5/Dashboard访问异常2.png)
-
-```shell
-# 1. 所有节点开放CoreDNS相关端口
-sudo firewall-cmd --permanent --add-port=53/tcp
-sudo firewall-cmd --permanent --add-port=53/udp
-sudo firewall-cmd --permanent --add-port=9153/udp
-# DHCP端口
-sudo firewall-cmd --permanent --add-port=67/udp
-sudo firewall-cmd --permanent --add-port=68/udp
-sudo firewall-cmd --reload
-
-
-# 2. 在Master节点上删除 coredns 和 calico-node 相关pods，等待重建
-kubectl delete pods -n kube-system -l k8s-app=calico-node
-kubectl delete pods -n kube-system -l k8s-app=kube-dns
-
-# 3. 在Master节点上删除 kubernetes-dashboard 相关pods，等待重建
-kubectl get pods -n kubernetes-dashboard
-kubectl delete pods --all -n kubernetes-dashboard
-
-# 4. 验证
-sudo firewall-cmd --list-all
-kubectl get pods --all-namespaces -o wide
-
-```
-![](./img/5/Dashboard访问异常3.png)
-![](./img/5/Dashboard访问异常4.png)
-
