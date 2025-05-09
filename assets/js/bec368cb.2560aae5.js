@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[60035],{99685:s=>{s.exports=JSON.parse('{"label":"docsearch","permalink":"/blog/tags/docsearch","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

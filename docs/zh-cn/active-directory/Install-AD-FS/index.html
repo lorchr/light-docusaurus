@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-zh-cn/active-directory/Install-AD-FS" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.2.1">
+<title data-rh="true">Install-AD-FS | Light Docusaurus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://lorchr.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://lorchr.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://lorchr.github.io/docs/zh-cn/active-directory/Install-AD-FS/"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Install-AD-FS | Light Docusaurus"><meta data-rh="true" name="description" content="- ADFS 用户 SSO 使用说明"><meta data-rh="true" property="og:description" content="- ADFS 用户 SSO 使用说明"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://lorchr.github.io/docs/zh-cn/active-directory/Install-AD-FS/"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/docs/zh-cn/active-directory/Install-AD-FS/" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/docs/zh-cn/active-directory/Install-AD-FS/" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://TLGHDZ3Y2I-dsn.algolia.net" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Light Docusaurus RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Light Docusaurus Atom Feed">
+
+
+
+<link rel="search" type="application/opensearchdescription+xml" title="Light Docusaurus" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.10a62360.css">
+<script src="/assets/js/runtime~main.849e35c8.js" defer="defer"></script>
+<script src="/assets/js/main.4af205e6.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Torch</b></a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/docs/category/guide/">Torch</a><a class="navbar__item navbar__link" href="/blog/">Blog</a><a class="navbar__item navbar__link" href="/middleware/">Middleware</a><a class="navbar__item navbar__link" href="/electron/">Electron</a><a class="navbar__item navbar__link" href="/postman/">Postman</a><a class="navbar__item navbar__link" href="/diy/">DIY</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/docs/zh-cn/active-directory/Install-AD-FS/" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li></ul></div><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><button type="button" class="DocSearch DocSearch-Button" aria-label="搜索"><span class="DocSearch-Button-Container"><svg width="20" height="20" class="DocSearch-Search-Icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="DocSearch-Button-Placeholder">搜索</span></span><span class="DocSearch-Button-Keys"></span></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class="sidebarViewport_aRkj"><div class="sidebar_njMd"><nav aria-label="文档侧边栏" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/guide/">Guide</a><button aria-label="展开侧边栏分类 &#x27;Guide&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/develop-environment/">Develop Environment</a><button aria-label="展开侧边栏分类 &#x27;Develop Environment&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/java-jvm/">Java (JVM)</a><button aria-label="展开侧边栏分类 &#x27;Java (JVM)&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/spring-boot/">Spring Boot</a><button aria-label="展开侧边栏分类 &#x27;Spring Boot&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/spring-cloud/">Spring Cloud</a><button aria-label="展开侧边栏分类 &#x27;Spring Cloud&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/spring-security/">Spring Security</a><button aria-label="展开侧边栏分类 &#x27;Spring Security&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/spring-authorization-server/">Spring Authorization Server</a><button aria-label="展开侧边栏分类 &#x27;Spring Authorization Server&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist menu__link--active" href="/docs/category/active-directory/">Active Directory</a><button aria-label="折叠侧边栏分类 &#x27;Active Directory&#x27;" aria-expanded="true" type="button" class="clean-btn menu__caret"></button></div><ul style="display:block;overflow:visible;height:auto" class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Install-AD-DS/">Install-AD-DS</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Tomcat-Integrate-Windows-Authentication-With-Spnego/">Tomcat-Integrate-Windows-Authentication-With-Spnego</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/ADFS-Login/">ADFS-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Install-AD-FS-For-SSO-Login/">Install-AD-FS-For-SSO-Login</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Rename-Domain-Controller/">Rename-Domain-Controller</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/docs/zh-cn/active-directory/Install-AD-FS/">Install-AD-FS</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Spring-Boot-Login-With-ADFS/">Spring-Boot-Login-With-ADFS</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Spring-Boot-Login-With-ADDS/">Spring-Boot-Login-With-ADDS</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link" tabindex="0" href="/docs/zh-cn/active-directory/Install-ApacheDS/">Install-ApacheDS</a></li></ul></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/database/">Database</a><button aria-label="展开侧边栏分类 &#x27;Database&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/git/">Git</a><button aria-label="展开侧边栏分类 &#x27;Git&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/linux/">Linux</a><button aria-label="展开侧边栏分类 &#x27;Linux&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/docker/">Docker</a><button aria-label="展开侧边栏分类 &#x27;Docker&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/kubernetes/">Kubernetes</a><button aria-label="展开侧边栏分类 &#x27;Kubernetes&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/test/">Test</a><button aria-label="展开侧边栏分类 &#x27;Test&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="menu__link menu__link--sublist" href="/docs/category/others/">Others</a><button aria-label="展开侧边栏分类 &#x27;Others&#x27;" aria-expanded="false" type="button" class="clean-btn menu__caret"></button></div></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/zh-cn/awesome-open-source/">Github Speed UP</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/docs/zh-cn/windows/">Windows</a></li></ul></nav><button type="button" title="收起侧边栏" aria-label="收起侧边栏" class="button button--secondary button--outline collapseSidebarButton_PEFL"><svg width="20" height="20" aria-hidden="true" class="collapseSidebarButtonIcon_kv0_"><g fill="#7a7a7a"><path d="M9.992 10.023c0 .2-.062.399-.172.547l-4.996 7.492a.982.982 0 01-.828.454H1c-.55 0-1-.453-1-1 0-.2.059-.403.168-.551l4.629-6.942L.168 3.078A.939.939 0 010 2.528c0-.548.45-.997 1-.997h2.996c.352 0 .649.18.828.45L9.82 9.472c.11.148.172.347.172.55zm0 0"></path><path d="M19.98 10.023c0 .2-.058.399-.168.547l-4.996 7.492a.987.987 0 01-.828.454h-3c-.547 0-.996-.453-.996-1 0-.2.059-.403.168-.551l4.625-6.942-4.625-6.945a.939.939 0 01-.168-.55 1 1 0 01.996-.997h3c.348 0 .649.18.828.45l4.996 7.492c.11.148.168.347.168.55zm0 0"></path></g></svg></button></div></div></aside><main class="docMainContainer_TBSr"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label="页面路径"><ul class="breadcrumbs" itemscope="" itemtype="https://schema.org/BreadcrumbList"><li class="breadcrumbs__item"><a aria-label="主页面" class="breadcrumbs__link" href="/"><svg viewBox="0 0 24 24" class="breadcrumbHomeIcon_YNFT"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill="currentColor"></path></svg></a></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item"><a class="breadcrumbs__link" itemprop="item" href="/docs/category/active-directory/"><span itemprop="name">Active Directory</span></a><meta itemprop="position" content="1"></li><li itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem" class="breadcrumbs__item breadcrumbs__item--active"><span class="breadcrumbs__link" itemprop="name">Install-AD-FS</span><meta itemprop="position" content="2"></li></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>Install-AD-FS</h1></header><ul>
+<li>
+<p><a href="https://cloud.tencent.com/document/product/598/84174" target="_blank" rel="noopener noreferrer">ADFS 用户 SSO 使用说明</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/bzpfly/p/13521792.html" target="_blank" rel="noopener noreferrer">Dynamics CRM安装教程五：ADFS安装配置</a></p>
+</li>
+<li>
+<p><a href="https://learn.microsoft.com/zh-cn/windows-server/identity/ad-fs/deployment/deploying-a-federation-server-farm" target="_blank" rel="noopener noreferrer">部署联合服务器场</a></p>
+</li>
+<li>
+<p><a href="https://learn.microsoft.com/zh-cn/previous-versions/azure/azure-services/dn151310(v=azure.100)" target="_blank" rel="noopener noreferrer">安装 AD FS 软件</a></p>
+</li>
+<li>
+<p><a href="https://learn.microsoft.com/zh-cn/windows-server/storage/work-folders/deploy-work-folders-adfs-step1" target="_blank" rel="noopener noreferrer">使用 AD FS 和 Web 应用程序代理部署工作文件夹：步骤 1，设置 AD FS</a></p>
+</li>
+<li>
+<p><a href="https://docs.keeper.io/sso-connect-cloud/identity-provider-setup/ad-fs-keeper" target="_blank" rel="noopener noreferrer">Keeper Microsoft AD FS</a></p>
+</li>
+<li>
+<p><a href="https://learn.microsoft.com/zh-cn/windows-server/identity/ad-fs/ad-fs-overview" target="_blank" rel="noopener noreferrer">Active Directory 联合身份验证服务概述</a></p>
+</li>
+<li>
+<p><a href="https://docs.spring.io/spring-security/reference/servlet/saml2/index.html" target="_blank" rel="noopener noreferrer">SAML2 :: Spring Security</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9836169.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-总览</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9836196.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-前置准备</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9837685.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-ADFS3.0安装配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9838248.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-集成SharePoint</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9838277.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-集成MVC</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9838305.html" target="_blank" rel="noopener noreferrer">实战：ADFS3.0单点登录系列-集成Exchange</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9838609.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（1）证书颁发机构配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842030.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（2）证书配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842172.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（3）DNS及防火墙配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842264.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（4）ADFS安装配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842277.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（5）Claims-based认证-内部访问配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842294.html" target="_blank" rel="noopener noreferrer">Dynamic CRM 2016 IFD配置（6）Claims-based认证-外部访问配置</a></p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/luoyedemeng/articles/9842465.html" target="_blank" rel="noopener noreferrer">Server2012 下 部署ADFS IFD</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lynxkor/article/details/103927227" target="_blank" rel="noopener noreferrer">服务部署系列手册--01-AD域服务安装及新林安装配置</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lynxkor/article/details/103928142" target="_blank" rel="noopener noreferrer">服务部署系列手册--02-ADFS3.0单点登录服务安装及配置</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lynxkor/article/details/104746643" target="_blank" rel="noopener noreferrer">服务部署系列手册--03-证书服务安装及SSL证书申请颁发</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lynxkor/article/details/105123593" target="_blank" rel="noopener noreferrer">服务部署系列手册--04-SQL SERVER2016安装及配置</a></p>
+</li>
+<li>
+<p><a href="https://blog.csdn.net/lynxkor/article/details/105134007" target="_blank" rel="noopener noreferrer">服务部署系列手册--05-Dynamics365安装部署及配置</a></p>
+</li>
+<li>
+<p><a href="https://cloud.tencent.com/developer/article/2367225" target="_blank" rel="noopener noreferrer">如何将Spring Security 集成 SAML2 ADFS 实现SSO单点登录?</a></p>
+</li>
+<li>
+<p><a href="https://github.com/Kahen/spring-security-saml2-azure-ad-example" target="_blank" rel="noopener noreferrer">示例代码</a></p>
+</li>
+<li>
+<p><a href="https://docs.keeper.io/sso-connect-cloud/identity-provider-setup/ad-fs-keeper" target="_blank" rel="noopener noreferrer">How to configure Keeper SSO Connect Cloud with Microsoft AD FS for seamless and secure SAML 2.0 authentication</a></p>
+</li>
+<li>
+<p><a href="https://learn.microsoft.com/zh-cn/windows-server/identity/ad-fs/ad-fs-overview" target="_blank" rel="noopener noreferrer">Active Directory 联合身份验证 服务概述</a></p>
+</li>
+<li>
+<p><a href="https://docs.spring.io/spring-security/reference/servlet/saml2/index.html" target="_blank" rel="noopener noreferrer">SAML2 :: Spring Security</a></p>
+</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="创建ad域账户">创建AD域账户<a href="#创建ad域账户" class="hash-link" aria-label="创建AD域账户的直接链接" title="创建AD域账户的直接链接">​</a></h2>
+<p>如果安装AD域未创建账户，需要先创建一个账户用于ADFS认证配置</p>
+<ol>
+<li>安装完成后，服务器将重启，重启完成后，进入 <code>服务器管理</code> &gt; <code>AD DS</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-0-1-9bf5c71d5f7b80379870637b2adc5ee7.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-0-2-72dd45c036bdd94dd18dd6a8c7cfbda7.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="2">
+<li>在 <code>Active Directory 用户与计算机</code> 页面，新建 <code>组织单位</code> 及 <code>用户</code> 信息，其中 <code>姓(Users-First name)</code> 名称需与后续腾讯云创建的子用户保持一致，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-0-3-22078c6efa7ad0169fb7eaec9f95db48.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-0-4-d444f9e7c730d0438c23f88c3c1a1642.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-0-5-7da2da778e3425984c93a52142585418.png" width="1667" height="880" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="安装ca证书服务">安装CA证书服务<a href="#安装ca证书服务" class="hash-link" aria-label="安装CA证书服务的直接链接" title="安装CA证书服务的直接链接">​</a></h2>
+<ol>
+<li>在服务器内，进入 <code>服务器管理器</code> &gt; <code>仪表板</code>， 点击 <code>添加角色和功能</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-1-aeff6768ba5f10d143625f0537da448d.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="2">
+<li>一直单击 <code>下一步</code> 直到 <code>服务器角色</code> 页面，<code>角色</code> 选择 <code>Active Directory 证书服务</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-2-8123a29d0f322a711e5919c7ea4bcfbc.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="3">
+<li>一直单击 <code>下一步</code> 直到 <code>AD CS</code> - <code>角色服务</code> 页面，<code>角色服务</code> 选择 <code>证书颁发服务</code>、<code>证书颁发机构Web注册</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-3-3a98a0ed7c789b0e461ef9a84b50f0f8.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="4">
+<li>一直单击 <code>下一步</code> 直到 <code>结果</code> 页面，单击下图信息配置 <code>AD CS 配置</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-4-e998536c30941dcef9927c60eeffcf01.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-5-015be2356dddd26e8524d9d3fc1944fe.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="5">
+<li>单击 <code>下一步</code> ，在<code>角色服务</code>，勾选下图信息，单击 <code>下一步</code></li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-6-c2e4c344c8d10979ab672a4564d6b008.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="6">
+<li>在 <code>设置类型</code> 页面，选择 <code>企业 CA</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-7-2251cc434aa9b2a89c0cc5c5622ddd95.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="7">
+<li>在 <code>CA 类型</code> 页面，选择 <code>根 CA</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-8-85848cd96f2cb6e85d31522c95b386cb.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="8">
+<li>在 <code>私钥</code> 页面，选择 <code>创建新的私钥</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-9-a50ba0d47702df2c6e43977681c8d73b.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-10-973b603d3da14d227a0aeab6cd38ed31.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-11-27de462b0a2e4b1493459ac3023ab681.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-12-fcd25fe1255fbc20bf1c29704bce115a.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="9">
+<li>在 <code>证书数据库</code> 页面，补充信息，单击下一步，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-13-a7e206e94ad5ccfa5cd4be7b48cfff4e.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-14-f79a7da107e2426ece68490bf6b73402.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-15-962645d5b6d53c2a0348c92e058bef9e.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="10">
+<li>访问  <code>http://localhost/certsrv</code>  确保 CA 安装成功，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-16-c9c38a110ff5e12d480aecacdd8ffe36.png" width="1667" height="880" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="安装ad-fs服务">安装AD FS服务<a href="#安装ad-fs服务" class="hash-link" aria-label="安装AD FS服务的直接链接" title="安装AD FS服务的直接链接">​</a></h2>
+<p>在配置前您需要给计算机或者指定的用户或者计算机授权证书颁发。安装 ADFS 前，需要创建和配置证书，本文中通过 IIS 进行证书申请。</p>
+<ol>
+<li>在服务器内进入<code>服务器管理器</code> &gt; <code>仪表板</code>，单击<code>工具</code>，选择 <code>IIS 管理器</code> 。</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-17-7ed6c9ae046e56dc0f15c964fb03e15a.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="2">
+<li>在 <code>IIS 管理器</code>中，单击<code>服务器证书</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-18-74fd19d46586d3ef33bbe3142d580660.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="3">
+<li>进入<code>服务器证书</code>页面，单击 <code>创建证书申请</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-19-f0f36446bce0bb6a78f10f41b25f4447.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-20-6cb18e730ca2a36e0b8118f3e2733481.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-21-2ac14544ae9a7ba2ff2009fca6d9ac37.png" width="1667" height="880" class="img_ev3q"></p>
+<p>输入证书文件名<code>C:\Users\Administrator\Desktop\cert.txt</code></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-22-038e5f537ffc2074233aec2f6cafca21.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="4">
+<li>访问 <code>http://localhost/certsrv</code>，单击<code>申请证书</code> &gt; <code>高级证书申 请</code> &gt; <code>使用 base64 编码</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-23-22473ef015839dfe67c6a8f8909865ed.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-24-363211e79b655191b9ac5bc2abac2b88.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-25-7ef98908e89e36a814385abf7484d3fb.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="5">
+<li>在弹出的提交证书申请页面，将申请证书保存的证书文件内容复制之后补充至以下输入框，证书模板选择 <code>Web 服务器</code>，单击提交。如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-26-7af607d82cb7c9813b3edac0f4544b56.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="6">
+<li>提交之后，单击 下载证书，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-27-9ee0c1127b8760a8eb3a956393733558.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="7">
+<li>在<code>服务器证书</code>页面，单击 <code>完成证书申请</code>，在弹出的页面选择<code>步骤 6</code> 下载的证书，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-28-7fee0b6e803b7bbd343353f28cfa81f0.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-29-3b57d517230dd93abf6263c84735de8a.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="8">
+<li>在<code>网站</code> &gt; <code>Default Web Site</code> 主页，右键单击 编辑绑定，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-30-648ecbc61f44f196ab44895b841f4692.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="9">
+<li>在弹出的网站绑定页面，单击 添加，选择类型为 https，IP 地址为全部未分配，端口为 443，SSL 证书为 <code>ad-pisx.cert</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-31-fa221f76ad542596e724ab955c1c3c4f.png" width="1667" height="880" class="img_ev3q"></p>
+<ol>
+<li>在 <code>控制面板</code> &gt; <code>系统和安全</code> &gt; <code>管理工具</code>页面，单击 <code>证书颁发机构</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-32-908e22621336a03704d2ba1afde50ee7.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="11">
+<li>在证书颁发机构页面，选择证件模板，右键单击管理，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-33-b835a4969824433755afd1ad16d94613.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="12">
+<li>参考下图配置：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-34-386a9d8cc61d7074bde2f6bbefb13411.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-35-a145373052f3369b2731a96c7afd8a0d.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-36-32b3c36641daa0b03c4cd9abeb7c2893.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-37-1b05ae0eb633ac2377f9589a32f6bbd5.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-38-9d0d30fca39cffa9c3bb5cb8b5d18530.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="13">
+<li>进入<code>服务器管理器</code> &gt; <code>仪表板页面</code>，单击 <code>添加角色和功能</code>，按照默认选择一直单击 下一步 直到服务器角 色选择页面，勾选 <code>Active Directory 联合身份验证服务</code>，一直单击 下一步，直至安装完成。</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-39-81366b17d7d023a66f0ac018f8059b07.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="14">
+<li>在安装完成页面，单击 <code>在此服务器上配置联合身份验证服务</code>，如下图所示：</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-40-eb8e61e604267ba6a704e7c9a3e00366.png" width="1667" height="880" class="img_ev3q"></p>
+<ol start="15">
+<li>在弹出的向导页面，单击 下一步，</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-41-47fb0ddeea23a201baece6f6ebb3b1ab.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-42-65e471a97d12b59d1a96d18d1e791d4e.png" width="1667" height="880" class="img_ev3q"></p>
+<p>设置<code>指定服务属性</code>，选择并填写好所需数据，单击下一步。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-43-b2676d2d4b70fc156ad39caf2a6a9414.png" width="1667" height="880" class="img_ev3q"></p>
+<p>设置<code>指定服务账户</code>，选择<code>使用现有的域用户账户或组托管服务账户</code>，单击<code>选择</code>。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-44-398e62622910794177020eb77e6e4c08.png" width="1667" height="880" class="img_ev3q"></p>
+<p>选择指定账户后，单击确认，输入账号密码，点击<code>下一步</code>后直至安装完成。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-45-b98fba8d2b048d9026b6a09cfb1b6c76.png" width="1667" height="880" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/6-46-bd2facdce62742ed4429b37d4966fdd7.png" width="1667" height="880" class="img_ev3q"></p>
+<p><strong>Note:</strong> 如果不知道用户全名，可以使用<code>高级</code>中的搜索功能</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/lorchr/light-docusaurus/tree/main/docs/zh-cn/active-directory/6-Install-AD-FS.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/zh-cn/active-directory/Rename-Domain-Controller/"><div class="pagination-nav__sublabel">上一页</div><div class="pagination-nav__label">Rename-Domain-Controller</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/zh-cn/active-directory/Spring-Boot-Login-With-ADFS/"><div class="pagination-nav__sublabel">下一页</div><div class="pagination-nav__label">Spring-Boot-Login-With-ADFS</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#创建ad域账户" class="table-of-contents__link toc-highlight">创建AD域账户</a></li><li><a href="#安装ca证书服务" class="table-of-contents__link toc-highlight">安装CA证书服务</a></li><li><a href="#安装ad-fs服务" class="table-of-contents__link toc-highlight">安装AD FS服务</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/category/guide/">Torch</a></li><li class="footer__item"><a class="footer__link-item" href="/middleware/">Middleware</a></li><li class="footer__item"><a class="footer__link-item" href="/electron/">Electron</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/blog/">Blog</a></li><li class="footer__item"><a class="footer__link-item" href="/diy/">DIY</a></li><li class="footer__item"><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Offical</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer" class="footer__link-item">Home<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://docusaurus.io/docs/playground" target="_blank" rel="noopener noreferrer" class="footer__link-item">Playground<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Light-Docusaurus, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

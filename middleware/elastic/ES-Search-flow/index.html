@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="zh-Hans" dir="ltr" class="docs-wrapper plugin-docs plugin-id-middleware docs-version-current docs-doc-page docs-doc-id-elastic/ES-Search-flow" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.2.1">
+<title data-rh="true">ES-Search-flow | Light Docusaurus</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:image" content="https://lorchr.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" name="twitter:image" content="https://lorchr.github.io/img/docusaurus-social-card.jpg"><meta data-rh="true" property="og:url" content="https://lorchr.github.io/middleware/elastic/ES-Search-flow/"><meta data-rh="true" property="og:locale" content="zh_Hans"><meta data-rh="true" name="docusaurus_locale" content="zh-Hans"><meta data-rh="true" name="docsearch:language" content="zh-Hans"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-middleware-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-middleware-current"><meta data-rh="true" property="og:title" content="ES-Search-flow | Light Docusaurus"><meta data-rh="true" name="description" content="- ElasticSearch 2 (9) - 在ElasticSearch之下（图解搜索的故事）"><meta data-rh="true" property="og:description" content="- ElasticSearch 2 (9) - 在ElasticSearch之下（图解搜索的故事）"><link data-rh="true" rel="icon" href="/img/favicon.ico"><link data-rh="true" rel="canonical" href="https://lorchr.github.io/middleware/elastic/ES-Search-flow/"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/middleware/elastic/ES-Search-flow/" hreflang="zh-Hans"><link data-rh="true" rel="alternate" href="https://lorchr.github.io/middleware/elastic/ES-Search-flow/" hreflang="x-default"><link data-rh="true" rel="preconnect" href="https://TLGHDZ3Y2I-dsn.algolia.net" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="/blog/rss.xml" title="Light Docusaurus RSS Feed">
+<link rel="alternate" type="application/atom+xml" href="/blog/atom.xml" title="Light Docusaurus Atom Feed">
+
+
+
+<link rel="search" type="application/opensearchdescription+xml" title="Light Docusaurus" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.10a62360.css">
+<script src="/assets/js/runtime~main.849e35c8.js" defer="defer"></script>
+<script src="/assets/js/main.4af205e6.js" defer="defer"></script>
+</head>
+<body class="navigation-with-keyboard">
+<script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return localStorage.getItem("theme")}catch(t){}}();t(null!==e?e:"light")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="跳到主要内容"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">跳到主要内容</a></div><nav aria-label="主导航" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="切换导航栏" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/"><div class="navbar__logo"><img src="/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--light_NVdE"><img src="/img/logo.svg" alt="Torch Logo" class="themedComponent_mlkZ themedComponent--dark_xIcU"></div><b class="navbar__title text--truncate">Torch</b></a><a class="navbar__item navbar__link" href="/docs/category/guide/">Torch</a><a class="navbar__item navbar__link" href="/blog/">Blog</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/middleware/">Middleware</a><a class="navbar__item navbar__link" href="/electron/">Electron</a><a class="navbar__item navbar__link" href="/postman/">Postman</a><a class="navbar__item navbar__link" href="/diy/">DIY</a></div><div class="navbar__items navbar__items--right"><div class="navbar__item dropdown dropdown--hoverable dropdown--right"><a href="#" aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" class="iconLanguage_nlXk"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"></path></svg>简体中文</a><ul class="dropdown__menu"><li><a href="/middleware/elastic/ES-Search-flow/" target="_self" rel="noopener noreferrer" class="dropdown__link dropdown__link--active" lang="zh-Hans">简体中文</a></li></ul></div><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="切换浅色/暗黑模式（当前为浅色模式）" aria-label="切换浅色/暗黑模式（当前为浅色模式）" aria-live="polite"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><button type="button" class="DocSearch DocSearch-Button" aria-label="搜索"><span class="DocSearch-Button-Container"><svg width="20" height="20" class="DocSearch-Search-Icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="DocSearch-Button-Placeholder">搜索</span></span><span class="DocSearch-Button-Keys"></span></button></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0"><div class="docsWrapper_hBAB"><button aria-label="回到顶部" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type="button"></button><div class="docRoot_UBD9"><main class="docMainContainer_TBSr docMainContainerEnhanced_lQrH"><div class="container padding-top--md padding-bottom--lg"><div class="row"><div class="col docItemCol_VOVn"><div class="docItemContainer_Djhp"><article><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">本页总览</button></div><div class="theme-doc-markdown markdown"><header><h1>ES-Search-flow</h1></header><ul>
+<li><a href="https://www.cnblogs.com/richaaaard/p/5226334.html" target="_blank" rel="noopener noreferrer">ElasticSearch 2 (9) - 在ElasticSearch之下（图解搜索的故事）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/QpYR3ljbUyVsSf7s609i_g" target="_blank" rel="noopener noreferrer">图解 ElasticSearch 搜索原理</a></li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="摘要">摘要<a href="#摘要" class="hash-link" aria-label="摘要的直接链接" title="摘要的直接链接">​</a></h2>
+<p>先自上而下，后自底向上的介绍<code>ElasticSearch</code>的底层工作原理，试图回答以下问题：</p>
+<ul>
+<li>为什么我的搜索 <code>*foo-bar *</code> 无法匹配 <code>foo-bar</code> ？</li>
+<li>为什么增加更多的文件会压缩索引（Index）？</li>
+<li>为什么<code>ElasticSearch</code>占用很多内存？</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="版本">版本<a href="#版本" class="hash-link" aria-label="版本的直接链接" title="版本的直接链接">​</a></h2>
+<p><code>elasticsearch</code>版本: <code>elasticsearch-2.2.0</code></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="内容">内容<a href="#内容" class="hash-link" aria-label="内容的直接链接" title="内容的直接链接">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="图解elasticsearch">图解ElasticSearch<a href="#图解elasticsearch" class="hash-link" aria-label="图解ElasticSearch的直接链接" title="图解ElasticSearch的直接链接">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="云上的集群">云上的集群<a href="#云上的集群" class="hash-link" aria-label="云上的集群的直接链接" title="云上的集群的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-1-ffa88c3d451c78c942d3a5d16a0e52a8.png" width="1374" height="768" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="集群里的盒子">集群里的盒子<a href="#集群里的盒子" class="hash-link" aria-label="集群里的盒子的直接链接" title="集群里的盒子的直接链接">​</a></h4>
+<p>云里面的每个白色正方形的盒子代表一个节点——Node。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-2-775424247d0347fe6d443d95b8e8e569.png" width="1368" height="764" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="节点之间">节点之间<a href="#节点之间" class="hash-link" aria-label="节点之间的直接链接" title="节点之间的直接链接">​</a></h4>
+<p>在一个或者多个节点直接，多个绿色小方块组合在一起形成一个<code>ElasticSearch</code>的索引。
+<img decoding="async" loading="lazy" alt="img" src="/assets/images/3-3-da58a6101ad96fb4c875d09242a9f783.png" width="1372" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="索引里的小方块">索引里的小方块<a href="#索引里的小方块" class="hash-link" aria-label="索引里的小方块的直接链接" title="索引里的小方块的直接链接">​</a></h4>
+<p>在一个索引下，分布在多个节点里的绿色小方块称为分片——<code>Shard</code>。
+<img decoding="async" loading="lazy" alt="img" src="/assets/images/3-4-38130814d66d256d94705597081638b0.png" width="1370" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="shardlucene-index">Shard＝Lucene Index<a href="#shardlucene-index" class="hash-link" aria-label="Shard＝Lucene Index的直接链接" title="Shard＝Lucene Index的直接链接">​</a></h4>
+<p>一个<code>ElasticSearch</code>的<code>Shard</code>本质上是一个<code>Lucene Index</code>。
+<img decoding="async" loading="lazy" alt="img" src="/assets/images/3-5-948344a54068cf6ab229865de079db09.png" width="1370" height="762" class="img_ev3q"></p>
+<p><code>Lucene</code>是一个<code>Full Text</code> 搜索库（也有很多其他形式的搜索库），<code>ElasticSearch</code>是建立在<code>Lucene</code>之上的。接下来的故事 要说的大部分内容实际上是<code>ElasticSearch</code>如何基于<code>Lucene</code>工作的。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="图解lucene">图解Lucene<a href="#图解lucene" class="hash-link" aria-label="图解Lucene的直接链接" title="图解Lucene的直接链接">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="mini索引segment">Mini索引——segment<a href="#mini索引segment" class="hash-link" aria-label="Mini索引——segment的直接链接" title="Mini索引——segment的直接链接">​</a></h4>
+<p>在<code>Lucene</code>里面有很多小的<code>segment</code>，我们可以把它们看成<code>Lucene</code>内部的<code>mini-index</code>。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-6-4fd35418b8bff4428f12157efe8a3104.png" width="1372" height="758" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="segment内部">Segment内部<a href="#segment内部" class="hash-link" aria-label="Segment内部的直接链接" title="Segment内部的直接链接">​</a></h4>
+<p>有着许多数据结构</p>
+<ul>
+<li><code>Inverted Index</code></li>
+<li><code>Stored Fields</code></li>
+<li><code>Document Values</code></li>
+<li><code>Cache</code></li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-7-31b816f2befd488af38d27b49512e3f6.png" width="1368" height="760" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="最最重要的inverted-index">最最重要的Inverted Index<a href="#最最重要的inverted-index" class="hash-link" aria-label="最最重要的Inverted Index的直接链接" title="最最重要的Inverted Index的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-8-454edb19b37c4f4d8d00a4fe149dfa63.png" width="1364" height="760" class="img_ev3q"></p>
+<p><code>Inverted Index</code>主要包括两部分：</p>
+<ol>
+<li>一个有序的数据字典<code>Dictionary</code>（包括单词Term和它出现的频率）。</li>
+<li>与单词<code>Term</code>对应的<code>Postings</code>（即存在这个单词的文件）。
+当我们搜索的时候，首先将搜索的内容分解，然后在字典里找到对应Term，从而查找到与搜索相关的文件内容。</li>
+</ol>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-9-573b2635dd5ef6878c48ddb8a2d994db.png" width="1370" height="760" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="查询the-fury">查询“the fury”<a href="#查询the-fury" class="hash-link" aria-label="查询“the fury”的直接链接" title="查询“the fury”的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-10-051f272e578c257310b3d3885e6f66fc.png" width="1370" height="758" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="自动补全autocompletion-prefix">自动补全（AutoCompletion-Prefix）<a href="#自动补全autocompletion-prefix" class="hash-link" aria-label="自动补全（AutoCompletion-Prefix）的直接链接" title="自动补全（AutoCompletion-Prefix）的直接链接">​</a></h4>
+<p>如果想要查找以字母“c”开头的字母，可以简单的通过二分查找（<code>Binary Search</code>）在<code>Inverted Index</code>表中找到例如<code>“choice”</code>、<code>“coming”</code>这样的词（Term）。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-11-eb5fab73c654d9f13cb7ffa2ed6ce5e9.png" width="1372" height="764" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="昂贵的查找">昂贵的查找<a href="#昂贵的查找" class="hash-link" aria-label="昂贵的查找的直接链接" title="昂贵的查找的直接链接">​</a></h4>
+<p>如果想要查找所有包含“our”字母的单词，那么系统会扫描整个<code>Inverted Index</code>，这是非常昂贵的。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-12-d512352bdee3f266b71ff349107712c8.png" width="1370" height="770" class="img_ev3q"></p>
+<p>在此种情况下，如果想要做优化，那么我们面对的问题是如何生成合适的<code>Term</code>。</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="问题的转化">问题的转化<a href="#问题的转化" class="hash-link" aria-label="问题的转化的直接链接" title="问题的转化的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-13-b0ecc07ebd72c159c39b7d5a3cf79f9b.png" width="1376" height="772" class="img_ev3q"></p>
+<p>对于以上诸如此类的问题，我们可能会有几种可行的解决方案：</p>
+<ul>
+<li>
+<p><code>* suffix -&gt; xiffus *</code></p>
+<ul>
+<li>如果我们想以后缀作为搜索条件，可以为<code>Term</code>做反向处理。</li>
+</ul>
+</li>
+<li>
+<p><code>(60.6384, 6.5017) -&gt; u4u8gyykk</code></p>
+<ul>
+<li>对于GEO位置信息，可以将它转换为<code>GEO Hash</code>。</li>
+</ul>
+</li>
+<li>
+<p><code>123 -&gt; {1-hundreds, 12-tens, 123}</code></p>
+<ul>
+<li>对于简单的数字，可以为它生成多重形式的Term。</li>
+</ul>
+</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="解决拼写错误">解决拼写错误<a href="#解决拼写错误" class="hash-link" aria-label="解决拼写错误的直接链接" title="解决拼写错误的直接链接">​</a></h4>
+<p>一个 <a href="https://pypi.python.org/pypi/misspellings" target="_blank" rel="noopener noreferrer">Python库</a> 为单词生成了一个包含错误拼写信息的树形状态机，解决拼写错误的问题。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-14-e4aff96d05de24a7f68e423776ad9d57.png" width="1370" height="764" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="stored-field字段查找">Stored Field字段查找<a href="#stored-field字段查找" class="hash-link" aria-label="Stored Field字段查找的直接链接" title="Stored Field字段查找的直接链接">​</a></h4>
+<p>当我们想要查找包含某个特定标题内容的文件时，<code>Inverted Index</code>就不能很好的解决这个问题，所以<code>Lucene</code>提供了另外一种数据结构<code>Stored Fields</code>来解决这个问题。本质上，<code>Stored Fields</code>是一个简单的键值对<code>key-value</code>。默认情况下，<code>ElasticSearch</code>会存储整个文件的<code>JSON source</code>。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-15-ba7ef9ee694bc0f9cdadb6af7eb8009e.png" width="1370" height="770" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="document-values为了排序聚合">Document Values为了排序，聚合<a href="#document-values为了排序聚合" class="hash-link" aria-label="Document Values为了排序，聚合的直接链接" title="Document Values为了排序，聚合的直接链接">​</a></h4>
+<p>即使这样，我们发现以上结构仍然无法解决诸如：<code>排序</code>、<code>聚合</code>、<code>facet</code>，因为我们可能会要读取大量不需要的信息。</p>
+<p>所以，另一种数据结构解决了此种问题：<code>Document Values</code>。这种结构本质上就是一个列式的存储，它高度优化了具有相同类型的数据的存储结构。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-16-e41db0478cd680bf2e3817f15c6bda00.png" width="1374" height="772" class="img_ev3q"></p>
+<p>为了提高效率，<code>ElasticSearch</code>可以将索引下某一个<code>Document Value</code>全部读取到内存中进行操作，这大大提升访问速度，但是也同时会消耗掉大量的内存空间。</p>
+<p>总之，这些数据结构<code>Inverted Index</code>、<code>Stored Fields</code>、<code>Document Values</code>及其缓存，都在s<code>egment</code>内部。</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="搜索发生时">搜索发生时<a href="#搜索发生时" class="hash-link" aria-label="搜索发生时的直接链接" title="搜索发生时的直接链接">​</a></h3>
+<p>搜索时，<code>Lucene</code>会搜索所有的<code>segment</code>然后将每个<code>segment</code>的搜索结果返回，最后合并呈现给客户。</p>
+<p><code>Lucene</code>的一些特性使得这个过程非常重要：</p>
+<ul>
+<li>
+<p><code>Segments</code>是不可变的（<code>immutable</code>）</p>
+<ul>
+<li><code>Delete?</code> 当删除发生时，<code>Lucene</code>做的只是将其标志位置为删除，但是文件还是会在它原来的地方，不会发生改变</li>
+<li><code>Update?</code> 所以对于更新来说，本质上它做的工作是：先删除 ，然后重新索引（<code>Re-index</code>）</li>
+</ul>
+</li>
+<li>
+<p>随处可见的压缩</p>
+<ul>
+<li><code>Lucene</code>非常擅长压缩数据，基本上所有教科书上的压缩方式，都能在<code>Lucene</code>中找到。</li>
+</ul>
+</li>
+<li>
+<p>缓存所有的所有</p>
+<ul>
+<li><code>Lucene</code>也会将所有的信息做缓存，这大大提高了它的查询效率。</li>
+</ul>
+</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="缓存的故事">缓存的故事<a href="#缓存的故事" class="hash-link" aria-label="缓存的故事的直接链接" title="缓存的故事的直接链接">​</a></h3>
+<p>当<code>ElasticSearch</code>索引一个文件的时候，会为文件建立相应的缓存，并且会定期（每秒）刷新这些数据，然后这些文件就可以被搜索到。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-17-0820ae9a62aa1a4f2253a18e97a8a6b4.png" width="1374" height="762" class="img_ev3q"></p>
+<p>随着时间的增加，我们会有很多<code>segments</code>，</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-18-0767f2bb4b0743dc574068f9c47f9a73.png" width="1374" height="766" class="img_ev3q"></p>
+<p>所以<code>ElasticSearch</code>会将这些<code>segment</code>合并，在这个过程中，<code>segment</code>会最终被删除掉</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-19-897de8556a59c9644675bdafb6747dec.png" width="1378" height="768" class="img_ev3q"></p>
+<p>这就是为什么增加文件可能会使索引所占空间变小，它会引起<code>merge</code>，从而可能会有更多的压缩。</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="举个栗子">举个栗子<a href="#举个栗子" class="hash-link" aria-label="举个栗子的直接链接" title="举个栗子的直接链接">​</a></h4>
+<p>有两个<code>segment</code>将会<code>merge</code></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-20-67ead58f784e85cb9303e7539874a509.png" width="1376" height="764" class="img_ev3q"></p>
+<p>这两个<code>segment</code>最终会被删除，然后合并成一个新的<code>segment</code></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-21-366abd8c72a2d74610c40acb0609be8d.png" width="1374" height="760" class="img_ev3q"></p>
+<p>这时这个新的<code>segment</code>在缓存中处于cold状态，但是大多数<code>segment</code>仍然保持不变，处于warm状态。</p>
+<p>以上场景经常在<code>Lucene Index</code>内部发生的。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-22-7544de726c84f93261e0d66312abe3f5.png" width="1374" height="762" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="在shard中搜索">在Shard中搜索<a href="#在shard中搜索" class="hash-link" aria-label="在Shard中搜索的直接链接" title="在Shard中搜索的直接链接">​</a></h3>
+<p><code>ElasticSearch</code>从<code>Shard</code>中搜索的过程与<code>Lucene Segment</code>中搜索的过程类似。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-23-ad71e28f8424865afa1d342005b1db26.png" width="1374" height="760" class="img_ev3q"></p>
+<p>与在<code>Lucene Segment</code>中搜索不同的是，<code>Shard</code>可能是分布在不同<code>Node</code>上的，所以在搜索与 返回结果时，所有的信息都会通过网络传输。</p>
+<p>需要注意的是：</p>
+<p>1次搜索查找2个<code>shard ＝ 2</code>次分别搜索<code>shard</code></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-24-530075c6b51088d7dda9bece487bece0.png" width="1374" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="对于日志文件的处理">对于日志文件的处理<a href="#对于日志文件的处理" class="hash-link" aria-label="对于日志文件的处理的直接链接" title="对于日志文件的处理的直接链接">​</a></h4>
+<p>当我们想搜索特定日期产生的日志时，通过根据时间戳对日志文件进行分块与索引，会极大提高搜索效率。</p>
+<p>当我们想要删除旧的数据时也非常方便，只需删除老的索引即可。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-25-c0caa733b7424c03475b1d1d48ed38eb.png" width="1374" height="766" class="img_ev3q"></p>
+<p>在上种情况下，每个index有两个shards</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="如何scale">如何Scale<a href="#如何scale" class="hash-link" aria-label="如何Scale的直接链接" title="如何Scale的直接链接">​</a></h3>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-26-81dad6f3ec4a1b56c3a89196e36e8060.png" width="1372" height="760" class="img_ev3q"></p>
+<p>shard不会进行更进一步的拆分，但是shard可能会被转移到不同节点上</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-27-81dad6f3ec4a1b56c3a89196e36e8060.png" width="1372" height="760" class="img_ev3q"></p>
+<p>所以，如果当集群节点压力增长到一定的程度，我们可能会考虑增加新的节点，这就会要求我们对所有数据进行重新索引，这是我们不太希望看到的，所以我们需要在规划的时候就考虑清楚，如何去平衡足够多的节点与不足节点之间的关系。</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="节点分配与shard优化">节点分配与Shard优化<a href="#节点分配与shard优化" class="hash-link" aria-label="节点分配与Shard优化的直接链接" title="节点分配与Shard优化的直接链接">​</a></h4>
+<p>为更重要的数据索引节点，分配性能更好的机器
+确保每个shard都有副本信息replica
+<img decoding="async" loading="lazy" alt="img" src="/assets/images/3-28-2046e7f059eda696b5932e5ed5c7403b.png" width="1374" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="路由routing">路由Routing<a href="#路由routing" class="hash-link" aria-label="路由Routing的直接链接" title="路由Routing的直接链接">​</a></h4>
+<p>每个节点，每个都存留一份路由表，所以当请求到任何一个节点时，<code>ElasticSearch</code>都有能力将请求转发到期望节点的shard进一步处理。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-29-fd3217a194112c8df7eb376a4727d889.png" width="1368" height="772" class="img_ev3q"></p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="一个真实的请求">一个真实的请求<a href="#一个真实的请求" class="hash-link" aria-label="一个真实的请求的直接链接" title="一个真实的请求的直接链接">​</a></h3>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-30-11caa03f41465c92ea0c94b0652a6d68.png" width="1374" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="query">Query<a href="#query" class="hash-link" aria-label="Query的直接链接" title="Query的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-31-11caa03f41465c92ea0c94b0652a6d68.png" width="1374" height="762" class="img_ev3q"></p>
+<p><code>Query</code>有一个类型<code>filtered</code>，以及一个<code>multi_match</code>的查询</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="aggregation">Aggregation<a href="#aggregation" class="hash-link" aria-label="Aggregation的直接链接" title="Aggregation的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-32-8fa0fc13dddf7aaa1d1bf6f3a6485543.png" width="1378" height="768" class="img_ev3q"></p>
+<p>根据作者进行聚合，得到top10的<code>hits</code>的<code>top10</code>作者的信息</p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="请求分发">请求分发<a href="#请求分发" class="hash-link" aria-label="请求分发的直接链接" title="请求分发的直接链接">​</a></h4>
+<p>这个请求可能被分发到集群里的任意一个节点</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-33-f1aefede5f1171602d628bc5b15656ec.png" width="1372" height="766" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="上帝节点">上帝节点<a href="#上帝节点" class="hash-link" aria-label="上帝节点的直接链接" title="上帝节点的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-34-6df849423bdd14862224266b863e4a47.png" width="1374" height="772" class="img_ev3q"></p>
+<p>这时这个节点就成为当前请求的协调者（<code>Coordinator</code>），它决定：</p>
+<ul>
+<li>根据索引信息，判断请求会被路由到哪个核心节点</li>
+<li>以及哪个副本是可用的</li>
+<li>等等</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="路由">路由<a href="#路由" class="hash-link" aria-label="路由的直接链接" title="路由的直接链接">​</a></h4>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-35-40d1134eadc3c3d1603c20ac5c913791.png" width="1370" height="762" class="img_ev3q"></p>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="在真实搜索之前">在真实搜索之前<a href="#在真实搜索之前" class="hash-link" aria-label="在真实搜索之前的直接链接" title="在真实搜索之前的直接链接">​</a></h4>
+<p><code>ElasticSearch</code> 会将Query转换成<code>Lucene Query</code></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-36-779ec2aa556a7da5ac8f0ea0d441951f.png" width="1370" height="764" class="img_ev3q"></p>
+<p>然后在所有的<code>segment</code>中执行计算</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-37-1604446349da1833cb05cc4ce51f2dba.png" width="1372" height="760" class="img_ev3q"></p>
+<p>对于<code>Filter</code>条件本身也会有缓存</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-38-cea4d7bbb80c6c63ad57ac56c94e9c66.png" width="1370" height="758" class="img_ev3q"></p>
+<p>但<code>queries</code>不会被缓存，所以如果相同的<code>Query</code>重复执行，应用程序自己需要做缓存</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-39-baf56257da00e39c26003f5e79225998.png" width="1366" height="758" class="img_ev3q"></p>
+<p>所以，</p>
+<ul>
+<li><code>filters</code>可以在任何时候使用</li>
+<li><code>query</code>只有在需要<code>score</code>的时候才使用</li>
+</ul>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="返回">返回<a href="#返回" class="hash-link" aria-label="返回的直接链接" title="返回的直接链接">​</a></h4>
+<p>搜索结束之后，结果会沿着下行的路径向上逐层返回。</p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-40-d1dba934ac998fa857c739aa5a85592f.png" width="1368" height="762" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-41-770e8d301bcd2fd1bc004346c187700d.png" width="1366" height="756" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-42-4c1dc14caf1f00f35c30ce05cbfc5c23.png" width="1368" height="766" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-43-a02da95c0b577b11793929ca5115db19.png" width="1372" height="768" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="img" src="/assets/images/3-44-60b001ebf8d38ffa75a54cc2db0e444f.png" width="1372" height="764" class="img_ev3q"></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="参考">参考<a href="#参考" class="hash-link" aria-label="参考的直接链接" title="参考的直接链接">​</a></h2>
+<p><a href="http://www.slideshare.net/foundsearch/elasticsearch-from-the-bottom-up?qid=8a5495a0-6902-4af8-99e4-4797f7b3bba8&amp;v=&amp;b=&amp;from_search=1" target="_blank" rel="noopener noreferrer">SlideShare: Elasticsearch From the Bottom Up</a></p>
+<p><a href="https://www.youtube.com/watch?v=PpX7J-G2PEo" target="_blank" rel="noopener noreferrer">Youtube: Elasticsearch from the bottom up</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Document-term_matrix" target="_blank" rel="noopener noreferrer">Wiki: Document-term matrix</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Search_engine_indexing" target="_blank" rel="noopener noreferrer">Wiki: Search engine indexing</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Skip_list" target="_blank" rel="noopener noreferrer">Skip list</a></p>
+<p><a href="http://nlp.stanford.edu/IR-book/html/htmledition/faster-postings-list-intersection-via-skip-pointers-1.html" target="_blank" rel="noopener noreferrer">Standford Edu: Faster postings list intersection via skip pointers</a></p>
+<p><a href="http://stackoverflow.com/questions/9387451/how-an-search-index-works-when-querying-many-words" target="_blank" rel="noopener noreferrer">StackOverflow: how an search index works when querying many words?</a></p>
+<p><a href="http://stackoverflow.com/questions/7693897/how-does-lucene-calculate-intersection-of-documents-so-fast" target="_blank" rel="noopener noreferrer">StackOverflow: how does lucene calculate intersection of documents so fast?</a></p>
+<p><a href="https://www.linkedin.com/pulse/lucene-its-magical-indexes-sanjay-singh" target="_blank" rel="noopener noreferrer">Lucene and its magical indexes</a></p>
+<p><a href="https://pypi.python.org/pypi/misspellings" target="_blank" rel="noopener noreferrer">misspellings 2.0c: A tool to detect misspellings</a></p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col"><a href="https://github.com/lorchr/light-docusaurus/tree/main/middleware/elastic/3-ES-Search-flow.md" target="_blank" rel="noopener noreferrer" class="theme-edit-this-page"><svg fill="currentColor" height="20" width="20" viewBox="0 0 40 40" class="iconEdit_Z9Sw" aria-hidden="true"><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"></path></g></svg>编辑此页</a></div><div class="col lastUpdated_JAkA"><span class="theme-last-updated">最后<!-- -->由 <b>Lorchr</b> <!-- -->于 <b><time datetime="2025-05-09T13:47:59.000Z" itemprop="dateModified">2025年5月9日</time></b> <!-- -->更新</span></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="文件选项卡"></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#摘要" class="table-of-contents__link toc-highlight">摘要</a></li><li><a href="#版本" class="table-of-contents__link toc-highlight">版本</a></li><li><a href="#内容" class="table-of-contents__link toc-highlight">内容</a><ul><li><a href="#图解elasticsearch" class="table-of-contents__link toc-highlight">图解ElasticSearch</a></li><li><a href="#图解lucene" class="table-of-contents__link toc-highlight">图解Lucene</a></li><li><a href="#搜索发生时" class="table-of-contents__link toc-highlight">搜索发生时</a></li><li><a href="#缓存的故事" class="table-of-contents__link toc-highlight">缓存的故事</a></li><li><a href="#在shard中搜索" class="table-of-contents__link toc-highlight">在Shard中搜索</a></li><li><a href="#如何scale" class="table-of-contents__link toc-highlight">如何Scale</a></li><li><a href="#一个真实的请求" class="table-of-contents__link toc-highlight">一个真实的请求</a></li></ul></li><li><a href="#参考" class="table-of-contents__link toc-highlight">参考</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="col footer__col"><div class="footer__title">Docs</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/docs/category/guide/">Torch</a></li><li class="footer__item"><a class="footer__link-item" href="/middleware/">Middleware</a></li><li class="footer__item"><a class="footer__link-item" href="/electron/">Electron</a></li></ul></div><div class="col footer__col"><div class="footer__title">Community</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://stackoverflow.com/questions/tagged/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Stack Overflow<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://discordapp.com/invite/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://twitter.com/lorchr" target="_blank" rel="noopener noreferrer" class="footer__link-item">Twitter<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">More</div><ul class="footer__items clean-list"><li class="footer__item"><a class="footer__link-item" href="/blog/">Blog</a></li><li class="footer__item"><a class="footer__link-item" href="/diy/">DIY</a></li><li class="footer__item"><a href="https://github.com/lorchr/light-docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div><div class="col footer__col"><div class="footer__title">Offical</div><ul class="footer__items clean-list"><li class="footer__item"><a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer" class="footer__link-item">Home<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://github.com/facebook/docusaurus" target="_blank" rel="noopener noreferrer" class="footer__link-item">Github<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li><li class="footer__item"><a href="https://docusaurus.io/docs/playground" target="_blank" rel="noopener noreferrer" class="footer__link-item">Playground<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a></li></ul></div></div><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Light-Docusaurus, Inc. Built with Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

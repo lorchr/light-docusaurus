@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[17708],{18119:s=>{s.exports=JSON.parse('{"label":"oss","permalink":"/blog/tags/oss","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
