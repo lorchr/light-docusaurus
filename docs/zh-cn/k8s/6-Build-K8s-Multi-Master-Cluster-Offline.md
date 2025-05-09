@@ -557,8 +557,6 @@ ip link | grep link/ether
 sudo cat /sys/class/dmi/id/product_uuid
 ```
 
-![](./img/6/MAC地址和UUID.png)
-
 ### 5.2 安装 kubelet、kubeadm 和 kubectl
 
 ```shell
@@ -636,8 +634,6 @@ sudo firewall-cmd --list-all
 #     rule family="ipv4" source address="224.0.0.18/32" accept
 
 ```
-
-![](./img/6/VIP2.png)
 
 在配置防火墙规则之后，`192.168.137.140` IP仅在Keepalived主节点上，备份节点没有这个ip，备份节点也可以通过这个IP访问到主节点
 
@@ -1261,8 +1257,8 @@ kubectl get svc -n kubernetes-dashboard
 
 ```
 
-![](./img/6/Dashbaord1.png)
-![](./img/6/Dashbaord2.png)
+![](./img/6/Dashboard1.png)
+![](./img/6/Dashboard2.png)
 
 ### 11.3 创建Token
 
@@ -1309,7 +1305,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IkZvMml4OGhLVFpTTXN6Vm9pTXo2MEpoMjFWblNKUVA1Q0JjOHkw
 kubectl describe secret -n kubernetes-dashboard $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 
 ```
-![](./img/6/Dashbaord3.png)
+![](./img/6/Dashboard3.png)
 
 ### 11.4 访问Dashboard
 

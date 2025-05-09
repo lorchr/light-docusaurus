@@ -530,8 +530,6 @@ docker run hello-world
 
 ```
 
-![](./img/5/Docker测试1.png)
-
 ### 4.4 如果需要卸载，使用以下命令
 
 ```shell
@@ -738,8 +736,6 @@ ip link | grep link/ether
 # 查看 product_uuid
 sudo cat /sys/class/dmi/id/product_uuid
 ```
-
-![](./img/5/MAC地址和UUID.png)
 
 ### 5.2 添加 Kubernetes 的 yum 仓库
 
@@ -1615,7 +1611,7 @@ kubectl get svc -n kubernetes-dashboard
 
 ```
 
-![](./img/5/Dashbaord1.png)
+![](./img/5/Dashboard1.png)
 
 ### 11.4 创建Token
 
@@ -1662,7 +1658,7 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IjJtWTBjMHlsN2tSVkVaamI1WGU0YTZkMi1EclRfUXdBLUdnR3VF
 kubectl describe secret -n kubernetes-dashboard $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
 
 ```
-![](./img/5/Dashbaord2.png)
+![](./img/5/Dashboard2.png)
 
 ### 11.5 访问Dashboard
 
@@ -1691,11 +1687,11 @@ kubectl logs -n kubernetes-dashboard kubernetes-dashboard-kong-7696bb8c88-c2qkt
 
 ```
 
-![](./img/5/Dashbaord3.png)
+![](./img/5/Dashboard3.png)
 
 - 浏览器访问 `https://192.168.137.131:30443`，输入前面生成的Token即可访问页面
 
-![](./img/5/Dashbaord4.png)
+![](./img/5/Dashboard4.png)
 
 ### 11.6 删除Dashboard
 ```shell
