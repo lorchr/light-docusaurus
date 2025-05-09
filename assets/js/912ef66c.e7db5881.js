@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[23671],{18645:s=>{s.exports=JSON.parse('{"name":"docusaurus-plugin-content-docs","id":"electron"}')}}]);

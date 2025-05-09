@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunklight_docusaurus=self.webpackChunklight_docusaurus||[]).push([[28267],{25663:s=>{s.exports=JSON.parse('{"label":"minio","permalink":"/blog/tags/minio","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);
