@@ -1686,9 +1686,13 @@ PortPlayer播放
 ![](./img/13/播放日志1.png)
 
 ## 常见问题
-### 点播收流超时 [Github issue#289](https://github.com/648540858/wvp-GB28181-pro/issues/289)
+
+### 一、点播收流超时 [Github issue#289](https://github.com/648540858/wvp-GB28181-pro/issues/289)
+#### 故障原因
+
 这通常是摄像头网络无法联通ZLMediaServer导致的
 
+#### 解决方案
 在摄像头配置中开启SSH
 ![](./img/13/摄像头开启SSH.png)
 
@@ -1696,3 +1700,194 @@ PortPlayer播放
 ![](./img/13/摄像头网络测试.png)
 
 然后检查ZLM的防火墙是否关闭（或者端口放行规则是否配置）
+
+### 二、WebRTC播放报错[](https://cloud.tencent.com/developer/article/2403493)
+Chrome浏览器升级到123版本后，zlmediakit的webrtc无法播放，无法建立连接问题
+
+报错信息如下
+```shell
+ [RTCPusherPlayer] OperationError: Failed to execute 'setRemoteDescription' on 'RTCPeerConnection': Failed to parse SessionDescription.  Duplicate a=msid lines detected
+    at e.RTCPeerConnection.setRemoteDescription (liveplayer-lib.min.js:1:1198473)
+    at RTCPeerConnection.setRemoteDescription (common_shim.js:214:39)
+    at endpoint.js:119:29
+```
+
+#### 故障原因
+这是因为Chrome浏览器升级到123版本后[更改了rtp机制](https://bugs.chromium.org/p/webrtc/issues/detail?id=15845)导致的。(https://issues.webrtc.org/issues/42226210)
+
+webrtc 返回的sdp中的msid是相同的，chrome更新完后会有这个问题，在`WebRtcTransport.cpp`修改
+ `ssrc.msid = RTP_MSID + to_string(i++);` 这一行，使msid不一样就好了
+
+#### 解决方案：
+1. 合并fix代码：[Commit 1e39594](https://github.com/ZLMediaKit/ZLMediaKit/commit/1e3959433522808f3390bc9748ae96af793906dc)
+2. 更新编译zlmeidakit版本到最新版本
+
+### WebRTC播放失败，转圈
+#### 故障原因
+
+一般是因为网络不通，如设备(摄像头)及服务(wvp zlm)部署通过内网IP通讯，通过公网访问视频页面时会出现WebRTC一直转圈的情况
+
+#### 解决方案
+这时可以将zlm rtc配置改为内网ip测试
+
+```ini
+[rtc]
+bfilter=0
+datachannel_echo=1
+#externIP=113.57.121.225     # 将此处的公网IP改为内网
+externIP=192.168.1.213
+maxRtpCacheMS=5000
+maxRtpCacheSize=2048
+max_bitrate=0
+min_bitrate=0
+nackIntervalRatio=1.0
+nackMaxCount=15
+nackMaxMS=3000
+nackMaxSize=2048
+nackRtpSize=8
+port=8000
+preferredCodecA=PCMA,PCMU,opus,mpeg4-generic
+preferredCodecV=H264,H265,AV1,VP9,VP8
+rembBitRate=0
+start_bitrate=0
+tcpPort=8000
+timeoutSec=15
+
+```
+
+如果可以正常播放，需要将公网IP防火墙规则对应的8000/tcp 8000/udp 开放出来
+
+### 语音对讲报错 `navigator.mediaDevices is undefined`
+- [关于navigator.mediaDevices为undefined，获取不到媒体权限的问题](https://blog.csdn.net/gw6601/article/details/130850614)
+
+报错信息如下
+```shell
+TypeError: Cannot read properties of undefined (reading 'getUserMedia')
+```
+
+当时的场景是公司搭建的内部服务网站没有测试环境（有点鸡肋，说是因为需要线上成员信息认证登录），也因为跨域问题，所以需要制定线上环境的域名，本地localhost用不了，协议是http的，导致接入一个语音需求的时候本地调试出现了问题。
+
+#### 故障原因
+主要原因是浏览器的安全策略导致了这个问题
+```js
+// 兼容性处理
+navigator.getUserMedia = navigator.getUserMedia || 
+                        navigator.webkitGetUserMedia || 
+                        navigator.mozGetUserMedia || 
+                        navigator.msGetUserMedia;
+
+if (navigator.getUserMedia) {
+  // 支持
+  console.log('支持');
+  console.log(navigator.getUserMedia);
+} else {
+// 不支持
+  console.log('navigator.getUserMedia - 不支持');
+}
+
+// 新版 API 优先
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  // 现代浏览器
+  navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    .then(handleSuccess)
+    .catch(handleError);
+} else if (navigator.getUserMedia) {
+  // 旧版浏览器兼容
+  navigator.getUserMedia({ video: true, audio: true }, handleSuccess, handleError);
+} else {
+  console.log("当前浏览器不支持媒体设备访问");
+}
+
+```
+
+```html
+<!DOCTYPE html>
+<html>
+<body>
+  <button onclick="startCapture()">获取媒体设备</button>
+  <video id="video" autoplay></video>
+
+  <script>
+    // 兼容性处理
+    navigator.getUserMedia = navigator.getUserMedia || 
+                            navigator.webkitGetUserMedia || 
+                            navigator.mozGetUserMedia || 
+                            navigator.msGetUserMedia;
+
+    if (navigator.getUserMedia) {
+      // 支持
+      console.log('支持');
+      console.log(navigator.getUserMedia);
+    } else {
+    // 不支持
+      console.log('navigator.getUserMedia - 不支持');
+    }
+
+    // 新版 API 优先
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // 现代浏览器
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(handleSuccess)
+        .catch(handleError);
+    } else if (navigator.getUserMedia) {
+      // 旧版浏览器兼容
+      navigator.getUserMedia({ video: true, audio: true }, handleSuccess, handleError);
+    } else {
+      console.log("当前浏览器不支持媒体设备访问");
+    }
+
+    function handleSuccess(stream) {
+      console.log("成功获取媒体流");
+      const video = document.getElementById('video');
+      video.srcObject = stream;
+    }
+
+    function handleError(error) {
+      console.error("获取媒体失败:", error.name, error.message);
+    }
+
+    function startCapture() {
+      // 通过按钮触发（浏览器要求用户主动交互）
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+          .then(handleSuccess)
+          .catch(handleError);
+      }
+    }
+  </script>
+</body>
+</html>
+
+```
+
+- [MediaDevices.getUserMedia() - Web API 接口参考 | MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/MediaDevices/getUserMedia)
+
+`navigator.mediaDevices`在目前以下三种情况下可以获取到
+
+1. 地址为localhost:// 访问时
+2. 地址为https:// 时
+3. 为文件访问file://
+
+解决方案有三种
+#### 1. 采用https方案
+由于线上环境都是https协议的，所以这个不用考虑，只是本地调试是一个大问题，所以忽略
+
+#### 2. 采取修改chrome浏览器的安全策略
+1. 浏览器地址栏输入 `edge://flags/#unsafely-treat-insecure-origin-as-secure`  `chrome://flags/#unsafely-treat-insecure-origin-as-secure`
+2. 将该 `Disabled` 切换成 `Enable` 状态；
+3. 在输入框中填写需要开启的域名或地址(带上端口号)，如果有多个，则以逗号分隔；
+   - `http://aio.pisx.com:9092`
+4.  重启浏览器后生效
+
+#### 3. 在本地做了一次proxy，我的项目是vue的，在vue.config.js中添加：
+
+```js
+devServer: {
+  port: 8000,
+  disableHostCheck: true,
+  host: 'aio.pisx.com',
+  https: true
+}
+```
+
+采用第2、3套方案可以解决本地调试问题，如果线上不是https协议，那就要申请证书了
