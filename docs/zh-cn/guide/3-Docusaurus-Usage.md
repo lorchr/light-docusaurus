@@ -183,9 +183,10 @@ npm install
 npx docusaurus --version
 
 # 或者一键升级
-yarn upgrade @docusaurus/core@latest @docusaurus/plugin-content-blog@latest @docusaurus/plugin-content-docs@latest @docusaurus/plugin-content-pages@latest @docusaurus/plugin-sitemap@latest @docusaurus/preset-classic@latest @docusaurus/remark-plugin-npm2yarn@latest @docusaurus/theme-live-codeblock@latest @docusaurus/theme-mermaid@latest @docusaurus/theme-search-algolia@latest @docusaurus/module-type-aliases@latest
+yarn upgrade @docusaurus/core@latest @docusaurus/plugin-content-blog@latest @docusaurus/plugin-content-docs@latest @docusaurus/plugin-content-pages@latest @docusaurus/plugin-sitemap@latest @docusaurus/preset-classic@latest @docusaurus/remark-plugin-npm2yarn@latest @docusaurus/theme-live-codeblock@latest @docusaurus/theme-mermaid@latest @docusaurus/theme-search-algolia@latest @docusaurus/module-type-aliases@latest @docusaurus/tsconfig@latest @docusaurus/types@latest
 
-npm uninstall -g @docusaurus/core @docusaurus/plugin-content-blog @docusaurus/plugin-content-docs @docusaurus/plugin-content-pages @docusaurus/plugin-sitemap @docusaurus/preset-classic @docusaurus/remark-plugin-npm2yarn @docusaurus/theme-live-codeblock @docusaurus/theme-mermaid @docusaurus/theme-search-algolia @docusaurus/module-type-aliases
+npm uninstall -g @docusaurus/core @docusaurus/plugin-content-blog @docusaurus/plugin-content-docs @docusaurus/plugin-content-pages @docusaurus/plugin-sitemap @docusaurus/preset-classic @docusaurus/remark-plugin-npm2yarn @docusaurus/theme-live-codeblock @docusaurus/theme-mermaid @docusaurus/theme-search-algolia @docusaurus/module-type-aliases @docusaurus/tsconfig @docusaurus/types
+
 ```
 
 3. 运行
@@ -195,7 +196,9 @@ npm install --save docusaurus
 
 # 安装 node依赖
 rm -rf node_modules
+
 npm install
+
 ```
 
 4. 安装插件

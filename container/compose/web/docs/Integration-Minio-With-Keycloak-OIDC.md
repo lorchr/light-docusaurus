@@ -22,11 +22,11 @@ Keycloak是一种单点登录解决方案。使用Keycloak，用户使用Keycloa
 
 设置URL信息
 
-* **Root URL**                  <https://minio.light.local>
-* **Home URL                  <https://minio.light.local>**
-* **Valid redirect URIs**   <https://minio.light.local>/oauth_callback  \*
-* **Valid post logout redirect URIs  <https://minio.light.local>**
-* **Web origins**               https://minio.light.local
+* **Root URL**                  `https://minio.light.local`
+* **Home URL                  `https://minio.light.local`**
+* **Valid redirect URIs**   `https://minio.light.local>/oauth_callback  `*
+* **Valid post logout redirect URIs  `https://minio.light.local`**
+* **Web origins**               `https://minio.light.local`
 
 \n ![](img/a0b34447-7f21-41de-aeab-e584860df3bd.png " =1259x596")
 
@@ -128,14 +128,14 @@ Keycloak是一种单点登录解决方案。使用Keycloak，用户使用Keycloa
 
 登陆Minio， 点击**Administrator** -> Identity → Openid, 按照下图配置, Client Secret 可以从Keycloak Clients -> Minio -> Credentials -> Client secret 获得
 
-* Config URL       <https://keycloak.light.local/realms/master/.well-known/openid-configuration>
+* Config URL       `https://keycloak.light.local/realms/master/.well-known/openid-configuration`
 * Client ID           Minio
 * Client Secret    QQO0uOF9w9XAx8BW8JGMR9fdIEXYAwuy
 * Claim Name      Minio-Policy
 * Display Name   Keycloak OIDC
 * Claim Prefix
 * Scopes             openid,profile,email
-* Redirect URI     <https://minio.light.local/oauth_callback>
+* Redirect URI     `https://minio.light.local/oauth_callback`
 
  ![](img/b694d0a3-fe8b-43c2-a093-5c9cd924b429.png)
 
