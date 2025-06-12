@@ -1096,8 +1096,9 @@ kubectl port-forward service/grafana 3000:3000 --namespace=grafana
 6. Promtail 收集本地日志
 7. Grafana 面板查看日志
 
-### 1. Docker Compose部署Loki + Grafana
+### 1. 部署Loki + Grafana
 
+#### Docker Compose 部署
 Docker Compose配置文件 `docker-compose.yaml`
 
 ```yaml
@@ -1176,6 +1177,312 @@ docker compose -f docker-compose.yaml down
   - `http://192.168.137.121:3000`
   - `admin` / `admin`
 
+#### K8s部署
+- [Kubernetes平台部署Grafana Loki Promtail系统](https://blog.csdn.net/ichen820/article/details/134287977)
+- [在k8s中利用Helm部署Prometheus+Grafana和Loki日志系统](https://blog.csdn.net/sinat_30893849/article/details/145747445)
+
+Kubernetes 资源定义文件 `loki-grafana.yaml`
+
+```yaml
+# Namespace定义
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: lpg
+---
+
+# Grafana 服务定义
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+  namespace: lpg
+spec:
+  type: NodePort
+  ports:
+  - port: 3000
+    targetPort: http-grafana
+    nodePort: 30300
+  selector:
+    app: grafana
+---
+
+# Grafana 部署定义
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+  namespace: lpg
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:12.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 3000
+            name: http-grafana
+            protocol: TCP
+        # 添加安全上下文 0 为 root用户
+        securityContext:
+          runAsUser: 0
+        env:
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "false"
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /robots.txt
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 1
+        resources:
+          requests:
+            cpu: 250m
+            memory: 250Mi
+          limits:
+            cpu: '1'
+            memory: 2Gi
+        volumeMounts:
+        - name: storage
+          mountPath: /var/lib/grafana
+      volumes:
+      - name: storage
+        hostPath:
+          path: /home/diginn/lpg/grafana
+---
+
+# Loki 账号定义
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: loki
+  namespace: lpg
+---
+
+# Loki 角色定义
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: loki
+  namespace: lpg
+rules:
+- apiGroups: ["extensions"]
+  resources: ["podsecuritypolicies"]
+  verbs: ["use"]
+  resourceNames: [loki]
+---
+
+# Loki 角色绑定定义
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: loki
+  namespace: lpg
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: loki
+subjects:
+- kind: ServiceAccount
+  name: loki
+---
+
+# Loki配置文件
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loki
+  namespace: lpg
+  labels:
+    app: loki
+data:
+  loki.yaml: |
+    auth_enabled: false
+
+    server:
+      http_listen_port: 3100
+
+    common:
+      instance_addr: 127.0.0.1
+      path_prefix: /data/loki
+      storage:
+        filesystem:
+          chunks_directory: /data/loki/chunks
+          rules_directory: /data/loki/rules
+      replication_factor: 1
+      ring:
+        kvstore:
+          store: inmemory
+
+    schema_config:
+      configs:
+        - from: 2020-10-24
+          store: tsdb
+          object_store: filesystem
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+
+    ruler:
+      alertmanager_url: http://localhost:9093
+
+---
+
+# Loki 服务定义
+apiVersion: v1
+kind: Service
+metadata:
+  name: loki
+  namespace: lpg
+  labels:
+    app: loki
+spec:
+  type: NodePort
+  ports:
+    - port: 3100
+      protocol: TCP
+      name: http-metrics
+      targetPort: http-metrics
+      nodePort: 30310
+  selector:
+    app: loki
+---
+
+# Loki StatefulSet定义
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: loki
+  namespace: lpg
+  labels:
+    app: loki
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+  serviceName: loki
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: loki
+    spec:
+      serviceAccountName: loki
+      initContainers:
+      - name: chmod-data
+        image: busybox:1.28.4
+        imagePullPolicy: IfNotPresent
+        command: ["chmod","-R","777","/loki/data"]
+        volumeMounts:
+        - name: storage
+          mountPath: /loki/data
+      containers:
+        - name: loki
+          image: grafana/loki:3.5.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - -config.file=/etc/loki/loki.yaml
+          ports:
+            - name: http-metrics
+              containerPort: 3100
+              protocol: TCP
+          # 添加安全上下文 id
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          livenessProbe:
+            httpGet: 
+              path: /ready
+              port: http-metrics
+              scheme: HTTP
+            initialDelaySeconds: 45
+          readinessProbe:
+            httpGet: 
+              path: /ready
+              port: http-metrics
+              scheme: HTTP
+            initialDelaySeconds: 45
+          volumeMounts:
+            - name: config
+              mountPath: /etc/loki
+            - name: storage
+              mountPath: /data
+      terminationGracePeriodSeconds: 4800
+      volumes:
+        - name: config
+          configMap:
+            name: loki
+        - name: storage
+          hostPath:
+            path: /home/diginn/lpg/loki
+
+```
+
+- `*.namespace: lpg`
+- `grafana.hostPath.path: /home/diginn/lpg/grafana`
+- `grafana.ports[*].port.nodePort: 30300`
+- `loki.hostPath.path: /home/diginn/lpg/loki`
+- `loki.ports[*].port.nodePort: 30310`
+
+部署资源
+
+```shell
+# 创建命名空间
+kubectl get ns lpg
+kubectl create ns lpg
+
+# 部署
+kubectl apply -f loki-grafana.yaml
+
+# 删除
+kubectl delete -f loki-grafana.yaml
+
+# 检查 Pod 状态
+kubectl get pods -l 'app in (loki, grafana)' -n lpg -o wide 
+kubectl get services -n lpg -o wide 
+
+# 查看日志
+kubectl logs loki-0 -n lpg
+kubectl logs grafana-756cfd5f8f-qdr4k -n lpg
+
+```
+
+- 浏览器访问Loki监控指标页面 
+  - `http://192.168.137.121:30310/metrics`
+- 浏览器访问Grafana页面 
+  - `http://192.168.137.121:30300`
+  - `admin` / `admin`
+
 ### 2. K8s DaemonSet部署Promtail
 
 Promtail DaemonSet配置文件 `promtail-daemonset.yaml`
@@ -1237,6 +1544,7 @@ data:
 
     clients:
     - url: http://192.168.137.121:3100/loki/api/v1/push  # 注意这里的协议为 HTTP，IP 端口为Loki映射的物理机IP 端口
+    - url: http://loki.lpg:3100/loki/api/v1/push  # 如果是在同一个K8s中，可以使用 <服务名.命名空间> 例如: loki.lpg
 
     positions:
       filename: /tmp/positions.yaml
@@ -1327,6 +1635,9 @@ Promtail DaemonSet部署
 ```shell
 # 部署 Promtail DaemonSet 
 kubectl apply -f promtail-daemonset.yaml
+
+# 删除
+kubectl delete -f promtail-daemonset.yaml
 
 # 查询出 Pod 以及它们部署到的节点
 kubectl get pods -l name=promtail -o wide
